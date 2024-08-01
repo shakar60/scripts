@@ -1,0 +1,25 @@
+local blacklist = {"Username3", "Username2", "Username3"}
+
+-- Function to check if a player is blacklisted
+local function isBlacklisted(player)
+for _, blacklistedPlayer in pairs(blacklist) do
+if player.Name == blacklistedPlayer then
+return true
+end
+end
+return false
+end
+
+-- Kick blacklisted players
+for _, player in pairs(game.Players:GetPlayers()) do
+if isBlacklisted(player) then
+player:Kick("You are blacklisted from USH!")
+end
+end
+
+-- Listen for new players joining
+game.Players.PlayerAdded:Connect(function(player)
+if isBlacklisted(player) then
+player:Kick("You are blacklisted from USH!")
+end
+end)
