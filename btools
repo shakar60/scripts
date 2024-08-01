@@ -1,1 +1,88 @@
+--skidded by shakar
 
+local tools = {
+    {Name = "Hammer", BinType = 4, Description = "Click An Object To Smash It"},
+    {Name = "Clone", BinType = 3, Description = "Click An Object To Clone It"},
+    {Name = "F3X", Code = "loadstring(game:GetObjects('rbxassetid://6695644299')[1].Source)()", Description = "Click An Object To Get The F3X Tool"}
+}
+
+-- Function to create a tool with a description
+local function createTool(toolInfo)
+    local tool
+
+    if toolInfo.Code then
+        -- Create a Tool instance for the F3X tool with custom code
+        tool = Instance.new("Tool")
+        tool.RequiresHandle = false
+        tool.Name = toolInfo.Name
+        tool.Activated:Connect(function()
+            -- Execute the F3X script
+            loadstring(toolInfo.Code)()
+            -- Remove the tool after activation
+            tool:Destroy()
+        end)
+    else
+        -- Create a HopperBin instance for other tools
+        tool = Instance.new("HopperBin")
+        tool.BinType = toolInfo.BinType
+        tool.Name = toolInfo.Name
+    end
+
+    -- Create and set up the description GUI
+    local handle = Instance.new("Part")
+    handle.Name = "Handle"
+    handle.Size = Vector3.new(1, 1, 1)
+    handle.Anchored = false
+    handle.CanCollide = false
+    handle.Parent = tool
+
+    local billboardGui = Instance.new("BillboardGui")
+    billboardGui.Adornee = handle
+    billboardGui.Size = UDim2.new(0, 200, 0, 50)
+    billboardGui.StudsOffset = Vector3.new(0, 3, 0)
+    billboardGui.Parent = handle
+
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Size = UDim2.new(1, 0, 1, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textLabel.TextScaled = true
+    textLabel.Text = toolInfo.Description
+    textLabel.TextStrokeTransparency = 0.5
+    textLabel.Parent = billboardGui
+
+    tool.Parent = game.Players.LocalPlayer.Backpack
+end
+
+-- Function to set up tools
+local function setupTools()
+    -- Remove existing tools
+    for _, existingTool in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+        if existingTool:IsA("Tool") or existingTool:IsA("HopperBin") then
+            existingTool:Destroy()
+        end
+    end
+    
+    -- Create tools
+    for _, toolInfo in ipairs(tools) do
+        createTool(toolInfo)
+    end
+end
+
+-- Function to handle character respawn
+local function onCharacterAdded(character)
+    -- Wait for the character's humanoid to load
+    local humanoid = character:WaitForChild("Humanoid", 10)
+    if humanoid then
+        setupTools()
+    end
+end
+
+-- Connect to CharacterAdded event
+local player = game.Players.LocalPlayer
+player.CharacterAdded:Connect(onCharacterAdded)
+
+-- Set up tools for the current character
+if player.Character then
+    onCharacterAdded(player.Character)
+end
