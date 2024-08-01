@@ -2,7 +2,7 @@
 local blacklist = {"Username3", "Username2", "Username3"}
 
 -- Define the specific game ID to check
-local gameId = 12345678  -- Replace with your specific game ID
+local gameId = 18376355901  -- Replace with your specific game ID
 
 -- Function to check if a player is blacklisted
 local function isBlacklisted(player)
