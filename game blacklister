@@ -1,1 +1,35 @@
+-- Blacklist of usernames
+local blacklist = {"Username3", "Username2", "Username3"}
 
+-- Define the specific game ID to check
+local gameId = 12345678  -- Replace with your specific game ID
+
+-- Function to check if a player is blacklisted
+local function isBlacklisted(player)
+    for _, blacklistedPlayer in pairs(blacklist) do
+        if player.Name == blacklistedPlayer then
+            return true
+        end
+    end
+    return false
+end
+
+-- Function to handle blacklisting for players already in the game
+local function handleExistingPlayers()
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if isBlacklisted(player) then
+            player:Kick("You are blacklisted from this game!")
+        end
+    end
+end
+
+-- Check if the player is joining the specific game
+game.Players.PlayerAdded:Connect(function(player)
+    -- Check if the player is joining the specific game and is blacklisted
+    if isBlacklisted(player) then
+        player:Kick("You are blacklisted from this game!")
+    end
+end)
+
+-- Handle blacklisting for players already in the game
+handleExistingPlayers()
