@@ -1,3 +1,5 @@
+--skidded by shakar
+
 local tools = {
     {Name = "Hammer", BinType = 4, Description = "Click An Object To Smash It"},
     {Name = "Clone", BinType = 3, Description = "Click An Object To Clone It"},
