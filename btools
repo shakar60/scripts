@@ -1,5 +1,3 @@
---skidded by shakar
-
 local tools = {
     {Name = "Hammer", BinType = 4, Description = "Click An Object To Smash It"},
     {Name = "Clone", BinType = 3, Description = "Click An Object To Clone It"},
@@ -56,10 +54,14 @@ end
 
 -- Function to set up tools
 local function setupTools()
-    -- Remove existing tools
+    -- Remove specified tools only
     for _, existingTool in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
         if existingTool:IsA("Tool") or existingTool:IsA("HopperBin") then
-            existingTool:Destroy()
+            for _, toolInfo in ipairs(tools) do
+                if existingTool.Name == toolInfo.Name then
+                    existingTool:Destroy()
+                end
+            end
         end
     end
     
