@@ -1,3 +1,9 @@
+-----------------------------------------------------------------
+
+--Check If Player Is In KAT
+local specificPlaceId = 621129760 -- Replace PlaceId with the game you want
+if game.PlaceId == specificPlaceId then
+
 ----------------------------------------------------------------------------------------------------------------------
 --BelugaWares KAT Script Gui
 
