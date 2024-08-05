@@ -36,7 +36,7 @@ end)
 
 
 ----------------------------------------------------------------------------------------------------------------------
-loadstring(game:HttpGet("https://pastebin.com/raw/vff1bQ9F"))()
+--loadstring(game:HttpGet("https://pastebin.com/raw/vff1bQ9F"))()
 --BelugaWares KAT Script Gui
 
 loadstring(game:HttpGet('https://raw.githubusercontent.com/scripter1cursed1rade/BelugaWare-realesed-1.3/main/belugaware.lua'))()
