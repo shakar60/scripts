@@ -8,32 +8,41 @@ if game.PlaceId == specificPlaceId then
 
 --Toggle Button For Kavo Library
 
---Button
-local ToggleGui = Instance.new("ScreenGui")
-local Toggle = Instance.new("TextButton")
-local UICorner = Instance.new("UICorner")
+local gui = Instance.new("ScreenGui")
+gui.Name = "patrickGui"
+gui.Parent = game.CoreGui
 
---Properties
-ToggleGui.Name = "Toggle Gui"
-ToggleGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-ToggleGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-ToggleGui.ResetOnSpawn = false
-
-UICorner.Parent = Toggle
-Toggle.Name = "Toggle"
-Toggle.Parent = ToggleGui
-Toggle.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
-Toggle.Position = UDim2.new(0, 0, 0.454706937, 0) --position of the toggle
-Toggle.Size = UDim2.new(0, 80, 0, 38) --size of the toggle
-Toggle.Font = Enum.Font.SourceSans
-Toggle.Text = "BelugaWare" --name of the toggle
-Toggle.TextColor3 = Color3.fromRGB(203, 122, 49)
-Toggle.TextSize = 19.000
-Toggle.Draggable = true
-Toggle.MouseButton1Click:connect(function()
-  Library:ToggleUI()
+local TextButton = Instance.new("TextButton")
+-- Text
+TextButton.Text = "BelugaWare"
+TextButton.TextSize = 18
+-- Color
+TextButton.TextColor3 = Color3.new(0.5, 0, 0.5)
+TextButton.BackgroundColor3 = Color3.new(0, 0, 0)
+TextButton.BorderColor3 = Color3.new(1, 1, 1)
+-- Thickness
+TextButton.BorderSizePixel = 4
+-- Text Code
+TextButton.Font = Enum.Font.Code
+-- Size
+TextButton.Size = UDim2.new(0.1, 0, 0.05, 0)
+-- Position
+TextButton.Position = UDim2.new(0, 0, 0.4, 0)
+-- Function
+TextButton.MouseButton1Click:Connect(function()
+    Library:ToggleUI()
 end)
+TextButton.Parent = gui
+TextButton.Draggable = true
 
+local cornerUI = Instance.new("UICorner")
+cornerUI.CornerRadius = UDim.new(0, 5)
+cornerUI.Parent = TextButton
+
+local uiStroke = Instance.new("UIStroke")
+uiStroke.Color = Color3.new(0, 0, 0)
+uiStroke.Thickness = 2
+uiStroke.Parent = TextButton
 
 ----------------------------------------------------------------------------------------------------------------------
 
