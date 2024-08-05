@@ -1,10 +1,10 @@
------------------------------------------------------------------
+--[[---------------------------------------------------------------
 
 --Check If Player Is In KAT
 local specificPlaceId = 621129760 -- Replace PlaceId with the game you want
 if game.PlaceId == specificPlaceId then
 
-----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------]]
 --BelugaWares KAT Script Gui
 
 loadstring(game:HttpGet('https://raw.githubusercontent.com/scripter1cursed1rade/BelugaWare-realesed-1.3/main/belugaware.lua'))()
