@@ -1,0 +1,109 @@
+local Workspace = game:GetService("Workspace")
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local Plr = Players.LocalPlayer
+local Clipon = false
+
+local Noclip = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local ToggleButton = Instance.new("TextButton")
+local CloseButton = Instance.new("TextButton")
+
+Noclip.Name = "Noclip"
+Noclip.Parent = CoreGui
+
+Frame.Name = "Frame"
+Frame.Parent = Noclip
+Frame.BackgroundColor3 = Color3.fromRGB(29, 103, 127)
+Frame.BorderColor3 = Color3.new(0.0588235, 0.0588235, 0.0588235)
+Frame.BorderSizePixel = 2
+Frame.Position = UDim2.new(0.5, -105, 0.5, -63)
+Frame.Size = UDim2.new(0, 210, 0, 127)
+Frame.Active = true
+Frame.Draggable = true
+
+Title.Name = "Title"
+Title.Parent = Frame
+Title.BackgroundColor3 = Color3.fromRGB(37, 150, 190)
+Title.BorderSizePixel = 0
+Title.Size = UDim2.new(1, 0, 0.3, 0)
+Title.Font = Enum.Font.Highway
+Title.Text = "By ScripterL"
+Title.TextColor3 = Color3.new(0, 0, 0)
+Title.TextScaled = true
+Title.TextSize = 26
+Title.TextStrokeColor3 = Color3.new(1, 1, 1)
+Title.TextStrokeTransparency = 0
+
+ToggleButton.Name = "ToggleButton"
+ToggleButton.Parent = Frame
+ToggleButton.BackgroundColor3 = Color3.fromRGB(37, 150, 190)
+ToggleButton.BorderSizePixel = 0
+ToggleButton.Position = UDim2.new(0.15, 0, 0.45, 0)
+ToggleButton.Size = UDim2.new(0.7, 0, 0.4, 0)
+ToggleButton.Font = Enum.Font.Highway
+ToggleButton.FontSize = Enum.FontSize.Size18
+ToggleButton.Text = "No Clip Off"
+ToggleButton.TextColor3 = Color3.new(0, 0, 0)
+ToggleButton.TextScaled = true
+ToggleButton.TextSize = 18
+ToggleButton.TextStrokeColor3 = Color3.new(1, 1, 1)
+ToggleButton.TextStrokeTransparency = 0
+
+CloseButton.Name = "CloseButton"
+CloseButton.Parent = Frame
+CloseButton.BackgroundColor3 = Color3.new(1, 0, 0)
+CloseButton.Position = UDim2.new(1, -30, 0, 0)
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Font = Enum.Font.Highway
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.new(1, 1, 1)
+CloseButton.TextScaled = true
+CloseButton.TextSize = 14
+
+local function ToggleNoclip()
+    Clipon = not Clipon
+    ToggleButton.Text = Clipon and "No Clip On" or "No Clip Off"
+    for _, v in pairs(Workspace:GetChildren()) do
+        if v.Name == Plr.Name then
+            for _, part in pairs(v:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = not Clipon
+                end
+            end
+        end
+    end
+end
+
+ToggleButton.MouseButton1Click:Connect(ToggleNoclip)
+
+CloseButton.MouseButton1Click:Connect(function()
+    Noclip:Destroy()
+end)
+
+Frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        Dragging = true
+        Offset = input.Position - Frame.Position
+        Frame.CaptureFocus = true
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        if Dragging then
+            Frame.Position = UDim2.new(0, input.Position.X - Offset.X, 0, input.Position.Y - Offset.Y)
+        end
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        Dragging = false
+        Frame.CaptureFocus = false
+    end
+end)
+
+ToggleNoclip() -- Ensure noclip is off initially
