@@ -1,0 +1,318 @@
+------------------------------
+
+-- Variable 
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local localroot = character:WaitForChild("HumanoidRootPart")
+
+local function UpdateChar()
+    character = player.Character or player.CharacterAdded:Wait()
+    localroot = character:WaitForChild("HumanoidRootPart")
+end
+
+game.Players.LocalPlayer.CharacterAdded:Connect(UpdateChar)
+
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/thanhdat4461/OrionMoblie/main/source')))()
+local Window = OrionLib:MakeWindow({Name = "FE kill all GUI v5 by Mawin CK, Recoded By sh4k4r6o", HidePremium = false, IntroEnabled = true, IntroText = "Fe kill all GUI v5 by Mawin CK, Recoded By sh4k4r6o", SaveConfig = true, ConfigFolder = "OrionTest"})
+
+------------------------------
+
+local Tab = Window:MakeTab({
+    Name = "Main",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+------------------------------
+
+game.StarterGui:SetCore("SendNotification", {
+Title = "edited by sh4k4r6o on discord"; 
+Text = "reworked on the code aka organized the code + fixed spelling + added tips tab and main tab + fixed spelling & more."; 
+Duration = 7; 
+})
+
+------------------------------
+
+local Tab1 = Window:MakeTab({
+    Name = "Tips",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+------------------------------
+
+local Section = Tab:AddSection({
+    Name = "Main Script"
+})
+
+------------------------------
+
+local Section = Tab1:AddSection({
+    Name = "Tips & More:"
+})
+
+------------------------------
+
+local selectedY = 0
+local selectedX = 0
+local selectedZ = -10
+
+------------------------------
+
+local Section = Tab1:AddSection({
+    Name = "Edited By sh4k4r6o:"
+})
+
+Tab1:AddParagraph("Edited By sh4k4r6o:", "hey this isnt the original version its an open source script but dont worry i made it so much better and organized so its easier if you want to do something or change anything also my discord is sh4k4r6o also add me if you want the source.")
+
+------------------------------
+
+local Section = Tab1:AddSection({
+    Name = "Tips:"
+})
+
+Tab1:AddParagraph("Tips:", "You can adjust the X, Y, and Z distances by using negative and positive numbers. For example, setting the Y position to -10 means the character’s Y position will move forward toward you. Conversely, if you remove the negative, it will move the Y position backward.")
+
+------------------------------
+
+local Section = Tab1:AddSection({
+    Name = "Recommended Game Types:"
+})
+
+Tab1:AddParagraph("Recommended Games To Use This Script In: ", "I recommend to use this script in a PVP game or Shooter game or whatever's game like that Because this script was Made to be Used in games like PVP/Shooter/Etc")
+
+------------------------------
+
+local Section = Tab1:AddSection({
+    Name = "Socials:"
+})
+
+Tab1:AddParagraph("My Socials:", "My Facebook: Mawin Ck, My YouTube: Mawin Ck or Mawin_CK, Also Dont Forget To Follow me on roblox My User is Mawin_CK")
+
+------------------------------
+
+local Section = Tab1:AddSection({
+    Name = "How To Use My Script:"
+})
+
+Tab1:AddParagraph("How to Use:","This script is designed to manipulate/abuse client-side hitboxes. It brings other players’ characters to your client, meaning that while they don’t see themselves being moved, they will still take damage or be attacked as if they were. For example, in a PVP/shooter game, you can use a gun, sword, knife, or any weapon in your backpack to attack other players while they are brought to you. However, this script won’t work if the game you’re playing has good anti-cheat measures or hitbox checks.")
+
+------------------------------
+
+local Section = Tab1:AddSection({
+    Name = "Reminder:"
+})
+
+Tab1:AddParagraph("Reminder:", "You don’t need to complain in the comments about my script not working if you don’t know how to use it i already explained it. If the game you tested it on doesn’t work, just find another game. You already know it, right? If it’s not working, simply find another game!")
+
+------------------------------
+
+local Section = Tab:AddSection({
+    Name = "Position X"
+})
+
+Tab:AddTextbox({
+    Name = "Position X(left/right(Using Negative Number/nonNeg))",
+    Default = "0",
+    TextDisappear = false,
+    Callback = function(Value)
+        selectedX = tonumber(Value)
+    end
+})
+
+------------------------------
+
+local Section = Tab:AddSection({
+    Name = "Position Y"
+})
+
+Tab:AddTextbox({
+    Name = "Position Y(Up/Down(Using Negative Number/NonNeg))",
+    Default = "0",
+    TextDisappear = false,
+    Callback = function(Value)
+        selectedY = tonumber(Value)
+    end
+})
+
+------------------------------
+
+local Section = Tab:AddSection({
+    Name = "Position Z"
+})
+
+Tab:AddTextbox({
+    Name = "Position Z(Foward/Backward(Negative/NonNeg) Recommended -5 to -10",
+    Default = "-10",
+    TextDisappear = false,
+    Callback = function(Value)
+        selectedZ = tonumber(Value)
+    end
+})
+
+------------------------------
+
+local Section = Tab:AddSection({
+    Name = "Select Player"
+})
+
+local TogglePlayerOnly = false
+local function bringPlayerOnly()
+    if TogglePlayerOnly and selectedX and selectedY and selectedZ then
+        spawn(function()
+            while TogglePlayerOnly do
+                for _, v in pairs(game.Players:GetPlayers()) do
+                    if v ~= player and v.Character then
+                        local JNR = v.Character:FindFirstChild("HumanoidRootPart")
+                        if JNR then
+                            JNR.CFrame = localroot.CFrame * CFrame.new(selectedX, selectedY, selectedZ)
+                            game:GetService("RunService").Heartbeat:Wait()
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end
+
+local tablePlayer = {}
+local function UpdatePlayerList()
+    tablePlayer = {}
+    for _, v in pairs(game.Players:GetPlayers()) do
+        if v.Name and v.Name ~= player.Name and v.Character then
+            table.insert(tablePlayer, v.Name)
+        end
+    end
+end
+
+UpdatePlayerList()
+
+game.Players.PlayerAdded:Connect(UpdatePlayerList)
+game.Players.PlayerRemoving:Connect(UpdatePlayerList)
+
+local selectedPlayer = nil
+Tab:AddDropdown({
+    Name = "Select Player",
+    Default = "",
+    Options = tablePlayer,
+    Callback = function(Value)
+        selectedPlayer = Value
+    end
+})
+
+local ToggleSelectedPlayer = false
+local function bringSelectedPlayer()
+    if selectedPlayer and selectedX and selectedY and selectedZ then
+        local targetPlayer = game.Players:FindFirstChild(selectedPlayer)
+        if targetPlayer and targetPlayer.Character then
+            spawn(function()
+                while ToggleSelectedPlayer do
+                    local JNR = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+                    if JNR then
+                        JNR.CFrame = localroot.CFrame * CFrame.new(selectedX, selectedY, selectedZ)
+                        game:GetService("RunService").Heartbeat:Wait()
+                    end
+                end
+            end)
+        end
+    end
+end
+
+------------------------------
+
+local Section = Tab:AddSection({
+    Name = "Bring All"
+})
+
+Tab:AddToggle({
+    Name = "Bring All Players",
+    Default = false,
+    Callback = function(state)
+        TogglePlayerOnly = state
+        if TogglePlayerOnly then
+            bringPlayerOnly()
+        end
+    end
+})
+
+------------------------------
+
+local Section = Tab:AddSection({
+    Name = "Bring Selected Player"
+})
+
+Tab:AddToggle({
+    Name = "Bring Selected Player",
+    Default = false,
+    Callback = function(state)
+        ToggleSelectedPlayer = state
+        if ToggleSelectedPlayer then
+            bringSelectedPlayer()
+        end
+    end
+})
+
+-------------------------------
+
+local function CreateSafeZone()
+    local part = Instance.new("Part")
+    part.Position = Vector3.new(1000, 1000, 1000)
+    part.Size = Vector3.new(10000, 2, 10000)
+    part.Color = Color3.new(1, 1, 1)
+    part.Parent = game.Workspace
+    part.Name = "SafePart"
+    part.Anchored = true
+    localroot.CFrame = part.CFrame * CFrame.new(0, 10, 0)
+end
+
+------------------------------
+
+local Section = Tab:AddSection({
+    Name = "Safe Zone"
+})
+
+Tab:AddButton({
+    Name = "Go to SafeZone (Far Away from Map)",
+    Callback = function()
+        CreateSafeZone()
+    end
+})
+
+local function BringNonTeamOnly()
+    if selectedX and selectedY and selectedZ then
+        spawn(function()
+            while TogglePlayerOnly do
+                for _, v in pairs(game.Players:GetPlayers()) do
+                    if v.Team ~= player.Team and v.Character then
+                        local enemyRoot = v.Character:FindFirstChild("HumanoidRootPart")
+                        if enemyRoot then
+                            enemyRoot.CFrame = localroot.CFrame * CFrame.new(selectedX, selectedY, selectedZ)
+                            wait()
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end
+
+------------------------------
+
+local Section = Tab:AddSection({
+    Name = "Bring All + Team Check (Laggy)"
+})
+
+Tab:AddToggle({
+    Name = "Bring All Player But With Team Check(WARNING MIGHT LAG OR CRASH)",
+    Default = false,
+    Callback = function(state)
+        TogglePlayerOnly = state
+        if TogglePlayerOnly then
+            BringNonTeamOnly()
+        end
+    end
+})
+
+OrionLib:Init()
+
+------------------------------
