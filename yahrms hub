@@ -1,0 +1,92 @@
+local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
+local StarterGui = game:GetService("StarterGui")
+
+-- Create a simple GUI
+local Gui = Instance.new("ScreenGui")
+Gui.Parent = CoreGui
+
+local OuterFrame = Instance.new("Frame")
+OuterFrame.Size = UDim2.new(0, 180, 0, 100) -- Less wide
+OuterFrame.Position = UDim2.new(0.5, -90, 0.5, -50)
+OuterFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black background
+OuterFrame.BorderSizePixel = 0
+OuterFrame.Active = true
+OuterFrame.Draggable = true
+OuterFrame.Parent = Gui
+
+-- Add rounded corners to the outer frame
+local UICornerOuter = Instance.new("UICorner")
+UICornerOuter.CornerRadius = UDim.new(0, 20)
+UICornerOuter.Parent = OuterFrame
+
+local Button = Instance.new("TextButton")
+Button.Size = UDim2.new(0, 160, 0, 60)
+Button.Position = UDim2.new(0.5, -80, 0.5, -30)
+Button.Text = "Execute Yarhms Hub"
+Button.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
+Button.TextScaled = true -- Makes the text larger
+Button.BackgroundColor3 = Color3.fromRGB(0, 0, 255) -- Blue background
+Button.BorderSizePixel = 0
+Button.Parent = OuterFrame
+
+-- Add rounded corners to the button
+local UICornerButton = Instance.new("UICorner")
+UICornerButton.CornerRadius = UDim.new(0, 10)
+UICornerButton.Parent = Button
+
+local CloseButton = Instance.new("TextButton")
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -30, 0, 0)
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+CloseButton.Parent = OuterFrame
+
+-- Add rounded corners to the close button
+local UICornerClose = Instance.new("UICorner")
+UICornerClose.CornerRadius = UDim.new(0, 10)
+UICornerClose.Parent = CloseButton
+
+-- Function to execute the script, show a notification, and remove the GUI
+local executed = false
+
+-- Show the "Gui Info" notification
+StarterGui:SetCore("SendNotification", {
+    Title = "Gui Info",
+    Text = "This Gui Was Made By sh4k4r6o",
+    Duration = 5,
+})
+
+-- Show the notification before execution
+StarterGui:SetCore("SendNotification", {
+    Title = "Yarhms Hub",
+    Text = "Yarhms Hub Only Works For MM2 And Flee The Facility",
+    Duration = 5,
+})
+
+Button.MouseButton1Click:Connect(function()
+    if not executed then
+        executed = true
+
+        -- Execute the script
+        loadstring(game:HttpGet("https://yarhm.goteamst.com/scr", false))()
+
+        -- Update button text and destroy GUI
+        Button.Text = "Executed Yarhms Hub"
+        wait(0.5)  -- Short delay before destroying the GUI
+        Gui:Destroy()
+    else
+        -- Notify that the script has already been executed
+        StarterGui:SetCore("SendNotification", {
+            Title = "Yarhms Hub",
+            Text = "Yarhms Script Is Already Executed",
+            Duration = 5,
+        })
+    end
+end)
+
+-- Close button functionality
+CloseButton.MouseButton1Click:Connect(function()
+    Gui:Destroy()
+end)
