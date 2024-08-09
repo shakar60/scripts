@@ -21,7 +21,7 @@ UICornerOuter.CornerRadius = UDim.new(0, 20)
 UICornerOuter.Parent = OuterFrame
 
 local Button = Instance.new("TextButton")
-Button.Size = UDim2.new(0, 160, 0, 60)
+Button.Size = UDim2.new(0, 150, 0, 60) --160 changed to 150 testing if it will be less wide
 Button.Position = UDim2.new(0.5, -80, 0.5, -30)
 Button.Text = "Execute Yarhms Hub"
 Button.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
