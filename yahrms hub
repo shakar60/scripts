@@ -26,7 +26,7 @@ Button.Position = UDim2.new(0.5, -80, 0.5, -30)
 Button.Text = "Execute Yarhms Hub"
 Button.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
 Button.TextScaled = true -- Makes the text larger
-Button.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Blue background
+Button.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Red background
 Button.BorderSizePixel = 0
 Button.Parent = OuterFrame
 
