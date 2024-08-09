@@ -48,8 +48,19 @@ local UICornerClose = Instance.new("UICorner")
 UICornerClose.CornerRadius = UDim.new(0, 10)
 UICornerClose.Parent = CloseButton
 
--- Function to execute the script, show a notification, and remove the GUI
+-- Function to execute the script, show notifications, and remove the GUI
 local executed = false
+
+-- Notify user and set clipboard content before script execution
+StarterGui:SetCore("SendNotification", {
+    Title = "Info",
+    Text = "If The Script Failed To Load Then It Has Been Copied To Your Clipboard. You Could Paste It To Your Clipboard And Execute The New Code So It Works Fine.",
+    Duration = 10,
+})
+
+-- Set the script URL to clipboard
+setclipboard("loadstring(game:HttpGet('https://yarhm.goteamst.com/scr', false))()")
+print("Script code set to clipboard")
 
 -- Show the "Gui Info" notification
 StarterGui:SetCore("SendNotification", {
@@ -69,13 +80,29 @@ Button.MouseButton1Click:Connect(function()
     if not executed then
         executed = true
 
-        -- Execute the script
-        loadstring(game:HttpGet("https://yarhm.goteamst.com/scr", false))()
+        -- Execute the script with error handling
+        local success, err = pcall(function()
+            local scriptCode = game:HttpGet("https://yarhm.goteamst.com/scr", false)
+            loadstring(scriptCode)()
+        end)
 
-        -- Update button text and destroy GUI
-        Button.Text = "Executed Yarhms Hub"
-        wait(0.3)  -- Short delay before destroying the GUI
-        Gui:Destroy()
+        if not success then
+            -- Notify user about the failure
+            StarterGui:SetCore("SendNotification", {
+                Title = "Info",
+                Text = "If The Script Failed To Load Then It Has Been Copied To Your Clipboard. You Could Paste It To Your Clipboard And Execute The New Code So It Works Fine.",
+                Duration = 10,
+            })
+
+            -- Set the script URL to clipboard
+            setclipboard("loadstring(game:HttpGet('https://yarhm.goteamst.com/scr', false))()")
+            print("Script code set to clipboard")
+        else
+            -- Update button text and destroy GUI
+            Button.Text = "Executed Yarhms Hub"
+            wait(0.3)  -- Short delay before destroying the GUI
+            Gui:Destroy()
+        end
     else
         -- Notify that the script has already been executed
         StarterGui:SetCore("SendNotification", {
