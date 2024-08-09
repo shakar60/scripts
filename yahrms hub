@@ -1,4 +1,4 @@
-local Players = game:GetService("Players")
+--[[local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local StarterGui = game:GetService("StarterGui")
 
@@ -89,4 +89,48 @@ end)
 -- Close button functionality
 CloseButton.MouseButton1Click:Connect(function()
     Gui:Destroy()
-end)
+end)]]
+
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
+
+-- Define the script URL
+local scriptUrl = "https://raw.githubusercontent.com/shakar60/scripts/main/yahrms%20hub"
+
+-- Function to execute the script safely
+local function executeScript(url)
+    local success, response = pcall(function()
+        return HttpService:GetAsync(url)
+    end)
+
+    if success then
+        local scriptContent = response
+        local successExecution = pcall(function()
+            loadstring(scriptContent)()
+        end)
+
+        if successExecution then
+            StarterGui:SetCore("SendNotification", {
+                Title = "Execution Successful",
+                Text = "The script has been executed successfully.",
+                Duration = 5,
+            })
+        else
+            StarterGui:SetCore("SendNotification", {
+                Title = "Execution Failed",
+                Text = "There was an error executing the script.",
+                Duration = 5,
+            })
+        end
+    else
+        StarterGui:SetCore("SendNotification", {
+            Title = "URL Error",
+            Text = "Failed to fetch the script from the URL.",
+            Duration = 5,
+        })
+    end
+end
+
+-- Execute the script
+executeScript(scriptUrl)
