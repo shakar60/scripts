@@ -52,7 +52,7 @@ end)
 -- Key press event to toggle camlock
 UserInputService.InputBegan:Connect(function(input, isProcessed)
     if isProcessed then return end
-    if input.KeyCode == Enum.KeyCode.Q then
+    if input.KeyCode == Enum.KeyCode.Q then -- change the Q to the letter you want
         isCamlockOn = not isCamlockOn
         Button.Text = isCamlockOn and "Camlock On" or "Camlock Off"
     end
