@@ -1,5 +1,9 @@
+local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
+local StarterGui = game:GetService("StarterGui")
+
+local player = Players.LocalPlayer
 
 -- Create a GUI
 local Gui = Instance.new("ScreenGui")
@@ -53,3 +57,17 @@ UserInputService.InputBegan:Connect(function(input, isProcessed)
         Button.Text = isCamlockOn and "Camlock On" or "Camlock Off"
     end
 end)
+
+-- Chat command to destroy GUI
+player.Chatted:Connect(function(message)
+    if message:lower() == "/e killcam" then
+        Gui:Destroy()
+    end
+end)
+
+-- Show notification
+StarterGui:SetCore("SendNotification", {
+    Title = "Info",
+    Text = "Type /e killcam To Destroy The Camlock",
+    Duration = 30,
+})
