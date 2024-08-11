@@ -1,10 +1,8 @@
---Toggle Ui Button
+-- Toggle Gui
 
 local ToggleGui = Instance.new("ScreenGui")
 local Toggle = Instance.new("TextButton")
 local UICorner = Instance.new("UICorner")
-local LightRedOutline = Instance.new("UIStroke")
-local BlackOutline = Instance.new("UIStroke")
 
 --Properties
 ToggleGui.Name = "Toggle Gui"
@@ -12,34 +10,39 @@ ToggleGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 ToggleGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ToggleGui.ResetOnSpawn = false
 
+UICorner.Parent = Toggle
 Toggle.Name = "Toggle"
 Toggle.Parent = ToggleGui
-Toggle.BackgroundColor3 = Color3.fromRGB(139, 0, 0) -- Dark red (blood color)
-Toggle.Position = UDim2.new(0, 0, 0.454, 0) -- Position of the toggle
-Toggle.Size = UDim2.new(0, 150, 0, 150) -- Circular size
-Toggle.Text = "USH"
-Toggle.TextColor3 = Color3.fromRGB(0, 0, 0) -- Text color (black)
-Toggle.TextScaled = true -- Scale text to fit
-Toggle.Font = Enum.Font.SourceSans -- Set font style
+Toggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Toggle.Position = UDim2.new(0, 0, 0.454706937, 0)--position of the toggle
+Toggle.Size = UDim2.new(0, 80, 0, 80)--size of the toggle
+Toggle.Font = Enum.Font.SourceSans
+Toggle.Text = "USH"--name of the toggle
+Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+Toggle.TextSize = 19.000
 Toggle.Draggable = true
-
-UICorner.CornerRadius = UDim.new(1, 0) -- Making it a circle
-UICorner.Parent = Toggle
-
--- Light red transparent outline
-LightRedOutline.Parent = Toggle
-LightRedOutline.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-LightRedOutline.Thickness = 6
-LightRedOutline.Color = Color3.fromRGB(255, 99, 99) -- Light red color
-LightRedOutline.Transparency = 0.5 -- Make it transparent
-
--- Smaller black outline
-BlackOutline.Parent = Toggle
-BlackOutline.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-BlackOutline.Thickness = 3
-BlackOutline.Color = Color3.fromRGB(0, 0, 0) -- Black color
-BlackOutline.Transparency = 0.5 -- Make it transparent
-
-Toggle.MouseButton1Click:Connect(function()
-    Library:ToggleUI()
+Toggle.MouseButton1Click:connect(function()
+  Library:ToggleUI()
 end)
+
+local function showNotification()
+local StarterGui = game:GetService("StarterGui")
+StarterGui:SetCore("SendNotification", {
+    Title = "Info";
+    Text = "Type /e killtoggle To Kill The Toggle";
+    Duration = 60; -- Duration in seconds
+})
+end
+
+-- Show the notification when the script starts
+showNotification()
+
+-- Function to handle the command
+local function onChatMessage(message)
+if message == "/e killtoggle" then
+    ToggleGui:Destroy()
+end
+end
+
+-- Connect the chat listener
+game.Players.LocalPlayer.Chatted:Connect(onChatMessage)
