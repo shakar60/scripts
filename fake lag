@@ -2,7 +2,7 @@
 ON YOUR OWN SO ITS NOT OUR FAULT IF YOU GET BANNED FOR USING IT,YOUR GAME WILL FREEZE
 WHEN YOU PLAY JENGA AND TOUCH THE LAVA IT MIGHT CRASH BY TOUCHING ANY KIND OF LAVA
 SO MAKE SURE YOU TURN IT OFF BEFORE YOU HIT THE LAVA SO YOU WONT CRASH OUT..WROTE BY
-SH4K4R6O.]]
+SH4K4R6O. ALSO THIS IS THE OLD GUI .
 
 -- Create the ScreenGui
 local function createGUI()
@@ -60,6 +60,129 @@ local function createGUI()
     creditLabel.Parent = main
     creditLabel.BackgroundTransparency = 1
     creditLabel.Position = UDim2.new(0.1, 0, 0.8, 0)
+    creditLabel.Size = UDim2.new(0.8, 0, 0.2, 0)
+    creditLabel.Font = Enum.Font.SourceSans
+    creditLabel.Text = "Edited By sh4k4r6o"
+    creditLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    creditLabel.TextScaled = true
+
+    local fakeLagEnabled = false
+
+    local function toggleFakeLag()
+        fakeLagEnabled = not fakeLagEnabled
+        DropTool.Text = fakeLagEnabled and "Fake Lag On" or "Fake Lag Off"
+
+        if fakeLagEnabled then
+            getgenv().autokill = true
+            task.spawn(function()
+                while getgenv().autokill do
+                    for _, V in pairs(game.Players:GetChildren()) do
+                        local LocalPlayer = game:GetService("Players").LocalPlayer
+                        local Character = LocalPlayer.Character
+                        local HumanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
+
+                        if HumanoidRootPart then
+                            HumanoidRootPart.Anchored = true
+                            wait(0.2)
+                            HumanoidRootPart.Anchored = false
+                            wait()
+                        end
+                    end
+                end
+            end)
+        else
+            getgenv().autokill = false
+        end
+    end
+
+    DropTool.MouseButton1Down:Connect(toggleFakeLag)
+    closeButton.MouseButton1Down:Connect(function()
+        if fakeLagEnabled then
+            toggleFakeLag()  -- Turn off Fake Lag before closing
+        end
+        DropGUI:Destroy()
+    end)
+end
+
+-- Create the GUI initially
+createGUI() ]]
+
+--[[..WARNING..EXPECT SOME BUGS LIKE GETTING KICKED OUT OF ROBLOX,USE THE SCRIPT
+ON YOUR OWN SO ITS NOT OUR FAULT IF YOU GET BANNED FOR USING IT,YOUR GAME WILL FREEZE
+WHEN YOU PLAY JENGA AND TOUCH THE LAVA IT MIGHT CRASH BY TOUCHING ANY KIND OF LAVA
+SO MAKE SURE YOU TURN IT OFF BEFORE YOU HIT THE LAVA SO YOU WONT CRASH OUT..WROTE BY
+SH4K4R6O.]]
+
+-- Create the ScreenGui
+local function createGUI()
+    local DropGUI = Instance.new("ScreenGui")
+    DropGUI.Name = "DropGUI"
+    DropGUI.Parent = game.CoreGui
+    DropGUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+    local main = Instance.new("Frame")
+    main.Name = "MainFrame"
+    main.Parent = DropGUI
+    main.BackgroundColor3 = Color3.fromRGB(50, 50, 50) -- Darker background
+    main.Size = UDim2.new(0.15, 0, 0.25, 0) -- Adjusted size for better visibility
+    main.Position = UDim2.new(0.5, -110, 0.5, -140) -- Centered position
+    main.Active = true
+    main.Draggable = true
+
+    -- Add rounded corners to the main frame
+    local UICornerMain = Instance.new("UICorner")
+    UICornerMain.CornerRadius = UDim.new(0, 25)
+    UICornerMain.Parent = main
+
+    -- Title label with a visible design
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Name = "TitleLabel"
+    titleLabel.Parent = main
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Position = UDim2.new(0, 0, 0, 0)
+    titleLabel.Size = UDim2.new(1, 0, 0.2, 0)
+    titleLabel.Font = Enum.Font.SourceSans
+    titleLabel.Text = "By GhostHub"
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.TextScaled = true
+
+    -- Fake Lag toggle button with improved design
+    local DropTool = Instance.new("TextButton")
+    DropTool.Name = "DropTool"
+    DropTool.Parent = main
+    DropTool.BackgroundColor3 = Color3.fromRGB(70, 70, 70) -- Slightly lighter button background
+    DropTool.BackgroundTransparency = 0.3 -- Slight transparency
+    DropTool.Position = UDim2.new(0.1, 0, 0.3, 0)
+    DropTool.Size = UDim2.new(0.8, 0, 0.4, 0)
+    DropTool.Font = Enum.Font.SourceSans
+    DropTool.Text = "Fake Lag Off"
+    DropTool.TextColor3 = Color3.fromRGB(255, 255, 255)
+    DropTool.TextScaled = true
+    DropTool.TextWrapped = true
+
+    -- Add rounded corners to the button
+    local UICornerButton = Instance.new("UICorner")
+    UICornerButton.CornerRadius = UDim.new(0, 20)
+    UICornerButton.Parent = DropTool
+
+    -- Close button with a clean, visible design
+    local closeButton = Instance.new("TextButton")
+    closeButton.Name = "CloseButton"
+    closeButton.Size = UDim2.new(0, 20, 0, 20)
+    closeButton.Position = UDim2.new(1, -25, 0, 5)
+    closeButton.BackgroundTransparency = 1 -- Transparent background
+    closeButton.TextColor3 = Color3.fromRGB(255, 50, 50)
+    closeButton.Text = "X"
+    closeButton.Font = Enum.Font.SourceSans
+    closeButton.TextSize = 14
+    closeButton.Parent = main
+
+    -- Credit label with a visible design
+    local creditLabel = Instance.new("TextLabel")
+    creditLabel.Name = "CreditLabel"
+    creditLabel.Parent = main
+    creditLabel.BackgroundTransparency = 1
+    creditLabel.Position = UDim2.new(0.1, 0, 0.75, 0)
     creditLabel.Size = UDim2.new(0.8, 0, 0.2, 0)
     creditLabel.Font = Enum.Font.SourceSans
     creditLabel.Text = "Edited By sh4k4r6o"
