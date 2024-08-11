@@ -1,0 +1,45 @@
+--Toggle Ui Button
+
+local ToggleGui = Instance.new("ScreenGui")
+local Toggle = Instance.new("TextButton")
+local UICorner = Instance.new("UICorner")
+local LightRedOutline = Instance.new("UIStroke")
+local BlackOutline = Instance.new("UIStroke")
+
+--Properties
+ToggleGui.Name = "Toggle Gui"
+ToggleGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ToggleGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ToggleGui.ResetOnSpawn = false
+
+Toggle.Name = "Toggle"
+Toggle.Parent = ToggleGui
+Toggle.BackgroundColor3 = Color3.fromRGB(139, 0, 0) -- Dark red (blood color)
+Toggle.Position = UDim2.new(0, 0, 0.454, 0) -- Position of the toggle
+Toggle.Size = UDim2.new(0, 150, 0, 150) -- Circular size
+Toggle.Text = "Universal Shakars Hub"
+Toggle.TextColor3 = Color3.fromRGB(0, 0, 0) -- Text color (black)
+Toggle.TextScaled = false -- Scale text to fit
+Toggle.Font = Enum.Font.DidotItalic -- Set font style
+Toggle.Draggable = true
+
+UICorner.CornerRadius = UDim.new(1, 0) -- Making it a circle
+UICorner.Parent = Toggle
+
+-- Light red transparent outline
+LightRedOutline.Parent = Toggle
+LightRedOutline.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+LightRedOutline.Thickness = 6
+LightRedOutline.Color = Color3.fromRGB(255, 99, 99) -- Light red color
+LightRedOutline.Transparency = 0.5 -- Make it transparent
+
+-- Smaller black outline
+BlackOutline.Parent = Toggle
+BlackOutline.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+BlackOutline.Thickness = 3
+BlackOutline.Color = Color3.fromRGB(0, 0, 0) -- Black color
+BlackOutline.Transparency = 0.5 -- Make it transparent
+
+Toggle.MouseButton1Click:Connect(function()
+    Library:ToggleUI()
+end)
