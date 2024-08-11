@@ -17,10 +17,10 @@ Toggle.Parent = ToggleGui
 Toggle.BackgroundColor3 = Color3.fromRGB(139, 0, 0) -- Dark red (blood color)
 Toggle.Position = UDim2.new(0, 0, 0.454, 0) -- Position of the toggle
 Toggle.Size = UDim2.new(0, 150, 0, 150) -- Circular size
-Toggle.Text = "Universal Shakars Hub"
+Toggle.Text = "USH"
 Toggle.TextColor3 = Color3.fromRGB(0, 0, 0) -- Text color (black)
 Toggle.TextScaled = true -- Scale text to fit
-Toggle.Font = Enum.Font.DidotItalic -- Set font style
+Toggle.Font = Enum.Font.SourceSans -- Set font style
 Toggle.Draggable = true
 
 UICorner.CornerRadius = UDim.new(1, 0) -- Making it a circle
