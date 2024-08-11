@@ -1,135 +1,107 @@
--- Function to create the GUI
-local function createGUI()
-    local player = game.Players.LocalPlayer
-    local playerGui = player:WaitForChild("PlayerGui")
+local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
+local UserInputService = game:GetService("UserInputService")
+local StarterGui = game:GetService("StarterGui")
+local Workspace = game:GetService("Workspace")
+
+local player = Players.LocalPlayer
+
+-- Create a GUI
+local Gui = Instance.new("ScreenGui")
+Gui.Parent = CoreGui
+
+local OuterFrame = Instance.new("Frame")
+OuterFrame.Size = UDim2.new(0, 200, 0, 100)
+OuterFrame.Position = UDim2.new(0.5, -100, 0.5, -50)
+OuterFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+OuterFrame.BackgroundTransparency = 0.5
+OuterFrame.BorderSizePixel = 2
+OuterFrame.BorderColor3 = Color3.fromRGB(128, 128, 128)
+OuterFrame.Active = true
+OuterFrame.Draggable = true
+OuterFrame.Parent = Gui
+
+-- Add rounded corners to the outer frame
+local UICornerOuter = Instance.new("UICorner")
+UICornerOuter.CornerRadius = UDim.new(0, 20)
+UICornerOuter.Parent = OuterFrame
+
+local XRayButton = Instance.new("TextButton")
+XRayButton.Size = UDim2.new(0, 180, 0, 60)
+XRayButton.Position = UDim2.new(0.5, -90, 0.5, -30)
+XRayButton.Text = "X-Ray Off"
+XRayButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+XRayButton.TextScaled = true
+XRayButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+XRayButton.BorderSizePixel = 0
+XRayButton.Parent = OuterFrame
+
+-- Add rounded corners to the button
+local UICornerButton = Instance.new("UICorner")
+UICornerButton.CornerRadius = UDim.new(0, 10)
+UICornerButton.Parent = XRayButton
+
+-- Toggle state
+local isXRayOn = false
+
+-- Function to toggle X-ray
+local function toggleXRay()
+    isXRayOn = not isXRayOn
+    XRayButton.Text = isXRayOn and "X-Ray On" or "X-Ray Off"
     
-    -- Check if the GUI already exists
-    local xRayGui = playerGui:FindFirstChild("XRayGui")
-    if xRayGui then
-        return -- GUI already exists, no need to recreate
-    end
-
-    -- Create the GUI if it doesn't exist
-    xRayGui = Instance.new("ScreenGui")
-    xRayGui.Name = "XRayGui"
-    xRayGui.Parent = playerGui
-
-    local frame = Instance.new("Frame")
-    frame.Name = "Frame"
-    frame.Parent = xRayGui
-    frame.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-    frame.BorderSizePixel = 0
-    frame.Position = UDim2.new(0, 10, 0, 10)
-    frame.Size = UDim2.new(0, 180, 0, 70)
-    frame.Active = true
-    frame.Draggable = true
-
-    local madeByText = Instance.new("TextLabel")
-    madeByText.Name = "MadeByText"
-    madeByText.Parent = frame
-    madeByText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    madeByText.BackgroundTransparency = 1.000
-    madeByText.Size = UDim2.new(0, 100, 0, 15)
-    madeByText.Position = UDim2.new(0, 5, 0, 5)
-    madeByText.AnchorPoint = Vector2.new(0, 0)
-    madeByText.Font = Enum.Font.Arial
-    madeByText.Text = "by sh4kar60"
-    madeByText.TextColor3 = Color3.fromRGB(255, 255, 255)
-    madeByText.TextSize = 12.000
-
-    local xRayText = Instance.new("TextLabel")
-    xRayText.Name = "XRayText"
-    xRayText.Parent = frame
-    xRayText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    xRayText.BackgroundTransparency = 1.000
-    xRayText.Size = UDim2.new(0, 100, 0, 15)
-    xRayText.Position = UDim2.new(0, 5, 0, 25)
-    xRayText.AnchorPoint = Vector2.new(0, 0)
-    xRayText.Font = Enum.Font.Arial
-    xRayText.Text = "X-Ray: Off"
-    xRayText.TextColor3 = Color3.fromRGB(255, 255, 255)
-    xRayText.TextSize = 12.000
-
-    local toggleButton = Instance.new("TextButton")
-    toggleButton.Name = "ToggleButton"
-    toggleButton.Parent = frame
-    toggleButton.BackgroundColor3 = Color3.fromRGB(66, 66, 66)
-    toggleButton.BorderSizePixel = 0
-    toggleButton.Position = UDim2.new(0, 0, 1, -30)
-    toggleButton.Size = UDim2.new(1, 0, 0, 30)
-    toggleButton.Font = Enum.Font.ArialBold
-    toggleButton.Text = "Toggle X-Ray"
-    toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    toggleButton.TextScaled = true
-    toggleButton.TextSize = 14.000
-    toggleButton.TextStrokeTransparency = 0.000
-    toggleButton.TextWrapped = true
-
-    local closeButton = Instance.new("TextButton")
-    closeButton.Name = "CloseButton"
-    closeButton.Parent = frame
-    closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-    closeButton.BorderSizePixel = 0
-    closeButton.Position = UDim2.new(1, -25, 0, 0)
-    closeButton.Size = UDim2.new(0, 25, 0, 25)
-    closeButton.Font = Enum.Font.ArialBold
-    closeButton.Text = "X"
-    closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    closeButton.TextScaled = true
-    closeButton.TextSize = 14.000
-    closeButton.TextStrokeTransparency = 0.000
-    closeButton.TextWrapped = true
-
-    -- X-Ray Functionality
-    local xrayHotkey = Enum.KeyCode.E
-    local uis = game:GetService("UserInputService")
-    local xrayOn = false
-
-    local function toggleXRay()
-        xrayOn = not xrayOn
-        for i, descendant in pairs(workspace:GetDescendants()) do
-            if descendant:IsA("BasePart") then
-                if xrayOn then
-                    if not descendant:FindFirstChild("OriginalTransparency") then
-                        local originalTransparency = Instance.new("NumberValue")
-                        originalTransparency.Name = "OriginalTransparency"
-                        originalTransparency.Value = descendant.Transparency
-                        originalTransparency.Parent = descendant
-                    end
-                    descendant.Transparency = 0.5
+    for _, descendant in pairs(Workspace:GetDescendants()) do
+        if descendant:IsA("BasePart") and descendant.Transparency < 1 then
+            if isXRayOn then
+                if not descendant:FindFirstChild("OriginalTransparency") then
+                    local originalTransparency = Instance.new("NumberValue")
+                    originalTransparency.Name = "OriginalTransparency"
+                    originalTransparency.Value = descendant.Transparency
+                    originalTransparency.Parent = descendant
+                end
+                descendant.Transparency = 0.5
+            else
+                if descendant:FindFirstChild("OriginalTransparency") then
+                    descendant.Transparency = descendant.OriginalTransparency.Value
+                    descendant.OriginalTransparency:Destroy()
                 else
-                    descendant.Transparency = descendant:FindFirstChild("OriginalTransparency") and descendant.OriginalTransparency.Value or 0
+                    descendant.Transparency = 0
                 end
             end
         end
-        xRayText.Text = xrayOn and "X-Ray: On" or "X-Ray: Off"
     end
-
-    uis.InputBegan:Connect(function(inp, processed)
-        if processed then return end
-        if inp.KeyCode == xrayHotkey then
-            toggleXRay()
-        end
-    end)
-
-    -- Toggle Button Click Event
-    toggleButton.MouseButton1Click:Connect(function()
-        toggleXRay()
-    end)
-
-    -- Close Button Click Event
-    closeButton.MouseButton1Click:Connect(function()
-        xRayGui:Destroy()
-        if xrayOn then
-            toggleXRay()
-        end
-    end)
 end
 
--- Ensure the GUI is created on startup and persist across resets
-createGUI()
+-- Button click event
+XRayButton.MouseButton1Click:Connect(toggleXRay)
 
--- Recreate GUI if needed on respawn
-game.Players.LocalPlayer.CharacterAdded:Connect(function()
-    createGUI()
+-- Key press event to toggle X-ray
+UserInputService.InputBegan:Connect(function(input, isProcessed)
+    if isProcessed then return end
+    if input.KeyCode == Enum.KeyCode.E then
+        toggleXRay()
+    end
+end)
+
+-- Chat command to destroy GUI
+player.Chatted:Connect(function(message)
+    if message:lower() == "/e killxray" then
+        Gui:Destroy()
+        if isXRayOn then
+            toggleXRay()  -- Turn off X-ray before destroying the GUI
+        end
+    end
+end)
+
+-- Show notification
+StarterGui:SetCore("SendNotification", {
+    Title = "Info",
+    Text = "Type /e killxray To Destroy The X-Ray GUI",
+    Duration = 30,
+})
+
+-- Ensure GUI persists across resets
+player.CharacterAdded:Connect(function()
+    if not Gui.Parent then
+        Gui.Parent = CoreGui
+    end
 end)
