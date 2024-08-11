@@ -87,7 +87,7 @@ player.Chatted:Connect(function(message)
     if message:lower() == "/e killxray" then
         Gui:Destroy()
         if isXRayOn then
-            toggleXRay()  -- Turn off X-ray before destroying the GUI
+            toggleXRay()  -- Turn off Xray before destroying the Gui
         end
     end
 end)
@@ -95,8 +95,15 @@ end)
 -- Show notification
 StarterGui:SetCore("SendNotification", {
     Title = "Info",
-    Text = "Type /e killxray To Destroy The X-Ray GUI",
+    Text = "Type /e killxray To Destroy The Xray Gui",
     Duration = 30,
+})
+
+-- Show notification
+StarterGui:SetCore("SendNotification", {
+    Title = "Info",
+    Text = "Click E To Turn On/Off The Xray Or Click the Xray Button",
+    Duration = 15,
 })
 
 -- Ensure GUI persists across resets
