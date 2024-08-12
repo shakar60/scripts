@@ -4,44 +4,50 @@ local ToggleGui = Instance.new("ScreenGui")
 local Toggle = Instance.new("TextButton")
 local UICorner = Instance.new("UICorner")
 
---Properties
+-- Properties
 ToggleGui.Name = "Toggle Gui"
 ToggleGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 ToggleGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ToggleGui.ResetOnSpawn = false
 
-UICorner.Parent = Toggle
 Toggle.Name = "Toggle"
 Toggle.Parent = ToggleGui
 Toggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Toggle.Position = UDim2.new(0, 0, 0.454706937, 0)--position of the toggle
-Toggle.Size = UDim2.new(0, 80, 0, 80)--size of the toggle
+Toggle.Position = UDim2.new(0.5, -40, 0.05, 0) -- Centered horizontally and near the top
+Toggle.Size = UDim2.new(0, 80, 0, 80) -- Size of the toggle
 Toggle.Font = Enum.Font.SourceSans
-Toggle.Text = "USH"--name of the toggle
+Toggle.Text = "USH" -- Name of the toggle
 Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
 Toggle.TextSize = 19.000
 Toggle.Draggable = true
-Toggle.MouseButton1Click:connect(function()
-  Library:ToggleUI()
+
+-- Set up UICorner for rounded corners
+UICorner.CornerRadius = UDim.new(0, 20) -- Adjust radius to make corners rounded
+UICorner.Parent = Toggle
+
+Toggle.MouseButton1Click:Connect(function()
+    Library:ToggleUI()
 end)
 
 local function showNotification()
-local StarterGui = game:GetService("StarterGui")
-StarterGui:SetCore("SendNotification", {
-    Title = "Info";
-    Text = "Type /e killtoggle To Kill The Toggle";
-    Duration = 60; -- Duration in seconds
-})
+    local StarterGui = game:GetService("StarterGui")
+    StarterGui:SetCore("SendNotification", {
+        Title = "Info",
+        Text = "Type /e killtoggle To Kill The Toggle",
+        Duration = 60 -- Duration in seconds
+    })
 end
 
 -- Show the notification when the script starts
 showNotification()
 
--- Function to handle the command
+-- Function to handle the chat commands
 local function onChatMessage(message)
-if message == "/e killtoggle" then
-    ToggleGui:Destroy()
-end
+    if message == "/e killtoggle" then
+        ToggleGui:Destroy()
+    elseif message == "/e toggle" then
+        Toggle.Visible = not Toggle.Visible
+    end
 end
 
 -- Connect the chat listener
