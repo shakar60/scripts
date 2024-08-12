@@ -44,6 +44,7 @@ local function detectExploit()
         "Solara",
         "Wave",
         "JJsploit",
+        "Cubix",
         -- Add more exploit names here as needed
     }
 
