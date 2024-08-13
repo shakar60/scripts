@@ -3,6 +3,8 @@
 local ToggleGui = Instance.new("ScreenGui")
 local Toggle = Instance.new("TextButton")
 local UICorner = Instance.new("UICorner")
+local UIStroke = Instance.new("UIStroke")
+local TextStroke = Instance.new("UIStroke")
 
 -- Properties
 ToggleGui.Name = "Toggle Gui"
@@ -24,6 +26,32 @@ Toggle.Draggable = true
 -- Set up UICorner for rounded corners
 UICorner.CornerRadius = UDim.new(0, 20) -- Adjust radius to make corners rounded
 UICorner.Parent = Toggle
+
+-- Set up UIStroke for RGB outline
+UIStroke.Parent = Toggle
+UIStroke.Thickness = 3 -- Adjust thickness of the outline
+UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+-- Set up TextStroke for subtle text outline
+TextStroke.Parent = Toggle
+TextStroke.Thickness = 0.3 -- Subtle thickness of the text stroke
+TextStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+TextStroke.Color = Color3.fromRGB(0, 0, 0) -- Black text stroke for subtle effect
+
+-- Function to create a rainbow effect for the UIStroke, text color, and outline stroke
+local function RainbowEffect()
+    local hue = 0
+    while true do
+        hue = 0.5 + (hue + 5) % 360 -- Slightly modify the hue range for a more subtle effect
+        local color = Color3.fromHSV(hue / 360, 1, 1)
+        UIStroke.Color = color
+        Toggle.TextColor3 = color
+        wait(0.01)
+    end
+end
+
+-- Start the rainbow effect
+spawn(RainbowEffect)
 
 Toggle.MouseButton1Click:Connect(function()
     Library:ToggleUI()
