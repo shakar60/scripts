@@ -6,9 +6,12 @@ local ScreenGui = Instance.new("ScreenGui")
 local ToggleButton = Instance.new("TextButton")
 local Frame = Instance.new("Frame")
 local CloseButton = Instance.new("TextButton")
+local NotificationFrame = Instance.new("Frame")
+local NotificationText = Instance.new("TextLabel")
+local NotificationTitle = Instance.new("TextLabel")
 
 ScreenGui.Name = "ToggleScriptGUI"
-ScreenGui.ResetOnSpawn = false -- Prevent GUI from being destroyed on respawn
+ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = localPlayer:WaitForChild("PlayerGui")
 
 Frame.Name = "MainFrame"
@@ -80,8 +83,8 @@ end)
 CloseButton.Name = "CloseButton"
 CloseButton.Parent = Frame
 CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-CloseButton.Size = UDim2.new(0, 26, 0, 26)
-CloseButton.Position = UDim2.new(1, -35, 0, 5)
+CloseButton.Size = UDim2.new(0, 24, 0, 24) -- Adjusted size
+CloseButton.Position = UDim2.new(1, -30, 0, 5)
 CloseButton.Text = "X"
 CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 CloseButton.Font = Enum.Font.SourceSansBold
@@ -94,3 +97,39 @@ CloseButtonUICorner.Parent = CloseButton
 CloseButton.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
+
+-- Notification GUI
+NotificationFrame.Name = "NotificationFrame"
+NotificationFrame.Parent = ScreenGui
+NotificationFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+NotificationFrame.BackgroundTransparency = 0.5
+NotificationFrame.Position = UDim2.new(0.5, -100, 0.5, -50)
+NotificationFrame.Size = UDim2.new(0, 200, 0, 100)
+
+local NotificationUICorner = Instance.new("UICorner")
+NotificationUICorner.CornerRadius = UDim.new(0, 16)
+NotificationUICorner.Parent = NotificationFrame
+
+NotificationTitle.Name = "NotificationTitle"
+NotificationTitle.Parent = NotificationFrame
+NotificationTitle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+NotificationTitle.BackgroundTransparency = 1
+NotificationTitle.Size = UDim2.new(1, 0, 0.4, 0)
+NotificationTitle.Font = Enum.Font.SourceSansBold
+NotificationTitle.Text = "OP RESOLVER"
+NotificationTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+NotificationTitle.TextSize = 24
+
+NotificationText.Name = "NotificationText"
+NotificationText.Parent = NotificationFrame
+NotificationText.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+NotificationText.BackgroundTransparency = 1
+NotificationText.Position = UDim2.new(0, 0, 0.4, 0)
+NotificationText.Size = UDim2.new(1, 0, 0.6, 0)
+NotificationText.Font = Enum.Font.SourceSans
+NotificationText.Text = "Made By @ feliciaxxx\nModified By @sh4k4r6o"
+NotificationText.TextColor3 = Color3.fromRGB(255, 255, 255)
+NotificationText.TextSize = 18
+
+wait(5)
+NotificationFrame:Destroy()
