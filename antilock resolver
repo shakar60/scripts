@@ -1,0 +1,96 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local localPlayer = Players.LocalPlayer
+
+local ScreenGui = Instance.new("ScreenGui")
+local ToggleButton = Instance.new("TextButton")
+local Frame = Instance.new("Frame")
+local CloseButton = Instance.new("TextButton")
+
+ScreenGui.Name = "ToggleScriptGUI"
+ScreenGui.ResetOnSpawn = false -- Prevent GUI from being destroyed on respawn
+ScreenGui.Parent = localPlayer:WaitForChild("PlayerGui")
+
+Frame.Name = "MainFrame"
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 60)
+Frame.Position = UDim2.new(0, 50, 0, 50)
+Frame.Size = UDim2.new(0, 200, 0, 100)
+Frame.Active = true
+Frame.Draggable = true
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 16)
+UICorner.Parent = Frame
+
+local UIGradient = Instance.new("UIGradient")
+UIGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(10, 10, 40)),
+    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(40, 40, 80))
+}
+UIGradient.Parent = Frame
+
+ToggleButton.Name = "ToggleButton"
+ToggleButton.Parent = Frame
+ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
+ToggleButton.Position = UDim2.new(0.1, 0, 0.3, 0)
+ToggleButton.Size = UDim2.new(0.8, 0, 0.4, 0)
+ToggleButton.Text = "Resolver: OFF"
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.Font = Enum.Font.SourceSansBold
+ToggleButton.TextSize = 18
+
+local ButtonUICorner = Instance.new("UICorner")
+ButtonUICorner.CornerRadius = UDim.new(0, 16)
+ButtonUICorner.Parent = ToggleButton
+
+local scriptEnabled = false
+local connection
+
+local function onHeartbeat()
+    for _, Target in pairs(Players:GetPlayers()) do
+        if Target ~= localPlayer and Target.Character then
+            for _, Part in pairs(Target.Character:GetDescendants()) do
+                if Part:IsA("BasePart") then
+                    Part.Velocity = Target.Character.Humanoid.MoveDirection * 16
+                    Part.AssemblyLinearVelocity = Target.Character.Humanoid.MoveDirection * 16
+                end
+            end
+        end
+    end
+end
+
+ToggleButton.MouseButton1Click:Connect(function()
+    scriptEnabled = not scriptEnabled
+    if scriptEnabled then
+        ToggleButton.Text = "Resolver: ON"
+        if not connection then
+            connection = RunService.Heartbeat:Connect(onHeartbeat)
+        end
+    else
+        ToggleButton.Text = "Resolver: OFF"
+        if connection then
+            connection:Disconnect()
+            connection = nil
+        end
+    end
+end)
+
+-- X Button to Close the GUI
+CloseButton.Name = "CloseButton"
+CloseButton.Parent = Frame
+CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+CloseButton.Size = UDim2.new(0, 28, 0, 28)
+CloseButton.Position = UDim2.new(1, -35, 0, 5)
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.Font = Enum.Font.SourceSansBold
+CloseButton.TextSize = 18
+
+local CloseButtonUICorner = Instance.new("UICorner")
+CloseButtonUICorner.CornerRadius = UDim.new(0, 8)
+CloseButtonUICorner.Parent = CloseButton
+
+CloseButton.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
