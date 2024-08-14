@@ -1,0 +1,120 @@
+-- StarterPlayerScripts/ESP_ToggleScript.lua
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Function to setup GUI
+local function setupGui()
+    -- Check if GUI already exists
+    local existingGui = playerGui:FindFirstChild("ToggleGui")
+    if existingGui then
+        return existingGui
+    end
+    
+    -- Create a ScreenGui
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "ToggleGui"
+    screenGui.Parent = playerGui
+
+    -- Create a Frame
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 100, 0, 50)
+    frame.Position = UDim2.new(0.5, -100, 0.5, -50)
+    frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    frame.BorderSizePixel = 2
+    frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    frame.Parent = screenGui
+    frame.Active = true
+    frame.Draggable = true
+
+    -- Create a Toggle Button
+    local toggleButton = Instance.new("TextButton")
+    toggleButton.Size = UDim2.new(0, 100, 0, 40)
+    toggleButton.Position = UDim2.new(0.5, -50, 0.5, -20)
+    toggleButton.Text = "Off"
+    toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    toggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    toggleButton.Parent = frame
+
+    return screenGui, toggleButton
+end
+
+-- Initialize GUI
+local screenGui, toggleButton = setupGui()
+
+-- Toggle logic
+local isOn = false
+
+-- ESP script functions
+local function createESP(player)
+    local char = player.Character
+    if not char then return end
+    
+    -- Create BillboardGui
+    local esp = Instance.new("BillboardGui")
+    esp.Size = UDim2.new(0, 200, 0, 50)
+    esp.Adornee = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
+    esp.AlwaysOnTop = true
+    esp.Parent = char
+    
+    -- Create TextLabel
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.Text = player.DisplayName
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextStrokeTransparency = 0.8
+    label.TextSize = 5
+    label.TextScaled = false
+    label.Parent = esp
+    
+    return esp
+end
+
+local espList = {}
+
+local function enableESP()
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if player.Character and player.Character:FindFirstChild("Head") then
+            espList[player] = createESP(player)
+        end
+    end
+end
+
+local function disableESP()
+    for _, esp in pairs(espList) do
+        if esp and esp.Parent then
+            esp:Destroy()
+        end
+    end
+    espList = {}
+end
+
+toggleButton.MouseButton1Click:Connect(function()
+    isOn = not isOn
+    if isOn then
+        toggleButton.Text = "On"
+        toggleButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+        enableESP()
+    else
+        toggleButton.Text = "Off"
+        toggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        disableESP()
+    end
+end)
+
+-- Handle respawns
+player.CharacterAdded:Connect(function()
+    -- Reinitialize GUI on respawn
+    if not playerGui:FindFirstChild("ToggleGui") then
+        setupGui()
+    end
+end)
+
+-- Optionally, update ESP for new players who join the game
+game.Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function(character)
+        if isOn and character:FindFirstChild("Head") then
+            espList[player] = createESP(player)
+        end
+    end)
+end)
