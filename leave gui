@@ -1,0 +1,102 @@
+-- Function to create the GUI
+local function createUI()
+    local player = game.Players.LocalPlayer
+    local playerGui = player:WaitForChild("PlayerGui")
+
+    -- Create ScreenGui
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "MyGui"
+    screenGui.Parent = playerGui
+
+    -- Create Frame
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 200, 0, 120)
+    frame.Position = UDim2.new(0.5, -100, 0.5, -60)
+    frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    frame.BorderSizePixel = 0
+    frame.Parent = screenGui
+    frame.Active = true
+    frame.Draggable = true
+
+    -- Add rounded corners to the frame
+    local frameUICorner = Instance.new("UICorner")
+    frameUICorner.CornerRadius = UDim.new(0, 15)
+    frameUICorner.Parent = frame
+
+    -- Create an RGB outline for the frame
+    local uiStroke = Instance.new("UIStroke")
+    uiStroke.Thickness = 4
+    uiStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    uiStroke.Parent = frame
+
+    -- Function to create a rainbow effect for the outline
+    local function RainbowEffect()
+        local hue = 0
+        while true do
+            hue = (hue + 1) % 360
+            local color = Color3.fromHSV(hue / 360, 1, 1)
+            uiStroke.Color = color
+            wait(0.05)
+        end
+    end
+
+    -- Start the rainbow effect
+    spawn(RainbowEffect)
+
+    -- Create a Title
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0, 30)
+    title.Position = UDim2.new(0, 0, 0, 0)
+    title.BackgroundTransparency = 1
+    title.Text = "Leave Gui"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.TextSize = 18
+    title.TextStrokeTransparency = 0.7
+    title.Font = Enum.Font.SourceSansBold
+    title.Parent = frame
+
+    -- Create Leave Button
+    local leaveButton = Instance.new("TextButton")
+    leaveButton.Size = UDim2.new(0, 180, 0, 40)
+    leaveButton.Position = UDim2.new(0.5, -90, 0.5, -20)
+    leaveButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    leaveButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    leaveButton.Text = "Leave Game"
+    leaveButton.Font = Enum.Font.SourceSans
+    leaveButton.TextSize = 18
+    leaveButton.Parent = frame
+
+    -- Add rounded corners to the leave button
+    local leaveButtonUICorner = Instance.new("UICorner")
+    leaveButtonUICorner.CornerRadius = UDim.new(0, 10)
+    leaveButtonUICorner.Parent = leaveButton
+
+    -- Create an X Button
+    local closeButton = Instance.new("TextButton")
+    closeButton.Size = UDim2.new(0, 30, 0, 30)
+    closeButton.Position = UDim2.new(1, -40, 0, 5) -- Positioned higher
+    closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    closeButton.Text = "X"
+    closeButton.Font = Enum.Font.SourceSans
+    closeButton.TextSize = 18
+    closeButton.Parent = frame
+
+    -- Add rounded corners to the X button
+    local closeButtonUICorner = Instance.new("UICorner")
+    closeButtonUICorner.CornerRadius = UDim.new(0, 10)
+    closeButtonUICorner.Parent = closeButton
+
+    -- Close GUI when X button is clicked
+    closeButton.MouseButton1Click:Connect(function()
+        screenGui:Destroy()
+    end)
+
+    -- Leave game when the leave button is clicked
+    leaveButton.MouseButton1Click:Connect(function()
+        game.Players.LocalPlayer:Kick("You have left the game.")
+    end)
+end
+
+-- Create the GUI
+createUI()
