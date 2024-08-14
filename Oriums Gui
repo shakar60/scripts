@@ -42,7 +42,7 @@ titleLabel.Position = UDim2.new(0, 0, 0, 0)
 titleLabel.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 titleLabel.BackgroundTransparency = 0.5
 titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleLabel.Text = "Leave Gui"
+titleLabel.Text = "Orium's Gui"
 titleLabel.Font = Enum.Font.SourceSans
 titleLabel.TextSize = 18
 titleLabel.TextStrokeTransparency = 0.5
@@ -123,66 +123,19 @@ closeButton.MouseButton1Click:Connect(function()
     screenGui:Destroy()
 end)
 
--- Credits GUI
-local creditsGui = Instance.new("ScreenGui")
-local creditsFrame = Instance.new("Frame")
-
-creditsGui.Name = "CreditsGUI"
-creditsGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
-creditsFrame.Parent = creditsGui
-creditsFrame.Size = UDim2.new(0, 200, 0, 150)
-creditsFrame.Position = UDim2.new(0, 10, 0.5, -75)
-creditsFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-creditsFrame.BackgroundTransparency = 0.2
-creditsFrame.BorderSizePixel = 0
-creditsFrame.Active = true
-creditsFrame.Draggable = true
-
-local UICornerCredits = Instance.new("UICorner")
-UICornerCredits.CornerRadius = UDim.new(0, 20)
-UICornerCredits.Parent = creditsFrame
-
-local UIStrokeCredits = Instance.new("UIStroke")
-UIStrokeCredits.Parent = creditsFrame
-UIStrokeCredits.Thickness = 4
-UIStrokeCredits.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-
-spawn(function() RainbowEffect(UIStrokeCredits) end)
-
-local creditsTitle = Instance.new("TextLabel")
-creditsTitle.Parent = creditsFrame
-creditsTitle.Size = UDim2.new(1, 0, 0, 40)
-creditsTitle.Position = UDim2.new(0, 0, 0, 0)
-creditsTitle.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-creditsTitle.BackgroundTransparency = 0.5
-creditsTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-creditsTitle.Text = "Credits"
-creditsTitle.Font = Enum.Font.SourceSans
-creditsTitle.TextSize = 18
-creditsTitle.TextStrokeTransparency = 0.5
-
-local UICornerTitleCredits = Instance.new("UICorner")
-UICornerTitleCredits.CornerRadius = UDim.new(0, 20)
-UICornerTitleCredits.Parent = creditsTitle
-
-local creditsText = Instance.new("TextLabel")
-creditsText.Parent = creditsFrame
-creditsText.Size = UDim2.new(1, -20, 0, 100)
-creditsText.Position = UDim2.new(0, 10, 0, 50)
-creditsText.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-creditsText.BackgroundTransparency = 0.5
-creditsText.TextColor3 = Color3.fromRGB(255, 255, 255)
-creditsText.Text = "Credits:\nsh4k4r6o For Making The Gui And The Toggle Button\nCredits To Orium For All The Other Stuff"
-creditsText.Font = Enum.Font.SourceSans
-creditsText.TextSize = 14
-creditsText.TextStrokeTransparency = 0.5
-creditsText.TextWrapped = true
-creditsText.TextYAlignment = Enum.TextYAlignment.Top
-
-local UICornerText = Instance.new("UICorner")
-UICornerText.CornerRadius = UDim.new(0, 10)
-UICornerText.Parent = creditsText
+-- Credits Labels
+local creditsLabel = Instance.new("TextLabel")
+creditsLabel.Parent = frame
+creditsLabel.Size = UDim2.new(1, -20, 0, 40)
+creditsLabel.Position = UDim2.new(0, 10, 1, -50)
+creditsLabel.BackgroundTransparency = 1
+creditsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+creditsLabel.Text = "Credits: sh4k4r6o for making the GUI and toggle button | Credits to Orium for all the other stuff"
+creditsLabel.Font = Enum.Font.SourceSans
+creditsLabel.TextSize = 14
+creditsLabel.TextStrokeTransparency = 0.5
+creditsLabel.TextWrapped = true
+creditsLabel.TextYAlignment = Enum.TextYAlignment.Bottom
 
 -- Toggle GUI
 local ToggleGui = Instance.new("ScreenGui")
@@ -201,7 +154,7 @@ Toggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 Toggle.Position = UDim2.new(0.5, -40, 0.05, 0)
 Toggle.Size = UDim2.new(0, 80, 0, 80)
 Toggle.Font = Enum.Font.SourceSans
-Toggle.Text = “Orium”
+Toggle.Text = "Orium"
 Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
 Toggle.TextSize = 19.000
 Toggle.Draggable = true
@@ -214,27 +167,27 @@ UIStrokeToggle.Parent = Toggle
 UIStrokeToggle.Thickness = 3
 UIStrokeToggle.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
-spawn(function() RainbowEffectToggle(UIStrokeToggle) end)
+spawn(function() RainbowEffect(UIStrokeToggle) end)
 
 Toggle.MouseButton1Click:Connect(function()
-frame.Visible = not frame.Visible
+    frame.Visible = not frame.Visible
 end)
 
 local function showNotification()
-local StarterGui = game:GetService(“StarterGui”)
-StarterGui:SetCore(“SendNotification”, {
-Title = “Info”,
-Text = “Type /e killtoggle To Kill The Toggle”,
-Duration = 60
-})
+    local StarterGui = game:GetService("StarterGui")
+    StarterGui:SetCore("SendNotification", {
+        Title = "Info",
+        Text = "Type /e killtoggle To Kill The Toggle",
+        Duration = 60
+    })
 end
 
 showNotification()
 
 local function onChatMessage(message)
-if message == “/e killtoggle” then
-ToggleGui:Destroy()
-end
+    if message == "/e killtoggle" then
+        ToggleGui:Destroy()
+    end
 end
 
 game.Players.LocalPlayer.Chatted:Connect(onChatMessage)
