@@ -17,23 +17,67 @@ local function setupGui()
 
     -- Create a Frame
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 100, 0, 50)
-    frame.Position = UDim2.new(0.5, -100, 0.5, -50)
-    frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    frame.BorderSizePixel = 2
-    frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    frame.Size = UDim2.new(0, 200, 0, 120)
+    frame.Position = UDim2.new(0.5, -100, 0.5, -60)
+    frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    frame.BorderSizePixel = 0
     frame.Parent = screenGui
     frame.Active = true
     frame.Draggable = true
 
+    -- Add rounded corners to the frame
+    local frameUICorner = Instance.new("UICorner")
+    frameUICorner.CornerRadius = UDim.new(0, 15)
+    frameUICorner.Parent = frame
+
+    -- Create a Title
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0, 30)
+    title.Position = UDim2.new(0, 0, 0, 0)
+    title.BackgroundTransparency = 1
+    title.Text = "Name ESP"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.TextSize = 18
+    title.TextStrokeTransparency = 0.7
+    title.Font = Enum.Font.SourceSansBold
+    title.Parent = frame
+
     -- Create a Toggle Button
     local toggleButton = Instance.new("TextButton")
-    toggleButton.Size = UDim2.new(0, 100, 0, 40)
-    toggleButton.Position = UDim2.new(0.5, -50, 0.5, -20)
+    toggleButton.Size = UDim2.new(0, 180, 0, 40)
+    toggleButton.Position = UDim2.new(0.5, -90, 0.5, -20)
     toggleButton.Text = "Off"
     toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     toggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    toggleButton.Font = Enum.Font.SourceSans
+    toggleButton.TextSize = 18
     toggleButton.Parent = frame
+
+    -- Add rounded corners to the toggle button
+    local toggleButtonUICorner = Instance.new("UICorner")
+    toggleButtonUICorner.CornerRadius = UDim.new(0, 10)
+    toggleButtonUICorner.Parent = toggleButton
+
+    -- Create an X Button
+    local closeButton = Instance.new("TextButton")
+    closeButton.Size = UDim2.new(0, 30, 0, 30)
+    closeButton.Position = UDim2.new(1, -40, 0, 5) -- Adjusted to be higher
+    closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    closeButton.Text = "X"
+    closeButton.Font = Enum.Font.SourceSans
+    closeButton.TextSize = 18
+    closeButton.Parent = frame
+
+    -- Add rounded corners to the X button
+    local closeButtonUICorner = Instance.new("UICorner")
+    closeButtonUICorner.CornerRadius = UDim.new(0, 10)
+    closeButtonUICorner.Parent = closeButton
+
+    -- Close GUI when X button is clicked
+    closeButton.MouseButton1Click:Connect(function()
+        screenGui:Destroy()
+    end)
 
     return screenGui, toggleButton
 end
@@ -63,7 +107,7 @@ local function createESP(player)
     label.Text = player.DisplayName
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
     label.TextStrokeTransparency = 0.8
-    label.TextSize = 5
+    label.TextSize = 16
     label.TextScaled = false
     label.Parent = esp
     
