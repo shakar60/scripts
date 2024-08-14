@@ -1,0 +1,175 @@
+-- Main GUI
+local screenGui = Instance.new("ScreenGui")
+local frame = Instance.new("Frame")
+
+screenGui.Name = "ScriptExecutorGUI"
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+frame.Parent = screenGui
+frame.Size = UDim2.new(0, 300, 0, 400)
+frame.Position = UDim2.new(0.5, -150, 0.5, -200)
+frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+frame.BackgroundTransparency = 0.2
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+
+local UICornerMain = Instance.new("UICorner")
+UICornerMain.CornerRadius = UDim.new(0, 20)
+UICornerMain.Parent = frame
+
+local UIStrokeMain = Instance.new("UIStroke")
+UIStrokeMain.Parent = frame
+UIStrokeMain.Thickness = 4
+UIStrokeMain.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+local function RainbowEffect(uiStroke)
+    local hue = 0
+    while true do
+        hue = (hue + 1) % 360
+        local color = Color3.fromHSV(hue / 360, 1, 1)
+        uiStroke.Color = color
+        wait(0.01)
+    end
+end
+
+spawn(function() RainbowEffect(UIStrokeMain) end)
+
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Parent = frame
+titleLabel.Size = UDim2.new(1, 0, 0, 40)
+titleLabel.Position = UDim2.new(0, 0, 0, 0)
+titleLabel.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+titleLabel.BackgroundTransparency = 0.5
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.Text = "Oriums Gui"
+titleLabel.Font = Enum.Font.SourceSans
+titleLabel.TextSize = 18
+titleLabel.TextStrokeTransparency = 0.5
+
+local UICornerTitle = Instance.new("UICorner")
+UICornerTitle.CornerRadius = UDim.new(0, 20)
+UICornerTitle.Parent = titleLabel
+
+local closeButton = Instance.new("TextButton")
+closeButton.Parent = frame
+closeButton.Size = UDim2.new(0, 30, 0, 30)
+closeButton.Position = UDim2.new(1, -40, 0, 5)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+closeButton.BackgroundTransparency = 0.5
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.Text = "X"
+closeButton.Font = Enum.Font.SourceSans
+closeButton.TextSize = 14
+closeButton.TextStrokeTransparency = 0.5
+closeButton.BorderSizePixel = 0
+
+local UICornerClose = Instance.new("UICorner")
+UICornerClose.CornerRadius = UDim.new(0, 15)
+UICornerClose.Parent = closeButton
+
+local function createButton(name, script, position)
+    local button = Instance.new("TextButton")
+    button.Parent = frame
+    button.Size = UDim2.new(1, -20, 0, 50)
+    button.Position = UDim2.new(0, 10, 0, position)
+    button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    button.BackgroundTransparency = 0.3
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Text = name
+    button.Font = Enum.Font.SourceSans
+    button.TextSize = 16
+    button.TextStrokeTransparency = 0.5
+    button.BorderSizePixel = 2
+
+    local UICornerButton = Instance.new("UICorner")
+    UICornerButton.CornerRadius = UDim.new(0, 15)
+    UICornerButton.Parent = button
+
+    button.MouseButton1Click:Connect(function()
+        loadstring(script)()
+    end)
+    return button
+end
+
+local scripts = {
+    {name = "OriumV1Lock", script = "print('Script 1 executed')"}, -- Replace with actual script code
+    {name = "LeaveButton", script = "print('Script 2 executed')"}, -- Replace with actual script code
+    {name = "Esp", script = "print('https://pastebin.com/raw/YskZYa4K')"}, -- Replace with actual script code
+    {name = "Script 4", script = "print('Script 4 executed')"}, -- Replace with actual script code
+    {name = "Script 5", script = "print('Script 5 executed')"}, -- Replace with actual script code
+    {name = "Script 6", script = "print('Script 6 executed')"} -- Replace with actual script code
+}
+
+for i, s in ipairs(scripts) do
+    createButton(s.name, s.script, 50 + (i - 1) * 55)
+end
+
+closeButton.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
+end)
+
+-- Toggle GUI
+local ToggleGui = Instance.new("ScreenGui")
+local Toggle = Instance.new("TextButton")
+local UICornerToggle = Instance.new("UICorner")
+local UIStrokeToggle = Instance.new("UIStroke")
+
+ToggleGui.Name = "ToggleGui"
+ToggleGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ToggleGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ToggleGui.ResetOnSpawn = false
+
+Toggle.Name = "Toggle"
+Toggle.Parent = ToggleGui
+Toggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Toggle.Position = UDim2.new(0.5, -40, 0.05, 0)
+Toggle.Size = UDim2.new(0, 80, 0, 80)
+Toggle.Font = Enum.Font.SourceSans
+Toggle.Text = "Orium"
+Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+Toggle.TextSize = 19.000
+Toggle.Draggable = true
+Toggle.BackgroundTransparency = 0.5
+
+UICornerToggle.CornerRadius = UDim.new(0, 20)
+UICornerToggle.Parent = Toggle
+
+UIStrokeToggle.Parent = Toggle
+UIStrokeToggle.Thickness = 3
+UIStrokeToggle.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+local function RainbowEffectToggle(uiStroke)
+    local hue = 0
+    while true do
+        hue = (hue + 1) % 360
+        local color = Color3.fromHSV(hue / 360, 1, 1)
+        uiStroke.Color = color
+        wait(0.01)
+    end
+end
+
+spawn(function() RainbowEffectToggle(UIStrokeToggle) end)
+
+Toggle.MouseButton1Click:Connect(function()
+    frame.Visible = not frame.Visible
+end)
+
+local function showNotification()
+    local StarterGui = game:GetService("StarterGui")
+    StarterGui:SetCore("SendNotification", {
+        Title = "Info",
+        Text = "Type /e killtoggle To Kill The Toggle",
+        Duration = 60
+    })
+end
+
+showNotification()
+
+local function onChatMessage(message)
+    if message == "/e killtoggle" then
+        ToggleGui:Destroy()
+    end
+end
+
+game.Players.LocalPlayer.Chatted:Connect(onChatMessage)
