@@ -10,24 +10,23 @@ local DEFAULT_SPEED_MULTIPLIER = 30
 local SLOW_SPEED_MULTIPLIER = 10 -- Adjust this to your desired slower speed
 local JUMP_POWER = 60
 local JUMP_GAP = 0.3
-local delta = 1
 
 local isBallRolling = false -- State of ball rolling effect
 
-local character = game.Players.LocalPlayer.Character
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
 
-for i,v in ipairs(character:GetDescendants()) do
-    if v:IsA("BasePart") then
-        v.CanCollide = false
-        v.Transparency = 0
-    end
-end
-
-local ball = character.HumanoidRootPart
+-- Set up a ball part
+local ball = Instance.new("Part")
+ball.Name = "Ball"
+ball.Parent = character
 ball.Shape = Enum.PartType.Ball
-ball.Material = "SmoothPlastic"
+ball.Material = Enum.Material.SmoothPlastic
 ball.Size = Vector3.new(5,5,5)
 ball.Transparency = 0.75
+ball.CanCollide = false
+ball.Anchored = false
+ball.CFrame = character.HumanoidRootPart.CFrame
 
 local humanoid = character:WaitForChild("Humanoid")
 local params = RaycastParams.new()
@@ -42,22 +41,29 @@ local function updateSpeed()
     end
 end
 
-local tc = RunService.RenderStepped:Connect(function(delta)
+RunService.RenderStepped:Connect(function(dt)
     if not isBallRolling then return end
     ball.CanCollide = true
     humanoid.PlatformStand = true
     if UserInputService:GetFocusedTextBox() then return end
-    if UserInputService:IsKeyDown("W") then
-        ball.RotVelocity -= Camera.CFrame.RightVector * delta * updateSpeed()
+
+    local moveDirection = Vector3.new()
+
+    if UserInputService:IsKeyDown(Enum.KeyCode.W) then
+        moveDirection = moveDirection - Camera.CFrame.LookVector
     end
-    if UserInputService:IsKeyDown("A") then
-        ball.RotVelocity -= Camera.CFrame.LookVector * delta * updateSpeed()
+    if UserInputService:IsKeyDown(Enum.KeyCode.S) then
+        moveDirection = moveDirection + Camera.CFrame.LookVector
     end
-    if UserInputService:IsKeyDown("S") then
-        ball.RotVelocity += Camera.CFrame.RightVector * delta * updateSpeed()
+    if UserInputService:IsKeyDown(Enum.KeyCode.A) then
+        moveDirection = moveDirection - Camera.CFrame.RightVector
     end
-    if UserInputService:IsKeyDown("D") then
-        ball.RotVelocity += Camera.CFrame.LookVector * delta * updateSpeed()
+    if UserInputService:IsKeyDown(Enum.KeyCode.D) then
+        moveDirection = moveDirection + Camera.CFrame.RightVector
+    end
+
+    if moveDirection.Magnitude > 0 then
+        ball.Velocity = moveDirection.Unit * updateSpeed()
     end
 end)
 
@@ -73,7 +79,7 @@ UserInputService.JumpRequest:Connect(function()
 end)
 
 Camera.CameraSubject = ball
-humanoid.Died:Connect(function() tc:Disconnect() end)
+humanoid.Died:Connect(function() RunService.RenderStepped:Disconnect() end)
 
 local BallGUI = Instance.new("ScreenGui")
 local MainFrame = Instance.new("ImageLabel")
@@ -88,12 +94,12 @@ local AButton = Instance.new("TextButton")
 local AGrad = Instance.new("UIGradient")
 local XButton = Instance.new("ImageButton")
 local XGRad = Instance.new("UIGradient")
-local ToggleButton = Instance.new("TextButton") -- Added Toggle Button
+local ToggleButton = Instance.new("TextButton")
 
 -- Properties:
 
 BallGUI.Name = "BallGUI"
-BallGUI.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+BallGUI.Parent = player:WaitForChild("PlayerGui")
 
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = BallGUI
@@ -184,62 +190,49 @@ AGrad.Parent = AButton
 
 XButton.Name = “XButton”
 XButton.Parent = MainFrame
-XButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-XButton.BackgroundTransparency = 1.000
+XButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 XButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
-XButton.BorderSizePixel = 0
-XButton.Position = UDim2.new(0.861660063, 0, 0.047169812, 0)
-XButton.Size = UDim2.new(0, 28, 0, 28)
-XButton.Image = “http://www.roblox.com/asset/?id=5702664224”
+XButton.BorderSizePixel = 2
+XButton.Position = UDim2.new(0.929872214, 0, -0.00306222963, 0)
+XButton.Size = UDim2.new(0, 40, 0, 36)
+XButton.Image = “http://www.roblox.com/asset/?id=6015830647”
 XButton.ImageColor3 = Color3.fromRGB(255, 0, 0)
 
 XGRad.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(57, 65, 138)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 103, 248))}
 XGRad.Name = “XGRad”
 XGRad.Parent = XButton
 
-ToggleButton.Name = “ToggleButton” – Set properties for the new toggle button
+ToggleButton.Name = “ToggleButton”
 ToggleButton.Parent = MainFrame
-ToggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(103, 50, 149)
 ToggleButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 ToggleButton.BorderSizePixel = 2
-ToggleButton.Position = UDim2.new(0.1, 0, 0.8, 0)
-ToggleButton.Size = UDim2.new(0, 120, 0, 50)
+ToggleButton.Position = UDim2.new(0.261162072, 0, 0.796099365, 0)
+ToggleButton.Size = UDim2.new(0, 121, 0, 50)
 ToggleButton.Font = Enum.Font.SourceSans
-ToggleButton.Text = “Toggle Ball Roll: OFF”
-ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.Text = “Ball Roll Off”
+ToggleButton.TextColor3 = Color3.fromRGB(0, 0, 0)
 ToggleButton.TextScaled = true
 ToggleButton.TextSize = 14.000
 ToggleButton.TextWrapped = true
 
-ToggleButton.MouseButton1Click:Connect(function()
+local function toggleBallRoll()
 isBallRolling = not isBallRolling
-ToggleButton.Text = isBallRolling and “Toggle Ball Roll: ON” or “Toggle Ball Roll: OFF”
-end)
+if isBallRolling then
+ToggleButton.Text = “Ball Roll On”
+ball.CanCollide = true
+ball.Velocity = Vector3.zero
+else
+ToggleButton.Text = “Ball Roll Off”
+ball.CanCollide = false
+ball.Velocity = Vector3.zero
+end
+end
 
-XButton.MouseButton1Down:Connect(function()
+ToggleButton.MouseButton1Click:Connect(toggleBallRoll)
+
+local function closeGUI()
 BallGUI:Destroy()
-end)
-
-WButton.MouseButton1Down:Connect(function()
-if isBallRolling then
-ball.RotVelocity -= Camera.CFrame.RightVector * delta * updateSpeed()
 end
-end)
 
-AButton.MouseButton1Down:Connect(function()
-if isBallRolling then
-ball.RotVelocity -= Camera.CFrame.LookVector * delta * updateSpeed()
-end
-end)
-
-SButton.MouseButton1Down:Connect(function()
-if isBallRolling then
-ball.RotVelocity += Camera.CFrame.RightVector * delta * updateSpeed()
-end
-end)
-
-DButton.MouseButton1Down:Connect(function()
-if isBallRolling then
-ball.RotVelocity += Camera.CFrame.LookVector * delta * updateSpeed()
-end
-end)
+XButton.MouseButton1Click:Connect(closeGUI)
