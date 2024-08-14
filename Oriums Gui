@@ -108,7 +108,7 @@ end
 
 local scripts = {
     {name = "Oriums Lock V1", script = "print('Script 1 executed')"}, -- Replace with actual script code
-    {name = "Leave Gui", script = "print('Script 2 executed')"}, -- Replace with actual script code
+    {name = "Leave Gui", script = "print('https://raw.githubusercontent.com/shakar60/scripts/main/leave%20gui')"}, -- Replace with actual script code
     {name = "Name Esp", script = "https://github.com/shakar60/scripts/blob/main/name%20esp"}, -- Example URL
     {name = "Script 4", script = "print('Script 4 executed')"}, -- Replace with actual script code
     {name = "Script 5", script = "print('Script 5 executed')"}, -- Replace with actual script code
