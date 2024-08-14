@@ -107,12 +107,12 @@ local function createButton(name, script, position)
 end
 
 local scripts = {
-    {name = "Oriums Camlock (Soon)", script = "print('Soon')"}, -- Replace with actual script code
-    {name = "Leave Gui", script = "https://raw.githubusercontent.com/shakar60/scripts/main/leave%20gui"}, -- Replace with actual script code
-    {name = "LightTux's Esp", script = "https://raw.githubusercontent.com/shakar60/scripts/main/LightTuxEsp"}, -- Replace with actual script code
-    {name = "USH Kavo Ui", script = "https://raw.githubusercontent.com/shakar60/USH/main/USH%20Kavo%20Protected"}, -- Replace with actual script code
-    {name = "Fake Lag", script = "https://raw.githubusercontent.com/shakar60/scripts/main/fake%20lag"}, -- Replace with actual script code
-    {name = "Keyboard Script", script = "https://raw.githubusercontent.com/shakar60/keyboardgui/main/script"} -- Replace with actual script code
+    {name = "Oriums Camlock (Soon)", script = "print('Soon')"}, 
+    {name = "Leave Gui", script = "https://raw.githubusercontent.com/shakar60/scripts/main/leave%20gui"}, 
+    {name = "LightTux's Esp", script = "https://raw.githubusercontent.com/shakar60/correct-repo/main/LightTuxEsp"}, 
+    {name = "USH Kavo Ui", script = "https://raw.githubusercontent.com/shakar60/USH/main/USH%20Kavo%20Protected"}, 
+    {name = "Fake Lag", script = "https://raw.githubusercontent.com/shakar60/scripts/main/fake%20lag"}, 
+    {name = "Keyboard Script", script = "https://raw.githubusercontent.com/shakar60/keyboardgui/main/script"} 
 }
 
 for i, s in ipairs(scripts) do
