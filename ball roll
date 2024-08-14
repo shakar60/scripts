@@ -1,0 +1,245 @@
+-- [[ Mobile GUI by Melon ]] --
+-- [[ Edited by Melon ]] -- 
+-- [[ Created by ??? ]] --
+-- [[ Edited Mobile Support Gui By sh4k4r6o ]] --
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local Camera = workspace.CurrentCamera
+
+local DEFAULT_SPEED_MULTIPLIER = 30
+local SLOW_SPEED_MULTIPLIER = 10 -- Adjust this to your desired slower speed
+local JUMP_POWER = 60
+local JUMP_GAP = 0.3
+local delta = 1
+
+local isBallRolling = false -- State of ball rolling effect
+
+local character = game.Players.LocalPlayer.Character
+
+for i,v in ipairs(character:GetDescendants()) do
+    if v:IsA("BasePart") then
+        v.CanCollide = false
+        v.Transparency = 0
+    end
+end
+
+local ball = character.HumanoidRootPart
+ball.Shape = Enum.PartType.Ball
+ball.Material = "SmoothPlastic"
+ball.Size = Vector3.new(5,5,5)
+ball.Transparency = 0.75
+
+local humanoid = character:WaitForChild("Humanoid")
+local params = RaycastParams.new()
+params.FilterType = Enum.RaycastFilterType.Blacklist
+params.FilterDescendantsInstances = {character}
+
+local function updateSpeed()
+    if isBallRolling then
+        return DEFAULT_SPEED_MULTIPLIER
+    else
+        return SLOW_SPEED_MULTIPLIER
+    end
+end
+
+local tc = RunService.RenderStepped:Connect(function(delta)
+    if not isBallRolling then return end
+    ball.CanCollide = true
+    humanoid.PlatformStand = true
+    if UserInputService:GetFocusedTextBox() then return end
+    if UserInputService:IsKeyDown("W") then
+        ball.RotVelocity -= Camera.CFrame.RightVector * delta * updateSpeed()
+    end
+    if UserInputService:IsKeyDown("A") then
+        ball.RotVelocity -= Camera.CFrame.LookVector * delta * updateSpeed()
+    end
+    if UserInputService:IsKeyDown("S") then
+        ball.RotVelocity += Camera.CFrame.RightVector * delta * updateSpeed()
+    end
+    if UserInputService:IsKeyDown("D") then
+        ball.RotVelocity += Camera.CFrame.LookVector * delta * updateSpeed()
+    end
+end)
+
+UserInputService.JumpRequest:Connect(function()
+    local result = workspace:Raycast(
+        ball.Position,
+        Vector3.new(0, -((ball.Size.Y/2)+JUMP_GAP), 0),
+        params
+    )
+    if result then
+        ball.Velocity = ball.Velocity + Vector3.new(0, JUMP_POWER, 0)
+    end
+end)
+
+Camera.CameraSubject = ball
+humanoid.Died:Connect(function() tc:Disconnect() end)
+
+local BallGUI = Instance.new("ScreenGui")
+local MainFrame = Instance.new("ImageLabel")
+local MainGrad = Instance.new("UIGradient")
+local WButton = Instance.new("TextButton")
+local WGRad = Instance.new("UIGradient")
+local SButton = Instance.new("TextButton")
+local SGrad = Instance.new("UIGradient")
+local DButton = Instance.new("TextButton")
+local DGrad = Instance.new("UIGradient")
+local AButton = Instance.new("TextButton")
+local AGrad = Instance.new("UIGradient")
+local XButton = Instance.new("ImageButton")
+local XGRad = Instance.new("UIGradient")
+local ToggleButton = Instance.new("TextButton") -- Added Toggle Button
+
+-- Properties:
+
+BallGUI.Name = "BallGUI"
+BallGUI.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = BallGUI
+MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+MainFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+MainFrame.BorderSizePixel = 2
+MainFrame.Position = UDim2.new(0.0837606788, 0, 0.317955106, 0)
+MainFrame.Size = UDim2.new(0, 254, 0, 193)
+MainFrame.Image = "http://www.roblox.com/asset/?id=9199483035"
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+MainGrad.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(57, 65, 138)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 103, 248))}
+MainGrad.Name = "MainGrad"
+MainGrad.Parent = MainFrame
+
+WButton.Name = "WButton"
+WButton.Parent = MainFrame
+WButton.BackgroundColor3 = Color3.fromRGB(103, 50, 149)
+WButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+WButton.BorderSizePixel = 2
+WButton.Position = UDim2.new(0.335968375, 0, 0.0990566015, 0)
+WButton.Size = UDim2.new(0, 83, 0, 50)
+WButton.Font = Enum.Font.SourceSans
+WButton.Text = "W"
+WButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+WButton.TextScaled = true
+WButton.TextSize = 14.000
+WButton.TextWrapped = true
+
+WGRad.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(57, 65, 138)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 103, 248))}
+WGRad.Name = "WGRad"
+WGRad.Parent = WButton
+
+SButton.Name = "SButton"
+SButton.Parent = MainFrame
+SButton.BackgroundColor3 = Color3.fromRGB(103, 50, 149)
+SButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+SButton.BorderSizePixel = 2
+SButton.Position = UDim2.new(0.335968375, 0, 0.660377383, 0)
+SButton.Size = UDim2.new(0, 83, 0, 50)
+SButton.Font = Enum.Font.SourceSans
+SButton.Text = "S"
+SButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+SButton.TextScaled = true
+SButton.TextSize = 14.000
+SButton.TextWrapped = true
+
+SGrad.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(57, 65, 138)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 103, 248))}
+SGrad.Name = "SGrad"
+SGrad.Parent = SButton
+
+DButton.Name = "DButton"
+DButton.Parent = MainFrame
+DButton.BackgroundColor3 = Color3.fromRGB(103, 50, 149)
+DButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DButton.BorderSizePixel = 2
+DButton.Position = UDim2.new(0.695652187, 0, 0.382075459, 0)
+DButton.Size = UDim2.new(0, 70, 0, 50)
+DButton.Font = Enum.Font.SourceSans
+DButton.Text = "D"
+DButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+DButton.TextScaled = true
+DButton.TextSize = 14.000
+DButton.TextWrapped = true
+
+DGrad.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(57, 65, 138)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 103, 248))}
+DGrad.Name = "DGrad"
+DGrad.Parent = DButton
+
+AButton.Name = "AButton"
+AButton.Parent = MainFrame
+AButton.BackgroundColor3 = Color3.fromRGB(103, 50, 149)
+AButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+AButton.BorderSizePixel = 2
+AButton.Position = UDim2.new(0.0276679844, 0, 0.382075459, 0)
+AButton.Size = UDim2.new(0, 69, 0, 50)
+AButton.Font = Enum.Font.SourceSans
+AButton.Text = "A"
+AButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+AButton.TextScaled = true
+AButton.TextSize = 14.000
+AButton.TextWrapped = true
+
+AGrad.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(57, 65, 138)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 103, 248))}
+AGrad.Name = “AGrad”
+AGrad.Parent = AButton
+
+XButton.Name = “XButton”
+XButton.Parent = MainFrame
+XButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+XButton.BackgroundTransparency = 1.000
+XButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+XButton.BorderSizePixel = 0
+XButton.Position = UDim2.new(0.861660063, 0, 0.047169812, 0)
+XButton.Size = UDim2.new(0, 28, 0, 28)
+XButton.Image = “http://www.roblox.com/asset/?id=5702664224”
+XButton.ImageColor3 = Color3.fromRGB(255, 0, 0)
+
+XGRad.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(57, 65, 138)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 103, 248))}
+XGRad.Name = “XGRad”
+XGRad.Parent = XButton
+
+ToggleButton.Name = “ToggleButton” – Set properties for the new toggle button
+ToggleButton.Parent = MainFrame
+ToggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+ToggleButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ToggleButton.BorderSizePixel = 2
+ToggleButton.Position = UDim2.new(0.1, 0, 0.8, 0)
+ToggleButton.Size = UDim2.new(0, 120, 0, 50)
+ToggleButton.Font = Enum.Font.SourceSans
+ToggleButton.Text = “Toggle Ball Roll: OFF”
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.TextScaled = true
+ToggleButton.TextSize = 14.000
+ToggleButton.TextWrapped = true
+
+ToggleButton.MouseButton1Click:Connect(function()
+isBallRolling = not isBallRolling
+ToggleButton.Text = isBallRolling and “Toggle Ball Roll: ON” or “Toggle Ball Roll: OFF”
+end)
+
+XButton.MouseButton1Down:Connect(function()
+BallGUI:Destroy()
+end)
+
+WButton.MouseButton1Down:Connect(function()
+if isBallRolling then
+ball.RotVelocity -= Camera.CFrame.RightVector * delta * updateSpeed()
+end
+end)
+
+AButton.MouseButton1Down:Connect(function()
+if isBallRolling then
+ball.RotVelocity -= Camera.CFrame.LookVector * delta * updateSpeed()
+end
+end)
+
+SButton.MouseButton1Down:Connect(function()
+if isBallRolling then
+ball.RotVelocity += Camera.CFrame.RightVector * delta * updateSpeed()
+end
+end)
+
+DButton.MouseButton1Down:Connect(function()
+if isBallRolling then
+ball.RotVelocity += Camera.CFrame.LookVector * delta * updateSpeed()
+end
+end)
