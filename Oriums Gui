@@ -111,7 +111,7 @@ local scripts = {
     {name = "Leave Gui", script = "https://raw.githubusercontent.com/shakar60/scripts/main/leave%20gui"}, -- Replace with actual script code
     {name = "Name Esp", script = "https://raw.githubusercontent.com/shakar60/scripts/main/name%20esp"}, -- Example URL
     {name = "USH Kavo Ui", script = "https://raw.githubusercontent.com/shakar60/USH/main/USH%20Kavo%20Protected"}, -- Replace with actual script code
-    {name = "Fake Lag", script = "print('Script 5 executed')"}, -- Replace with actual script code
+    {name = "Fake Lag", script = "https://raw.githubusercontent.com/shakar60/scripts/main/fake%20lag"}, -- Replace with actual script code
     {name = "Keyboard Script", script = "print('Script 6 executed')"} -- Replace with actual script code
 }
 
