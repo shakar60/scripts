@@ -42,7 +42,7 @@ titleLabel.Position = UDim2.new(0, 0, 0, 0)
 titleLabel.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 titleLabel.BackgroundTransparency = 0.5
 titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleLabel.Text = "Oriums Gui"
+titleLabel.Text = "Leave Gui"
 titleLabel.Font = Enum.Font.SourceSans
 titleLabel.TextSize = 18
 titleLabel.TextStrokeTransparency = 0.5
@@ -68,6 +68,7 @@ local UICornerClose = Instance.new("UICorner")
 UICornerClose.CornerRadius = UDim.new(0, 15)
 UICornerClose.Parent = closeButton
 
+-- Function to create a button with script loading capability
 local function createButton(name, script, position)
     local button = Instance.new("TextButton")
     button.Parent = frame
@@ -87,15 +88,25 @@ local function createButton(name, script, position)
     UICornerButton.Parent = button
 
     button.MouseButton1Click:Connect(function()
-        loadstring(script)()
+        if script:match("^https?://") then
+            local success, result = pcall(function()
+                local response = game:HttpGet(script)
+                loadstring(response)()
+            end)
+            if not success then
+                print("Error loading script from URL: " .. result)
+            end
+        else
+            loadstring(script)()
+        end
     end)
     return button
 end
 
 local scripts = {
     {name = "OriumV1Lock", script = "print('Script 1 executed')"}, -- Replace with actual script code
-    {name = "LeaveButton", script = "https://raw.githubusercontent.com/shakar60/scripts/733fb4f423eb6d4e5c6e8f76837dc56ed64ca029/leave%20gui"}, -- Replace with actual script code
-    {name = "Esp", script = "print('https://pastebin.com/raw/YskZYa4K')"}, -- Replace with actual script code
+    {name = "LeaveButton", script = "print('Script 2 executed')"}, -- Replace with actual script code
+    {name = "Esp", script = "https://pastebin.com/raw/YskZYa4K"}, -- Example URL
     {name = "Script 4", script = "print('Script 4 executed')"}, -- Replace with actual script code
     {name = "Script 5", script = "print('Script 5 executed')"}, -- Replace with actual script code
     {name = "Script 6", script = "print('Script 6 executed')"} -- Replace with actual script code
