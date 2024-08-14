@@ -20,7 +20,7 @@ Toggle.Size = UDim2.new(0, 80, 0, 80) -- Size of the toggle
 Toggle.Font = Enum.Font.SourceSans
 Toggle.Text = "USH" -- Name of the toggle
 Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-Toggle.TextSize = 19.000
+Toggle.TextSize = 23.000
 Toggle.Draggable = true
 
 -- Set up UICorner for rounded corners
