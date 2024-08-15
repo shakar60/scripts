@@ -2,6 +2,8 @@ local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
 
 local player = Players.LocalPlayer
 
@@ -47,6 +49,20 @@ local isCamlockOn = false
 Button.MouseButton1Click:Connect(function()
     isCamlockOn = not isCamlockOn
     Button.Text = isCamlockOn and "Camlock On" or "Camlock Off"
+    
+    if isCamlockOn then
+        -- Remove the tool if it's there
+        local tool = player.Backpack:FindFirstChild("CamlockTool")
+        if tool then
+            tool:Destroy()
+        end
+    else
+        -- Recreate the tool if Camlock is turned off
+        local CamlockTool = Instance.new("Tool")
+        CamlockTool.Name = "CamlockTool"
+        CamlockTool.RequiresHandle = false
+        CamlockTool.Parent = player.Backpack
+    end
 end)
 
 -- Key press event to toggle camlock
@@ -55,6 +71,20 @@ UserInputService.InputBegan:Connect(function(input, isProcessed)
     if input.KeyCode == Enum.KeyCode.Q then -- change the Q to the letter you want
         isCamlockOn = not isCamlockOn
         Button.Text = isCamlockOn and "Camlock On" or "Camlock Off"
+        
+        if isCamlockOn then
+            -- Remove the tool if it's there
+            local tool = player.Backpack:FindFirstChild("CamlockTool")
+            if tool then
+                tool:Destroy()
+            end
+        else
+            -- Recreate the tool if Camlock is turned off
+            local CamlockTool = Instance.new("Tool")
+            CamlockTool.Name = "CamlockTool"
+            CamlockTool.RequiresHandle = false
+            CamlockTool.Parent = player.Backpack
+        end
     end
 end)
 
@@ -82,20 +112,12 @@ getgenv().HornSilentaim = {
     Use_Radius            = false,
     Radius                = 200
 }
- 
--- Services
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local Workspace = game:GetService("Workspace")
-local LocalPlayer = Players.LocalPlayer
-local StarterGui = game:GetService("StarterGui")
- 
--- Variables
+
+-- Variables and functions
 local CamlockTool = Instance.new("Tool")
 CamlockTool.Name = "CamlockTool"
 CamlockTool.RequiresHandle = false
-CamlockTool.Parent = LocalPlayer.Backpack
- 
+
 local CamlockState = false
 local SelectedTarget = nil
 local Prediction = 0.15662
@@ -107,8 +129,7 @@ local JumpSmoothness = 0.1
 local FlickSmoothness = 0.1
 local CurrentJumpOffset = 2.50
 local FlickRotation = 1.25
- 
--- Function to create and adjust the highlight effect
+
 local function CreateHighlight(target)
     local highlight = Instance.new("Highlight")
     highlight.Parent = target
@@ -119,45 +140,37 @@ local function CreateHighlight(target)
     highlight.FillTransparency = 0.5
     return highlight
 end
- 
--- Function to scale the hitbox of the target
+
 local function ScaleHitbox(target, scaleFactor)
     local humanoidRootPart = target:FindFirstChild("HumanoidRootPart")
     if humanoidRootPart then
         humanoidRootPart.Size = humanoidRootPart.Size * scaleFactor
     end
 end
- 
--- Function to select and highlight the target
+
 local function SelectTarget(target)
     if currentHighlight then
         currentHighlight:Destroy()
         currentHighlight = nil
     end
- 
+
     SelectedTarget = target
- 
+
     if SelectedTarget then
-        -- Scale the hitbox size by a factor of 3
         local scaleFactor = 3 -- Scale factor for hitbox
         ScaleHitbox(SelectedTarget, scaleFactor)
- 
-        -- Create a highlight effect
         currentHighlight = CreateHighlight(SelectedTarget)
     end
 end
- 
--- Function to deselect and reset target hitbox
+
 local function DeselectTarget(target)
     local humanoidRootPart = target:FindFirstChild("HumanoidRootPart")
     if humanoidRootPart then
-        -- Reset size based on the scale factor used
         local scaleFactor = 3 -- Must match the scale factor used in SelectTarget
         humanoidRootPart.Size = humanoidRootPart.Size / scaleFactor
     end
 end
- 
--- Show a notification
+
 local function ShowNotification(text)
     StarterGui:SetCore("SendNotification", {
         Title = "saxx.lol",
@@ -165,8 +178,7 @@ local function ShowNotification(text)
         Duration = 3
     })
 end
- 
--- Check health and update highlight
+
 local function CheckHealthAndHighlight(target)
     if target and target:FindFirstChild("Humanoid") then
         if target.Humanoid.Health <= 0 then
@@ -175,13 +187,12 @@ local function CheckHealthAndHighlight(target)
     end
     return false
 end
- 
--- Find the closest visible enemy
+
 local function FindClosestEnemy()
     local closestDistance = math.huge
     local closestPlayer = nil
     local centerPosition = Vector2.new(Workspace.CurrentCamera.ViewportSize.X / 2, Workspace.CurrentCamera.ViewportSize.Y / 2)
- 
+
     for _, player in ipairs(Players:GetPlayers()) do
         if player ~= LocalPlayer then
             local character = player.Character
@@ -197,11 +208,10 @@ local function FindClosestEnemy()
             end
         end
     end
- 
+
     return closestPlayer
 end
- 
--- Check if the target is visible
+
 local function IsTargetVisible(target)
     if target and target:FindFirstChild("HumanoidRootPart") then
         local targetPosition = target.HumanoidRootPart.Position
@@ -212,8 +222,7 @@ local function IsTargetVisible(target)
     end
     return false
 end
- 
--- Smoothly interpolate camera position and orientation
+
 local function SmoothCameraTransition(targetPosition)
     local camera = Workspace.CurrentCamera
     local currentCFrame = camera.CFrame
@@ -221,92 +230,37 @@ local function SmoothCameraTransition(targetPosition)
     local newCFrame = currentCFrame:Lerp(targetCFrame, 1 / CameraSmoothness)
     camera.CFrame = newCFrame
 end
- 
--- Smoothly apply a flick effect to the camera
+
 local function ApplyFlickEffect()
     local camera = Workspace.CurrentCamera
     local currentCFrame = camera.CFrame
     local flickRotation = CFrame.Angles(0, math.rad(FlickRotation), 0)
     camera.CFrame = currentCFrame * flickRotation
 end
- 
--- Auto airshot function with enhanced targeting and smooth jump offset
+
 local function AutoAirshot()
-    if CamlockState and SelectedTarget then
-        local head = SelectedTarget:FindFirstChild("Head")
-        local humanoidRootPart = SelectedTarget:FindFirstChild("HumanoidRootPart")
-        local upperTorso = SelectedTarget:FindFirstChild("UpperTorso")
-        local humanoid = SelectedTarget:FindFirstChild("Humanoid")
- 
-        if head and humanoidRootPart and humanoid then
-            local targetPosition = upperTorso and upperTorso.Position or head.Position
-            targetPosition = targetPosition + humanoidRootPart.Velocity * Prediction
- 
-            if humanoidRootPart.Velocity.Y > 0 then
-                local desiredJumpOffset = JumpOffset
-                CurrentJumpOffset = CurrentJumpOffset + (desiredJumpOffset - CurrentJumpOffset) * JumpSmoothness
-                targetPosition = targetPosition + Vector3.new(0, CurrentJumpOffset, 0)
- 
-                ApplyFlickEffect()
-            else
-                CurrentJumpOffset = 0
-            end
- 
-            SmoothCameraTransition(targetPosition)
- 
-            if IsTargetVisible(SelectedTarget) then
-                local equippedTool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Tool")
-                if equippedTool and equippedTool ~= CamlockTool then
-                    local tool = equippedTool
-                    if AutoClickerEnabled and humanoidRootPart.Velocity.Y > 0 then
-                        if not tool.Activated then
-                            tool:Activate()
-                        end
-                        print("Firing with tool: " .. tool.Name)
+    ifnot CamlockState then return end
+
+local target = FindClosestEnemy()
+if target and target:FindFirstChild("HumanoidRootPart") then
+    if IsTargetVisible(target) then
+        if not CheckHealthAndHighlight(target) then
+            -- Set the gun's aim to the target's UpperTorso
+            local gun = player.Backpack:FindFirstChildOfClass("Tool")
+            if gun then
+                gun.Activated:Connect(function()
+                    local humanoidRootPart = target:FindFirstChild("HumanoidRootPart")
+                    if humanoidRootPart then
+                        SmoothCameraTransition(humanoidRootPart.Position)
+                        ApplyFlickEffect()
+                        wait(0.1) -- Adjust based on desired shooting frequency
                     end
-                end
-            end
- 
-            if CheckHealthAndHighlight(SelectedTarget) and humanoidRootPart.Velocity.Y < -0.1 then
-                CamlockState = false
-                CamlockTool:Deactivate()
-                DeselectTarget(SelectedTarget) -- Reset the target hitbox size
-                if currentHighlight then
-                    currentHighlight:Destroy()
-                    currentHighlight = nil
-                end
-                print("Camlock OFF - Target's health is 0 and falling")
+                end)
             end
         end
     end
 end
- 
--- Update camera and handle auto airshot
-RunService.Heartbeat:Connect(function()
-    AutoAirshot()
-end)
- 
--- Tool activation logic
-CamlockTool.Activated:Connect(function()
-    if not CamlockState then
-        local closestEnemy = FindClosestEnemy()
-        if closestEnemy then
-            SelectTarget(closestEnemy)
-            CamlockState = true
-            ShowNotification("Camlock ON - Target Locked")
-        else
-            ShowNotification("No valid target found")
-        end
-    else
-        CamlockState = false
-        CamlockTool:Deactivate()
-        if currentHighlight then
-            currentHighlight:Destroy()
-            currentHighlight = nil
-        end
-        if SelectedTarget then
-            DeselectTarget(SelectedTarget) -- Reset the target hitbox size
-        end
-        ShowNotification("Camlock OFF")
-    end
-end)
+
+end
+
+RunService.RenderStepped:Connect(AutoAirshot)
