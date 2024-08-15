@@ -354,7 +354,7 @@ local UICornerButton = Instance.new("UICorner")
 UICornerButton.CornerRadius = UDim.new(0, 10)
 UICornerButton.Parent = saxxButton
 
-local saxxEnabled = true  -- Set to true to show "Saxx.lol" when the script is executed
+local saxxEnabled = false  -- Initially set to false
 
 local function UpdateButtonText()
     if saxxEnabled then
