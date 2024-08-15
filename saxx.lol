@@ -340,6 +340,7 @@ local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
+local RunService = game:GetService("RunService")
 
 local player = Players.LocalPlayer
 
@@ -390,12 +391,17 @@ local function UpdateButtonText()
     end
 end
 
+local function SimulateKeyPress()
+    local vim = game:GetService("VirtualInputManager")
+    vim:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
+    vim:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
+end
+
 local function ToggleCamlock()
     camlockEnabled = not camlockEnabled
     UpdateButtonText()
     if camlockEnabled then
-        local vim = game:GetService("VirtualInputManager")
-        vim:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
+        SimulateKeyPress()
     end
 end
 
