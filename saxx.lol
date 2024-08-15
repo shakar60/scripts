@@ -240,7 +240,75 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
     end
 end)
 
--- camlock source
+-- esp source code
+
+-- Services
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+-- Variables
+local localPlayer = Players.LocalPlayer
+local targetPlayer = nil
+local highlighting = false
+local highlightColor = Color3.fromRGB(255, 0, 0) -- Red color
+
+-- Function to highlight the target player
+local function highlightPlayer(player)
+    if player and player.Character then
+        for _, part in pairs(player.Character:GetChildren()) do
+            if part:IsA("BasePart") then
+                local highlight = Instance.new("BoxHandleAdornment")
+                highlight.Name = "ESPHighlight"
+                highlight.Size = part.Size
+                highlight.Color3 = highlightColor
+                highlight.Transparency = 0.5
+                highlight.AlwaysOnTop = true
+                highlight.Adornee = part
+                highlight.ZIndex = 0
+                highlight.Parent = part
+            end
+        end
+    end
+end
+
+-- Function to remove the highlight
+local function removeHighlight(player)
+    if player and player.Character then
+        for _, part in pairs(player.Character:GetChildren()) do
+            if part:IsA("BasePart") and part:FindFirstChild("ESPHighlight") then
+                part.ESPHighlight:Destroy()
+            end
+        end
+    end
+end
+
+-- Function to handle key press
+local function onKeyPress(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.Q then
+        if highlighting then
+            removeHighlight(targetPlayer)
+            targetPlayer = nil
+            highlighting = false
+        else
+            local mouse = localPlayer:GetMouse()
+            local target = mouse.Target
+            if target and target:IsDescendantOf(workspace) then
+                local targetPlayer = Players:GetPlayerFromCharacter(target.Parent)
+                if targetPlayer and targetPlayer ~= localPlayer then
+                    highlightPlayer(targetPlayer)
+                    highlighting = true
+                end
+            end
+        end
+    end
+end
+
+-- Connect the key press event
+UserInputService.InputBegan:Connect(onKeyPress)
+
+-- camlock source code
 
 local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
