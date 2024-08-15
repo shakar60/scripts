@@ -336,7 +336,7 @@ end
 -- Connect the key press event
 UserInputService.InputBegan:Connect(onKeyPress)
 
--- camlock source code
+-- Camlock source code
 
 local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
@@ -404,7 +404,8 @@ end)
 UserInputService.InputBegan:Connect(function(input, isProcessed)
     if isProcessed then return end
     if input.KeyCode == Enum.KeyCode.Q then
-        saxxButton:Click()
+        saxxEnabled = not saxxEnabled -- Correct the toggle state when Q is pressed
+        UpdateButtonText()
     end
 end)
 
