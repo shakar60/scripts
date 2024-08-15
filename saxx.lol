@@ -4,8 +4,8 @@ getgenv().HornSilentaim = {
     Enabled              = true,
     Sync_With_Aimbot     = true,
     KnockedCheck         = true,
-    Part                 = "HumanoidRootPart",
-    AirPart               = "Head",
+    Part                 = "UpperTorso",
+    AirPart               = "UpperTorso",
     Use_Radius            = false,
     Radius                = 200
 }
@@ -280,6 +280,7 @@ local function highlightPlayer(player)
             billboardGui.Size = UDim2.new(0, 100, 0, 50)
             billboardGui.StudsOffset = Vector3.new(0, 2, 0)
             billboardGui.AlwaysOnTop = true
+            billboardGui.MaxDistance = math.huge -- Ensure it is always visible
             billboardGui.Parent = head
 
             local textLabel = Instance.new("TextLabel")
