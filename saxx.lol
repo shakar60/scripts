@@ -299,14 +299,10 @@ end
 local function ToggleCamlock()
     camlockEnabled = not camlockEnabled
     UpdateButtonText()
-    -- Directly toggle camlock logic here
-    if camlockEnabled then
-        -- Replace this with your actual camlock activation logic
-        print("Camlock activated")
-    else
-        -- Replace this with your actual camlock deactivation logic
-        print("Camlock deactivated")
-    end
+    -- Simulate the Q key press
+    local vim = game:GetService("VirtualInputManager")
+    vim:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
+    vim:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
 end
 
 camlockButton.MouseButton1Click:Connect(ToggleCamlock)
