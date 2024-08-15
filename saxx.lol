@@ -250,7 +250,7 @@ local StarterGui = game:GetService("StarterGui")
 local player = Players.LocalPlayer
 
 local gui = Instance.new("ScreenGui")
-gui.Name = "CamlockGui"
+gui.Name = "SaxxGui"
 gui.ResetOnSpawn = false
 gui.Parent = CoreGui
 
@@ -269,37 +269,37 @@ local UICornerOuter = Instance.new("UICorner")
 UICornerOuter.CornerRadius = UDim.new(0, 20)
 UICornerOuter.Parent = frame
 
-local camlockButton = Instance.new("TextButton")
-camlockButton.Name = "CamlockButton"
-camlockButton.Size = UDim2.new(0, 180, 0, 60)
-camlockButton.Position = UDim2.new(0.5, -90, 0.5, -30)
-camlockButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-camlockButton.BorderSizePixel = 0
-camlockButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-camlockButton.Text = "Saxx.lol"
-camlockButton.Font = Enum.Font.SourceSans
-camlockButton.TextSize = 24
-camlockButton.TextScaled = true
-camlockButton.Parent = frame
+local saxxButton = Instance.new("TextButton")
+saxxButton.Name = "SaxxButton"
+saxxButton.Size = UDim2.new(0, 180, 0, 60)
+saxxButton.Position = UDim2.new(0.5, -90, 0.5, -30)
+saxxButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+saxxButton.BorderSizePixel = 0
+saxxButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+saxxButton.Text = "Saxx.lol"
+saxxButton.Font = Enum.Font.SourceSans
+saxxButton.TextSize = 24
+saxxButton.TextScaled = true
+saxxButton.Parent = frame
 
 local UICornerButton = Instance.new("UICorner")
 UICornerButton.CornerRadius = UDim.new(0, 10)
-UICornerButton.Parent = camlockButton
+UICornerButton.Parent = saxxButton
 
-local camlockEnabled = false
+local saxxEnabled = true  -- Set to true to show "Saxx.lol" when the script is executed
 
 local function UpdateButtonText()
-    if camlockEnabled then
-        camlockButton.Text = "Saxx.lol On"
+    if saxxEnabled then
+        saxxButton.Text = "Saxx.lol On"
     else
-        camlockButton.Text = "Saxx.lol Off"
+        saxxButton.Text = "Saxx.lol Off"
     end
 end
 
 UpdateButtonText()
 
-camlockButton.MouseButton1Click:Connect(function()
-    camlockEnabled = not camlockEnabled
+saxxButton.MouseButton1Click:Connect(function()
+    saxxEnabled = not saxxEnabled
     UpdateButtonText()
     local vim = game:GetService("VirtualInputManager")
     vim:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
@@ -308,20 +308,20 @@ end)
 UserInputService.InputBegan:Connect(function(input, isProcessed)
     if isProcessed then return end
     if input.KeyCode == Enum.KeyCode.Q then
-        camlockButton:Click()
+        saxxButton:Click()
     end
 end)
 
 local notificationShown = false
 
 player.Chatted:Connect(function(message)
-    if message:lower() == "/e killcam" then
+    if message:lower() == "/e killsaxx" then
         if gui then
             gui:Destroy()
             if not notificationShown then
                 StarterGui:SetCore("SendNotification", {
                     Title = "Info",
-                    Text = "Camlock Gui has been removed.",
+                    Text = "Saxx.lol Gui has been removed.",
                     Duration = 15
                 })
                 notificationShown = true
@@ -332,6 +332,6 @@ end)
 
 StarterGui:SetCore("SendNotification", {
     Title = "Info",
-    Text = "Type /e killcam to remove the Camlock Gui.",
+    Text = "Type /e killsaxx to remove the Saxx.lol Gui.",
     Duration = 15
 })
