@@ -271,7 +271,7 @@ local function highlightPlayer(player)
             end
         end
         
-        -- Create a BillboardGui for the player's name
+        -- Create a BillboardGui for the player's display name
         local head = player.Character:FindFirstChild("Head")
         if head then
             local billboardGui = Instance.new("BillboardGui")
@@ -287,7 +287,7 @@ local function highlightPlayer(player)
             textLabel.BackgroundTransparency = 1
             textLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White color
             textLabel.TextStrokeTransparency = 0 -- Add stroke to the text for better visibility
-            textLabel.Text = player.Name
+            textLabel.Text = player.DisplayName -- Use DisplayName instead of Name
             textLabel.Font = Enum.Font.SourceSansBold
             textLabel.TextScaled = true
             textLabel.Parent = billboardGui
