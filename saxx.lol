@@ -253,12 +253,11 @@ local targetPlayer = nil
 local highlighting = false
 local highlightColor = Color3.fromRGB(255, 0, 0) -- Red color
 
--- Function to highlight the target player and add name ESP
+-- Function to highlight the target player
 local function highlightPlayer(player)
     if player and player.Character then
         for _, part in pairs(player.Character:GetChildren()) do
             if part:IsA("BasePart") then
-                -- ESP highlight
                 local highlight = Instance.new("BoxHandleAdornment")
                 highlight.Name = "ESPHighlight"
                 highlight.Size = part.Size
@@ -270,42 +269,16 @@ local function highlightPlayer(player)
                 highlight.Parent = part
             end
         end
-
-        -- Name ESP
-        local head = player.Character:FindFirstChild("Head")
-        if head and not head:FindFirstChild("NameEsp") then
-            local billboardGui = Instance.new("BillboardGui")
-            billboardGui.Name = "NameEsp"
-            billboardGui.Adornee = head
-            billboardGui.Size = UDim2.new(0, 100, 0, 50)
-            billboardGui.StudsOffset = Vector3.new(0, 2, 0)
-            billboardGui.AlwaysOnTop = true
-            billboardGui.Parent = head
-
-            local textLabel = Instance.new("TextLabel")
-            textLabel.Size = UDim2.new(1, 0, 1, 0)
-            textLabel.BackgroundTransparency = 1
-            textLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White color
-            textLabel.Text = player.Name -- Display the player's name
-            textLabel.Font = Enum.Font.SourceSansBold
-            textLabel.TextScaled = true
-            textLabel.Parent = billboardGui
-        end
     end
 end
 
--- Function to remove the highlight and name ESP
+-- Function to remove the highlight
 local function removeHighlight(player)
     if player and player.Character then
         for _, part in pairs(player.Character:GetChildren()) do
             if part:IsA("BasePart") and part:FindFirstChild("ESPHighlight") then
                 part.ESPHighlight:Destroy()
             end
-        end
-        
-        local head = player.Character:FindFirstChild("Head")
-        if head and head:FindFirstChild("NameEsp") then
-            head.NameEsp:Destroy()
         end
     end
 end
