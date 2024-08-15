@@ -6,7 +6,7 @@ getgenv().HornSilentaim = {
     KnockedCheck         = true,
     Part                 = "UpperTorso",
     AirPart               = "UpperTorso",
-    Use_Radius            = false,
+    Use_Radius            = true,
     Radius                = 200
 }
 
