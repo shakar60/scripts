@@ -258,6 +258,7 @@ local function highlightPlayer(player)
     if player and player.Character then
         for _, part in pairs(player.Character:GetChildren()) do
             if part:IsA("BasePart") then
+                -- ESP highlight
                 local highlight = Instance.new("BoxHandleAdornment")
                 highlight.Name = "ESPHighlight"
                 highlight.Size = part.Size
@@ -269,16 +270,43 @@ local function highlightPlayer(player)
                 highlight.Parent = part
             end
         end
+        
+        -- Create a BillboardGui for the player's name
+        local head = player.Character:FindFirstChild("Head")
+        if head then
+            local billboardGui = Instance.new("BillboardGui")
+            billboardGui.Name = "NameDisplay"
+            billboardGui.Adornee = head
+            billboardGui.Size = UDim2.new(0, 100, 0, 50)
+            billboardGui.StudsOffset = Vector3.new(0, 2, 0)
+            billboardGui.AlwaysOnTop = true
+            billboardGui.Parent = head
+
+            local textLabel = Instance.new("TextLabel")
+            textLabel.Size = UDim2.new(1, 0, 1, 0)
+            textLabel.BackgroundTransparency = 1
+            textLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White color
+            textLabel.TextStrokeTransparency = 0 -- Add stroke to the text for better visibility
+            textLabel.Text = player.Name
+            textLabel.Font = Enum.Font.SourceSansBold
+            textLabel.TextScaled = true
+            textLabel.Parent = billboardGui
+        end
     end
 end
 
--- Function to remove the highlight
+-- Function to remove the highlight and name display
 local function removeHighlight(player)
     if player and player.Character then
         for _, part in pairs(player.Character:GetChildren()) do
             if part:IsA("BasePart") and part:FindFirstChild("ESPHighlight") then
                 part.ESPHighlight:Destroy()
             end
+        end
+        
+        local head = player.Character:FindFirstChild("Head")
+        if head and head:FindFirstChild("NameDisplay") then
+            head.NameDisplay:Destroy()
         end
     end
 end
