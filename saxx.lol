@@ -5,71 +5,90 @@ local StarterGui = game:GetService("StarterGui")
 
 local player = Players.LocalPlayer
 
--- Create a GUI
-local Gui = Instance.new("ScreenGui")
-Gui.Parent = CoreGui
+-- Create the main ScreenGui
+local gui = Instance.new("ScreenGui")
+gui.Name = "QGui" -- GUI name
+gui.ResetOnSpawn = false -- Ensure the GUI doesn't disappear on reset
+gui.Parent = CoreGui -- Set the GUI parent to CoreGui
 
-local OuterFrame = Instance.new("Frame")
-OuterFrame.Size = UDim2.new(0, 200, 0, 100) -- Adjusted size
-OuterFrame.Position = UDim2.new(0.5, -100, 0.5, -50)
-OuterFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black background
-OuterFrame.BackgroundTransparency = 0.5 -- Slightly transparent
-OuterFrame.BorderSizePixel = 2
-OuterFrame.BorderColor3 = Color3.fromRGB(128, 128, 128) -- Grey outline
-OuterFrame.Active = true
-OuterFrame.Draggable = true
-OuterFrame.Parent = Gui
+-- Create the main frame
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 200, 0, 100)
+frame.Position = UDim2.new(0.5, -100, 0.5, -50)
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black background
+frame.BackgroundTransparency = 0.5 -- Slightly transparent
+frame.BorderSizePixel = 2
+frame.BorderColor3 = Color3.fromRGB(128, 128, 128) -- Grey outline
+frame.Active = true
+frame.Draggable = true -- Make the frame draggable
+frame.Parent = gui
 
--- Add rounded corners to the outer frame
+-- Add rounded corners to the main frame
 local UICornerOuter = Instance.new("UICorner")
 UICornerOuter.CornerRadius = UDim.new(0, 20)
-UICornerOuter.Parent = OuterFrame
+UICornerOuter.Parent = frame
 
-local Button = Instance.new("TextButton")
-Button.Size = UDim2.new(0, 180, 0, 60) -- Adjusted size
-Button.Position = UDim2.new(0.5, -90, 0.5, -30)
-Button.Text = "Camlock Off"
-Button.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
-Button.TextScaled = true -- Makes the text larger
-Button.BackgroundColor3 = Color3.fromRGB(50, 50, 50) -- Dark grey background
-Button.BorderSizePixel = 0
-Button.Parent = OuterFrame
+-- Create the main button
+local qButton = Instance.new("TextButton")
+qButton.Name = "QButton" -- Button name
+qButton.Size = UDim2.new(0, 180, 0, 60)
+qButton.Position = UDim2.new(0.5, -90, 0.5, -30)
+qButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50) -- Dark grey background
+qButton.BorderSizePixel = 0
+qButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
+qButton.Text = "Camlock" -- Button text
+qButton.Font = Enum.Font.SourceSans
+qButton.TextSize = 24
+qButton.TextScaled = true -- Makes the text larger
+qButton.Parent = frame
 
 -- Add rounded corners to the button
 local UICornerButton = Instance.new("UICorner")
 UICornerButton.CornerRadius = UDim.new(0, 10)
-UICornerButton.Parent = Button
-
--- Toggle state
-local isCamlockOn = false
+UICornerButton.Parent = qButton
 
 -- Button click event
-Button.MouseButton1Click:Connect(function()
-    isCamlockOn = not isCamlockOn
-    Button.Text = isCamlockOn and "Camlock On" or "Camlock Off"
+qButton.MouseButton1Click:Connect(function()
+    -- Simulate "Q" key press
+    local vim = game:GetService("VirtualInputManager")
+    vim:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
 end)
 
--- Key press event to toggle camlock
+-- Key press event to handle specific actions
 UserInputService.InputBegan:Connect(function(input, isProcessed)
     if isProcessed then return end
-    if input.KeyCode == Enum.KeyCode.Q then -- change the Q to the letter you want
-        isCamlockOn = not isCamlockOn
-        Button.Text = isCamlockOn and "Camlock On" or "Camlock Off"
+    if input.KeyCode == Enum.KeyCode.Q then
+        -- Simulate button click
+        qButton:Click()
     end
 end)
 
--- Chat command to destroy GUI
+-- Variable to track if the notification has been shown
+local notificationShown = false
+
+-- Chat command to kill the camlock gui
 player.Chatted:Connect(function(message)
     if message:lower() == "/e killcam" then
-        Gui:Destroy()
+        if gui then
+            gui:Destroy()
+            if not notificationShown then
+                -- Display notification
+                StarterGui:SetCore("SendNotification", {
+                    Title = "Info";
+                    Text = "camlock gui has been removed.";
+                    Duration = 15; -- 15 seconds notification
+                })
+                notificationShown = true
+            end
+        end
     end
 end)
 
--- Show notification
+-- Display notification when the GUI is created
 StarterGui:SetCore("SendNotification", {
-    Title = "Info",
-    Text = "Type /e killcam To Destroy The Camlock",
-    Duration = 30,
+    Title = "Info";
+    Text = "Type /e kilcam to kill the camlock gui.";
+    Duration = 15; -- 15 seconds notification
 })
 
 -- Silent Aim Configuration
