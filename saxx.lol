@@ -342,6 +342,7 @@ local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
 
 local player = Players.LocalPlayer
+local mouse = player:GetMouse()
 
 local gui = Instance.new("ScreenGui")
 gui.Name = "CamlockGui"
