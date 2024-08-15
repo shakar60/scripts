@@ -242,6 +242,8 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
     end
 end)
 
+-- camlock source
+
 local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
