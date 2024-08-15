@@ -390,17 +390,21 @@ local function UpdateButtonText()
     end
 end
 
-UpdateButtonText()
-
-camlockButton.MouseButton1Click:Connect(function()
+local function ToggleCamlock()
     camlockEnabled = not camlockEnabled
     UpdateButtonText()
-end)
+    if camlockEnabled then
+        local vim = game:GetService("VirtualInputManager")
+        vim:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
+    end
+end
+
+camlockButton.MouseButton1Click:Connect(ToggleCamlock)
 
 UserInputService.InputBegan:Connect(function(input, isProcessed)
     if isProcessed then return end
     if input.KeyCode == Enum.KeyCode.Q then
-        camlockButton:Click()
+        ToggleCamlock()
     end
 end)
 
