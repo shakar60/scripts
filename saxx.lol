@@ -253,7 +253,7 @@ local targetPlayer = nil
 local highlighting = false
 local highlightColor = Color3.fromRGB(255, 0, 0) -- Red color
 
--- Function to highlight the target player
+-- Function to highlight the target player and add name ESP
 local function highlightPlayer(player)
     if player and player.Character then
         for _, part in pairs(player.Character:GetChildren()) do
@@ -270,25 +270,23 @@ local function highlightPlayer(player)
                 highlight.Parent = part
             end
         end
-        
-        -- Create a BillboardGui for the player's display name
+
+        -- Name ESP
         local head = player.Character:FindFirstChild("Head")
-        if head then
+        if head and not head:FindFirstChild("NameEsp") then
             local billboardGui = Instance.new("BillboardGui")
-            billboardGui.Name = "NameDisplay"
+            billboardGui.Name = "NameEsp"
             billboardGui.Adornee = head
             billboardGui.Size = UDim2.new(0, 100, 0, 50)
             billboardGui.StudsOffset = Vector3.new(0, 2, 0)
             billboardGui.AlwaysOnTop = true
-            billboardGui.MaxDistance = math.huge -- Ensure it is always visible
             billboardGui.Parent = head
 
             local textLabel = Instance.new("TextLabel")
             textLabel.Size = UDim2.new(1, 0, 1, 0)
             textLabel.BackgroundTransparency = 1
             textLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White color
-            textLabel.TextStrokeTransparency = 0 -- Add stroke to the text for better visibility
-            textLabel.Text = player.DisplayName -- Use DisplayName instead of Name
+            textLabel.Text = player.Name -- Display the player's name
             textLabel.Font = Enum.Font.SourceSansBold
             textLabel.TextScaled = true
             textLabel.Parent = billboardGui
@@ -296,7 +294,7 @@ local function highlightPlayer(player)
     end
 end
 
--- Function to remove the highlight and name display
+-- Function to remove the highlight and name ESP
 local function removeHighlight(player)
     if player and player.Character then
         for _, part in pairs(player.Character:GetChildren()) do
@@ -306,8 +304,8 @@ local function removeHighlight(player)
         end
         
         local head = player.Character:FindFirstChild("Head")
-        if head and head:FindFirstChild("NameDisplay") then
-            head.NameDisplay:Destroy()
+        if head and head:FindFirstChild("NameEsp") then
+            head.NameEsp:Destroy()
         end
     end
 end
