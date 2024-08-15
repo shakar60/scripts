@@ -276,7 +276,7 @@ camlockButton.Position = UDim2.new(0.5, -90, 0.5, -30)
 camlockButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 camlockButton.BorderSizePixel = 0
 camlockButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-camlockButton.Text = "Camlock Off"
+camlockButton.Text = "Saxx.lol"
 camlockButton.Font = Enum.Font.SourceSans
 camlockButton.TextSize = 24
 camlockButton.TextScaled = true
@@ -290,105 +290,9 @@ local camlockEnabled = false
 
 local function UpdateButtonText()
     if camlockEnabled then
-        camlockButton.Text = "Camlock On"
+        camlockButton.Text = "Saxx.lol On"
     else
-        camlockButton.Text = "Camlock Off"
-    end
-end
-
-local function ToggleCamlock()
-    camlockEnabled = not camlockEnabled
-    UpdateButtonText()
-    -- Simulate the Q key press
-    local vim = game:GetService("VirtualInputManager")
-    vim:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
-    vim:SendKeyEvent(false, Enum.KeyCode.Q, false, game)
-end
-
-camlockButton.MouseButton1Click:Connect(ToggleCamlock)
-
-UserInputService.InputBegan:Connect(function(input, isProcessed)
-    if isProcessed then return end
-    if input.KeyCode == Enum.KeyCode.Q then
-        ToggleCamlock()
-    end
-end)
-
-local notificationShown = false
-
-player.Chatted:Connect(function(message)
-    if message:lower() == "/e killcam" then
-        if gui then
-            gui:Destroy()
-            if not notificationShown then
-                StarterGui:SetCore("SendNotification", {
-                    Title = "Info",
-                    Text = "Camlock Gui has been removed.",
-                    Duration = 15
-                })
-                notificationShown = true
-            end
-        end
-    end
-end)
-
-StarterGui:SetCore("SendNotification", {
-    Title = "Info",
-    Text = "Type /e killcam to remove the Camlock Gui.",
-    Duration = 15
-})
-
---[[ local Players = game:GetService("Players")
-local CoreGui = game:GetService("CoreGui")
-local UserInputService = game:GetService("UserInputService")
-local StarterGui = game:GetService("StarterGui")
-
-local player = Players.LocalPlayer
-
-local gui = Instance.new("ScreenGui")
-gui.Name = "CamlockGui"
-gui.ResetOnSpawn = false
-gui.Parent = CoreGui
-
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 200, 0, 100)
-frame.Position = UDim2.new(0.5, -100, 0.05, 0)
-frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-frame.BackgroundTransparency = 0.5
-frame.BorderSizePixel = 2
-frame.BorderColor3 = Color3.fromRGB(128, 128, 128)
-frame.Active = true
-frame.Draggable = true
-frame.Parent = gui
-
-local UICornerOuter = Instance.new("UICorner")
-UICornerOuter.CornerRadius = UDim.new(0, 20)
-UICornerOuter.Parent = frame
-
-local camlockButton = Instance.new("TextButton")
-camlockButton.Name = "CamlockButton"
-camlockButton.Size = UDim2.new(0, 180, 0, 60)
-camlockButton.Position = UDim2.new(0.5, -90, 0.5, -30)
-camlockButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-camlockButton.BorderSizePixel = 0
-camlockButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-camlockButton.Text = "Camlock Off"
-camlockButton.Font = Enum.Font.SourceSans
-camlockButton.TextSize = 24
-camlockButton.TextScaled = true
-camlockButton.Parent = frame
-
-local UICornerButton = Instance.new("UICorner")
-UICornerButton.CornerRadius = UDim.new(0, 10)
-UICornerButton.Parent = camlockButton
-
-local camlockEnabled = false
-
-local function UpdateButtonText()
-    if camlockEnabled then
-        camlockButton.Text = "Camlock On"
-    else
-        camlockButton.Text = "Camlock Off"
+        camlockButton.Text = "Saxx.lol Off"
     end
 end
 
@@ -430,4 +334,4 @@ StarterGui:SetCore("SendNotification", {
     Title = "Info",
     Text = "Type /e killcam to remove the Camlock Gui.",
     Duration = 15
-}) ]]
+})
