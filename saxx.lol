@@ -4,12 +4,11 @@ getgenv().HornSilentaim = {
     Enabled              = true,
     Sync_With_Aimbot     = true,
     KnockedCheck         = true,
-    Part                 = "UpperTorso",
-    AirPart               = "UpperTorso",
-    Use_Radius            = true,
+    Part                 = "HumanoidRootPart",
+    AirPart               = "HumanoidRootPart",
+    Use_Radius            = false,
     Radius                = 200
 }
-
 -- Services
 
 local Players = game:GetService("Players")
