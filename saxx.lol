@@ -702,8 +702,8 @@ gui.ResetOnSpawn = false
 gui.Parent = CoreGui
 
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 200, 0, 100)
-frame.Position = UDim2.new(0.5, -100, 0.5, -50)
+frame.Size = UDim2.new(0, 200, 0, 140)
+frame.Position = UDim2.new(0.5, -100, 0.5, -70)
 frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 frame.BackgroundTransparency = 0.5
 frame.BorderSizePixel = 2
@@ -719,7 +719,7 @@ UICornerOuter.Parent = frame
 local saxxButton = Instance.new("TextButton")
 saxxButton.Name = "saxxButton"
 saxxButton.Size = UDim2.new(0, 180, 0, 60)
-saxxButton.Position = UDim2.new(0.5, -90, 0.5, -30)
+saxxButton.Position = UDim2.new(0.5, -90, 0.5, -60)
 saxxButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 saxxButton.BorderSizePixel = 0
 saxxButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -733,13 +733,35 @@ local UICornerButton = Instance.new("UICorner")
 UICornerButton.CornerRadius = UDim.new(0, 10)
 UICornerButton.Parent = saxxButton
 
+local espButton = Instance.new("TextButton")
+espButton.Name = "espButton"
+espButton.Size = UDim2.new(0, 160, 0, 40)
+espButton.Position = UDim2.new(0.5, -80, 0.5, 10)
+espButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+espButton.BorderSizePixel = 0
+espButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+espButton.Text = "esp (rejoin to turn it off)"
+espButton.Font = Enum.Font.SourceSans
+espButton.TextSize = 16
+espButton.TextScaled = true
+espButton.Parent = frame
+
+local UICornerEsp = Instance.new("UICorner")
+UICornerEsp.CornerRadius = UDim.new(0, 5)
+UICornerEsp.Parent = espButton
+
 local isGuiOn = false
+local isRemoved = false
 
 saxxButton.MouseButton1Click:Connect(function()
     isGuiOn = not isGuiOn
     
     local vim = game:GetService("VirtualInputManager")
     vim:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
+end)
+
+espButton.MouseButton1Click:Connect(function()
+    print("Esp Script Executed (Rejoin To Turn It Off Because You Cant)")
 end)
 
 UserInputService.InputBegan:Connect(function(input, isProcessed)
@@ -751,9 +773,10 @@ end)
 
 player.Chatted:Connect(function(message)
     if message:lower() == "/e killsaxx" then
-        if gui then
+        if gui and not isRemoved then
             gui:Destroy()
             isGuiOn = false
+            isRemoved = true
             
             StarterGui:SetCore("SendNotification", {
                 Title = "Info";
