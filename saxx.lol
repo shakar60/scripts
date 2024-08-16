@@ -759,7 +759,7 @@ saxxButton.MouseButton1Click:Connect(function()
     local vim = game:GetService("VirtualInputManager")
     vim:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
 end)
-
+loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/esp",true))()
 espButton.MouseButton1Click:Connect(function()
     print("Esp Script Executed (Rejoin To Turn It Off Because You Cant)")
 end)
