@@ -308,8 +308,6 @@ end
 -- Connect the key press event
 UserInputService.InputBegan:Connect(onKeyPress)
 
--- Camlock source code
-
 local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
@@ -344,7 +342,7 @@ saxxButton.Position = UDim2.new(0.5, -90, 0.5, -30)
 saxxButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 saxxButton.BorderSizePixel = 0
 saxxButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-saxxButton.Text = "Saxx.lol"
+saxxButton.Text = "saxx.lol off"
 saxxButton.Font = Enum.Font.SourceSans
 saxxButton.TextSize = 24
 saxxButton.TextScaled = true
@@ -358,13 +356,13 @@ local saxxEnabled = false  -- Initially set to false
 
 local function UpdateButtonText()
     if saxxEnabled then
-        saxxButton.Text = "Saxx.lol On"
+        saxxButton.Text = "saxx.lol on"
+        print("saxx.lol is on")
     else
-        saxxButton.Text = "Saxx.lol Off"
+        saxxButton.Text = "saxx.lol off"
+        print("saxx.lol is off")
     end
 end
-
-UpdateButtonText()
 
 saxxButton.MouseButton1Click:Connect(function()
     saxxEnabled = not saxxEnabled
@@ -376,7 +374,7 @@ end)
 UserInputService.InputBegan:Connect(function(input, isProcessed)
     if isProcessed then return end
     if input.KeyCode == Enum.KeyCode.Q then
-        saxxEnabled = not saxxEnabled -- Correct the toggle state when Q is pressed
+        saxxEnabled = not saxxEnabled
         UpdateButtonText()
     end
 end)
@@ -404,3 +402,6 @@ StarterGui:SetCore("SendNotification", {
     Text = "Type /e killsaxx to remove the Saxx.lol Gui.",
     Duration = 15
 })
+
+-- Initial text update
+UpdateButtonText()
