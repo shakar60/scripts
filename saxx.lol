@@ -342,7 +342,7 @@ saxxButton.Position = UDim2.new(0.5, -90, 0.5, -30)
 saxxButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 saxxButton.BorderSizePixel = 0
 saxxButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-saxxButton.Text = "saxx.lol off"
+saxxButton.Text = "saxx.lol"
 saxxButton.Font = Enum.Font.SourceSans
 saxxButton.TextSize = 24
 saxxButton.TextScaled = true
@@ -356,10 +356,10 @@ local saxxEnabled = false  -- Initially set to false
 
 local function UpdateButtonText()
     if saxxEnabled then
-        saxxButton.Text = "saxx.lol on"
+        saxxButton.Text = "saxx.lol"
         print("saxx.lol is on")
     else
-        saxxButton.Text = "saxx.lol off"
+        saxxButton.Text = "saxx.lol"
         print("saxx.lol is off")
     end
 end
