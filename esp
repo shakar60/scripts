@@ -1,0 +1,111 @@
+-- dh games are recommended also use q to activate or deactivate the esp
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local CoreGui = game:GetService("CoreGui")
+
+local localPlayer = Players.LocalPlayer
+
+-- Create and configure ESP elements
+local espGui = Instance.new("ScreenGui")
+espGui.Name = "ESPGui"
+espGui.ResetOnSpawn = false
+espGui.Parent = CoreGui
+
+local boxEnabled = false
+
+local function createESP(player)
+    local espFrame = Instance.new("Frame")
+    espFrame.Size = UDim2.new(0, 100, 0, 100) -- Adjust as needed
+    espFrame.BackgroundTransparency = 1
+    espFrame.Parent = espGui
+    
+    local box = Instance.new("Frame")
+    box.Size = UDim2.new(0, 100, 0, 100) -- Adjust as needed
+    box.BorderSizePixel = 1
+    box.BorderColor3 = Color3.new(1, 0, 0) -- Red border for box
+    box.BackgroundTransparency = 1
+    box.Parent = espFrame
+    
+    local nameLabel = Instance.new("TextLabel")
+    nameLabel.Text = player.Name
+    nameLabel.Size = UDim2.new(0, 100, 0, 20)
+    nameLabel.Position = UDim2.new(0, 0, 0, -20) -- Position above the box
+    nameLabel.BackgroundTransparency = 1
+    nameLabel.TextColor3 = Color3.new(1, 1, 1)
+    nameLabel.TextStrokeTransparency = 0.5
+    nameLabel.Parent = espFrame
+    
+    local healthLabel = Instance.new("TextLabel")
+    healthLabel.Text = "Health: " .. tostring(player.Character and player.Character:FindFirstChildOfClass("Humanoid") and player.Character:FindFirstChildOfClass("Humanoid").Health or 0)
+    healthLabel.Size = UDim2.new(0, 100, 0, 20)
+    healthLabel.Position = UDim2.new(0, 0, 0, 100) -- Position below the box
+    healthLabel.BackgroundTransparency = 1
+    healthLabel.TextColor3 = Color3.new(1, 1, 1)
+    healthLabel.TextStrokeTransparency = 0.5
+    healthLabel.Parent = espFrame
+    
+    local toolLabel = Instance.new("TextLabel")
+    toolLabel.Text = "Tool: None"
+    toolLabel.Size = UDim2.new(0, 100, 0, 20)
+    toolLabel.Position = UDim2.new(0, 0, 0, 120) -- Position below the health
+    toolLabel.BackgroundTransparency = 1
+    toolLabel.TextColor3 = Color3.new(1, 1, 1)
+    toolLabel.TextStrokeTransparency = 0.5
+    toolLabel.Parent = espFrame
+    
+    local function updateTool()
+        if player.Character and player.Character:FindFirstChildOfClass("Humanoid") and player.Character:FindFirstChildOfClass("Humanoid").Tool then
+            toolLabel.Text = "Tool: " .. player.Character:FindFirstChildOfClass("Humanoid").Tool.Name
+        else
+            toolLabel.Text = "Tool: None"
+        end
+    end
+    
+    RunService.RenderStepped:Connect(function()
+        if boxEnabled then
+            -- Update box position and size based on player's character
+            if player.Character and player.Character:FindFirstChild("Head") then
+                local head = player.Character:FindFirstChild("Head")
+                local screenPosition, onScreen = workspace.CurrentCamera:WorldToScreenPoint(head.Position)
+                if onScreen then
+                    espFrame.Position = UDim2.new(0, screenPosition.X - (espFrame.Size.X.Offset / 2), 0, screenPosition.Y - (espFrame.Size.Y.Offset / 2))
+                    updateTool()
+                    healthLabel.Text = "Health: " .. tostring(player.Character:FindFirstChildOfClass("Humanoid") and player.Character:FindFirstChildOfClass("Humanoid").Health or 0)
+                end
+            end
+        end
+    end)
+    
+    return espFrame
+end
+
+local function toggleESP()
+    boxEnabled = not boxEnabled
+    if boxEnabled then
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= localPlayer then
+                createESP(player)
+            end
+        end
+    else
+        for _, gui in pairs(espGui:GetChildren()) do
+            gui:Destroy()
+        end
+    end
+end
+
+UserInputService.InputBegan:Connect(function(input, isProcessed)
+    if isProcessed then return end
+    if input.KeyCode == Enum.KeyCode.Q then
+        toggleESP()
+    end
+end)
+
+-- Create a notification
+StarterGui:SetCore("SendNotification", {
+    Title = "ESP",
+    Text = "Press Q to toggle ESP on/off.",
+    Duration = 10,
+})
