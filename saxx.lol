@@ -1,11 +1,3 @@
--- credits notification
-
-StarterGui:SetCore("SendNotification", {
-    Title = "Credits";
-    Text = "Credits To sh4k4r6o For Making All The Button And Esp Stuff\nCredits To saxxgooder1 For The Lock Only";
-    Duration = 15;
-})
-
 -- Silent Aim Configuration
 
 getgenv().HornSilentaim = {
@@ -429,4 +421,12 @@ StarterGui:SetCore("SendNotification", {
     Title = "Info";
     Text = "Type /e killsaxx to kill the saxx.lol gui.";
     Duration = 15;
+})
+
+-- credits notification
+
+StarterGui:SetCore("SendNotification", {
+    Title = "Credits";
+    Text = "Credits To sh4k4r6o For Making All The Button And Esp Stuff\nCredits To saxxgooder1 For The Lock Only";
+    Duration = 25;
 })
