@@ -240,20 +240,16 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
     end
 end)
 
--- esp source code
+-- player highlighter source code
 
--- Services
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
 
--- Variables
 local localPlayer = Players.LocalPlayer
 local targetPlayer = nil
 local highlighting = false
 local highlightColor = Color3.fromRGB(255, 0, 0) -- Red color
 
--- Function to highlight the target player
 local function highlightPlayer(player)
     if player and player.Character then
         for _, part in pairs(player.Character:GetChildren()) do
@@ -269,10 +265,10 @@ local function highlightPlayer(player)
                 highlight.Parent = part
             end
         end
+        print("Player Highlighter On, Highlighting " .. player.DisplayName)
     end
 end
 
--- Function to remove the highlight
 local function removeHighlight(player)
     if player and player.Character then
         for _, part in pairs(player.Character:GetChildren()) do
@@ -280,10 +276,10 @@ local function removeHighlight(player)
                 part.ESPHighlight:Destroy()
             end
         end
+        print("Player Highlighter Off, Unhighlighting " .. player.DisplayName)
     end
 end
 
--- Function to handle key press
 local function onKeyPress(input, gameProcessed)
     if gameProcessed then return end
     if input.KeyCode == Enum.KeyCode.Q then
@@ -295,7 +291,7 @@ local function onKeyPress(input, gameProcessed)
             local mouse = localPlayer:GetMouse()
             local target = mouse.Target
             if target and target:IsDescendantOf(workspace) then
-                local targetPlayer = Players:GetPlayerFromCharacter(target.Parent)
+                targetPlayer = Players:GetPlayerFromCharacter(target.Parent)
                 if targetPlayer and targetPlayer ~= localPlayer then
                     highlightPlayer(targetPlayer)
                     highlighting = true
@@ -305,7 +301,6 @@ local function onKeyPress(input, gameProcessed)
     end
 end
 
--- Connect the key press event
 UserInputService.InputBegan:Connect(onKeyPress)
 
 -- saxx.lol gui source
