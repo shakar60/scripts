@@ -340,7 +340,7 @@ UICornerOuter.Parent = frame
 local saxxButton = Instance.new("TextButton")
 saxxButton.Name = "saxxButton"
 saxxButton.Size = UDim2.new(0, 180, 0, 60)
-saxxButton.Position = UDim2.new(0.5, -90, 0.5, -60)
+saxxButton.Position = UDim2.new(0.5, -90, 0, 10)
 saxxButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 saxxButton.BorderSizePixel = 0
 saxxButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -383,6 +383,8 @@ end)
 
 espButton.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/esp",true))()
+    espButton:Destroy()  -- Remove the ESP button
+    frame:TweenSize(UDim2.new(0, 200, 0, 90), "Out", "Quad", 0.3, true)  -- Resize the frame to a slightly taller size
     print("Esp Script Executed (Rejoin To Turn It Off Because You Cant)")
 end)
 
