@@ -269,14 +269,15 @@ local function highlightPlayer(player)
     end
 end
 
-local function removeHighlight(player)
-    if player and player.Character then
-        for _, part in pairs(player.Character:GetChildren()) do
+local function removeHighlight()
+    if targetPlayer and targetPlayer.Character then
+        for _, part in pairs(targetPlayer.Character:GetChildren()) do
             if part:IsA("BasePart") and part:FindFirstChild("ESPHighlight") then
                 part.ESPHighlight:Destroy()
             end
         end
-        print("Player Highlighter Off, Unhighlighting " .. player.DisplayName)
+        print("Player Highlighter Off, Unhighlighting " .. targetPlayer.DisplayName)
+        targetPlayer = nil
     end
 end
 
@@ -284,8 +285,7 @@ local function onKeyPress(input, gameProcessed)
     if gameProcessed then return end
     if input.KeyCode == Enum.KeyCode.Q then
         if highlighting then
-            removeHighlight(targetPlayer)
-            targetPlayer = nil
+            removeHighlight()
             highlighting = false
         else
             local mouse = localPlayer:GetMouse()
