@@ -308,8 +308,6 @@ end
 -- Connect the key press event
 UserInputService.InputBegan:Connect(onKeyPress)
 
--- Camlock source code
-
 local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
@@ -344,7 +342,7 @@ saxxButton.Position = UDim2.new(0.5, -90, 0.5, -30)
 saxxButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 saxxButton.BorderSizePixel = 0
 saxxButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-saxxButton.Text = "Saxx.lol"
+saxxButton.Text = "Saxx.lol Off"  -- Initialize with Off state
 saxxButton.Font = Enum.Font.SourceSans
 saxxButton.TextSize = 24
 saxxButton.TextScaled = true
@@ -364,20 +362,23 @@ local function UpdateButtonText()
     end
 end
 
+-- Initial button text update
 UpdateButtonText()
 
 saxxButton.MouseButton1Click:Connect(function()
     saxxEnabled = not saxxEnabled
     UpdateButtonText()
-    local vim = game:GetService("VirtualInputManager")
-    vim:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
+    -- Perform the desired action when toggled (e.g., activating camlock)
+    -- local vim = game:GetService("VirtualInputManager")
+    -- vim:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
 end)
 
 UserInputService.InputBegan:Connect(function(input, isProcessed)
     if isProcessed then return end
     if input.KeyCode == Enum.KeyCode.Q then
-        saxxEnabled = not saxxEnabled -- Correct the toggle state when Q is pressed
+        saxxEnabled = not saxxEnabled
         UpdateButtonText()
+        -- Perform the desired action when Q is pressed
     end
 end)
 
