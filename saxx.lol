@@ -308,6 +308,8 @@ end
 -- Connect the key press event
 UserInputService.InputBegan:Connect(onKeyPress)
 
+-- Camlock source code
+
 local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
@@ -362,23 +364,20 @@ local function UpdateButtonText()
     end
 end
 
--- Initial button text update
 UpdateButtonText()
 
 saxxButton.MouseButton1Click:Connect(function()
     saxxEnabled = not saxxEnabled
     UpdateButtonText()
-    -- Perform the desired action when toggled (e.g., activating camlock)
-    -- local vim = game:GetService("VirtualInputManager")
-    -- vim:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
+    local vim = game:GetService("VirtualInputManager")
+    vim:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
 end)
 
 UserInputService.InputBegan:Connect(function(input, isProcessed)
     if isProcessed then return end
     if input.KeyCode == Enum.KeyCode.Q then
-        saxxEnabled = not saxxEnabled
+        saxxEnabled = not saxxEnabled -- Correct the toggle state when Q is pressed
         UpdateButtonText()
-        -- Perform the desired action when Q is pressed
     end
 end)
 
