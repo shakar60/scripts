@@ -1,4 +1,4 @@
---[[ Silent Aim Configuration
+-- Silent Aim Configuration
 
 getgenv().HornSilentaim = {
     Enabled              = true,
@@ -8,29 +8,6 @@ getgenv().HornSilentaim = {
     AirPart               = "HumanoidRootPart",
     Use_Radius            = false,
     Radius                = 200
-} ]]
-
--- Silent Aim Configuration
-
--- Silent Aim Configuration
-
-getgenv().HornSilentaim = {
-    Enabled              = true,                  -- Enable or disable silent aim
-    Sync_With_Aimbot     = true,                  -- Synchronize with aimbot
-    KnockedCheck         = true,                  -- Check if the target is knocked
-    Part                 = "HumanoidRootPart",    -- Part to aim at
-    AirPart               = "HumanoidRootPart",    -- Part to aim at in the air
-    Use_Radius            = false,                 -- Use radius-based targeting
-    Radius                = 200,                   -- Radius for targeting
-    FOV                   = 90,                    -- Field of view for aiming
-    Max_Distance          = 500,                   -- Maximum distance to target
-    Priority              = "Closest",             -- Targeting priority (Closest/Farthest)
-    Aim_Smoothness        = 0.5,                   -- Smoothness of the aim adjustment
-    Auto_Shoot            = true,                  -- Automatically shoot when targeting
-    Draw_ESP              = true,                  -- Draw ESP (Extra Sensory Perception) on targets
-    ESP_Color             = Color3.fromRGB(255, 0, 0), -- Color of the ESP outline
-    Toggle_Key            = Enum.KeyCode.Q,        -- Key to toggle silent aim
-    Debug_Mode            = false,                 -- Enable debug mode for troubleshooting
 }
 
 -- Services
