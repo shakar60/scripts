@@ -317,101 +317,76 @@ local StarterGui = game:GetService("StarterGui")
 
 local player = Players.LocalPlayer
 
--- Create the main ScreenGui
 local gui = Instance.new("ScreenGui")
-gui.Name = "saxx.lol" -- GUI name
-gui.ResetOnSpawn = false -- Ensure the GUI doesn't disappear on reset
-gui.Parent = CoreGui -- Set the GUI parent to CoreGui
+gui.Name = "saxx.lol"
+gui.ResetOnSpawn = false
+gui.Parent = CoreGui
 
--- Create the main frame
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0, 200, 0, 100)
 frame.Position = UDim2.new(0.5, -100, 0.5, -50)
-frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black background
-frame.BackgroundTransparency = 0.5 -- Slightly transparent
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.BackgroundTransparency = 0.5
 frame.BorderSizePixel = 2
-frame.BorderColor3 = Color3.fromRGB(128, 128, 128) -- Grey outline
+frame.BorderColor3 = Color3.fromRGB(128, 128, 128)
 frame.Active = true
-frame.Draggable = true -- Make the frame draggable
+frame.Draggable = true
 frame.Parent = gui
 
--- Add rounded corners to the main frame
 local UICornerOuter = Instance.new("UICorner")
 UICornerOuter.CornerRadius = UDim.new(0, 20)
 UICornerOuter.Parent = frame
 
--- Create the main button
 local saxxButton = Instance.new("TextButton")
-saxxButton.Name = "saxxButton" -- Button name
+saxxButton.Name = "saxxButton"
 saxxButton.Size = UDim2.new(0, 180, 0, 60)
 saxxButton.Position = UDim2.new(0.5, -90, 0.5, -30)
-saxxButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50) -- Dark grey background
+saxxButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 saxxButton.BorderSizePixel = 0
-saxxButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
-saxxButton.Text = "saxx.lol" -- Button text
+saxxButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+saxxButton.Text = "saxx.lol"
 saxxButton.Font = Enum.Font.SourceSans
 saxxButton.TextSize = 24
-saxxButton.TextScaled = true -- Makes the text larger
+saxxButton.TextScaled = true
 saxxButton.Parent = frame
 
--- Add rounded corners to the button
 local UICornerButton = Instance.new("UICorner")
 UICornerButton.CornerRadius = UDim.new(0, 10)
 UICornerButton.Parent = saxxButton
 
--- Track the state of the GUI
 local isGuiOn = false
 
--- Function to print status
-local function PrintStatus()
-    if isGuiOn then
-        print("camlock on/saxx.lol on")
-    else
-        print("camlock off/saxx.lol off")
-    end
-end
-
--- Button click event
 saxxButton.MouseButton1Click:Connect(function()
     isGuiOn = not isGuiOn
-    PrintStatus()
     
-    -- Simulate "Q" key press
     local vim = game:GetService("VirtualInputManager")
     vim:SendKeyEvent(true, Enum.KeyCode.Q, false, game)
 end)
 
--- Key press event to handle specific actions
 UserInputService.InputBegan:Connect(function(input, isProcessed)
     if isProcessed then return end
     if input.KeyCode == Enum.KeyCode.Q then
-        -- Toggle state
         isGuiOn = not isGuiOn
-        PrintStatus()
     end
 end)
 
--- Chat command to kill the GUI
 player.Chatted:Connect(function(message)
     if message:lower() == "/e killsaxx" then
         if gui then
             gui:Destroy()
             isGuiOn = false
-            PrintStatus()
             
-            -- Display notification
             StarterGui:SetCore("SendNotification", {
                 Title = "Info";
-                Text = "the saxx.lol gui has been removed.";
-                Duration = 15; -- 15 seconds notification
+                Text = "the saxx.lol has been removed.";
+                Duration = 15;
             })
         end
     end
 end)
 
--- Display notification when the GUI is created
 StarterGui:SetCore("SendNotification", {
     Title = "Info";
-    Text = "Type /e killgui to kill the saxx.lol gui.";
-    Duration = 15; -- 15 seconds notification
+    Text = "Type /e killsaxx to kill the saxx.lol gui.";
+    Duration = 15;
 })
