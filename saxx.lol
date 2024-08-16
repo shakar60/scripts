@@ -242,14 +242,18 @@ end)
 
 -- player highlighter source code
 
+-- Services
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
+-- Variables
 local localPlayer = Players.LocalPlayer
 local targetPlayer = nil
 local highlighting = false
 local highlightColor = Color3.fromRGB(255, 0, 0) -- Red color
 
+-- Function to highlight the target player
 local function highlightPlayer(player)
     if player and player.Character then
         for _, part in pairs(player.Character:GetChildren()) do
@@ -265,33 +269,33 @@ local function highlightPlayer(player)
                 highlight.Parent = part
             end
         end
-        print("Player Highlighter On, Highlighting " .. player.DisplayName)
     end
 end
 
-local function removeHighlight()
-    if targetPlayer and targetPlayer.Character then
-        for _, part in pairs(targetPlayer.Character:GetChildren()) do
+-- Function to remove the highlight
+local function removeHighlight(player)
+    if player and player.Character then
+        for _, part in pairs(player.Character:GetChildren()) do
             if part:IsA("BasePart") and part:FindFirstChild("ESPHighlight") then
                 part.ESPHighlight:Destroy()
             end
         end
-        print("Player Highlighter Off, Unhighlighting " .. targetPlayer.DisplayName)
-        targetPlayer = nil
     end
 end
 
+-- Function to handle key press
 local function onKeyPress(input, gameProcessed)
     if gameProcessed then return end
     if input.KeyCode == Enum.KeyCode.Q then
         if highlighting then
-            removeHighlight()
+            removeHighlight(targetPlayer)
+            targetPlayer = nil
             highlighting = false
         else
             local mouse = localPlayer:GetMouse()
             local target = mouse.Target
             if target and target:IsDescendantOf(workspace) then
-                targetPlayer = Players:GetPlayerFromCharacter(target.Parent)
+                local targetPlayer = Players:GetPlayerFromCharacter(target.Parent)
                 if targetPlayer and targetPlayer ~= localPlayer then
                     highlightPlayer(targetPlayer)
                     highlighting = true
@@ -301,7 +305,9 @@ local function onKeyPress(input, gameProcessed)
     end
 end
 
+-- Connect the key press event
 UserInputService.InputBegan:Connect(onKeyPress)
+
 
 -- saxx.lol gui source
 
@@ -356,7 +362,7 @@ espButton.Position = UDim2.new(0.5, -80, 0.5, 10)
 espButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 espButton.BorderSizePixel = 0
 espButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-espButton.Text = "esp (rejoin to turn it off)"
+espButton.Text = "player esp"
 espButton.Font = Enum.Font.SourceSans
 espButton.TextSize = 16
 espButton.TextScaled = true
@@ -378,9 +384,14 @@ end)
 
 espButton.MouseButton1Click:Connect(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/esp",true))()
-    espButton:Destroy()  -- Remove the ESP button
-    frame:TweenSize(UDim2.new(0, 200, 0, 90), "Out", "Quad", 0.3, true)  -- Resize the frame to a slightly taller size
-    print("Esp Script Executed (Rejoin To Turn It Off Because You Cant)")
+    espButton:Destroy()
+    frame:TweenSize(UDim2.new(0, 200, 0, 90), "Out", "Quad", 0.3, true)
+    
+    StarterGui:SetCore("SendNotification", {
+        Title = "Info";
+        Text = "Esp Script Executed (Rejoin To Turn It Off Because You Cant Turn It Off)";
+        Duration = 15;
+    })
 end)
 
 UserInputService.InputBegan:Connect(function(input, isProcessed)
