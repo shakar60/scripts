@@ -20,8 +20,8 @@ local StarterGui = game:GetService("StarterGui")
 
 -- Variables
 
-local CamlockState = true --false
-local SelectedTarget = true --nil
+local CamlockState = false
+local SelectedTarget = nil
 local Prediction = 0.15662
 local JumpOffset = 2.50
 local currentHighlight = true --nil
