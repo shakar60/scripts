@@ -242,7 +242,7 @@ end)
 
 -- esp source code
 
---[[ Services
+-- Services
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
@@ -306,7 +306,7 @@ local function onKeyPress(input, gameProcessed)
 end
 
 -- Connect the key press event
-UserInputService.InputBegan:Connect(onKeyPress) ]]
+UserInputService.InputBegan:Connect(onKeyPress)
 
 -- saxx.lol gui source
 
