@@ -20,11 +20,11 @@ local StarterGui = game:GetService("StarterGui")
 
 -- Variables
 
-local CamlockState = false
-local SelectedTarget = nil
+local CamlockState = true --false
+local SelectedTarget = true --nil
 local Prediction = 0.15662
 local JumpOffset = 2.50
-local currentHighlight = nil
+local currentHighlight = true --nil
 local AutoClickerEnabled = true
 local CameraSmoothness = 0.999
 local JumpSmoothness = 0.1
@@ -242,7 +242,7 @@ end)
 
 -- esp source code
 
--- Services
+--[[ Services
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
@@ -306,7 +306,7 @@ local function onKeyPress(input, gameProcessed)
 end
 
 -- Connect the key press event
-UserInputService.InputBegan:Connect(onKeyPress)
+UserInputService.InputBegan:Connect(onKeyPress) ]]
 
 -- saxx.lol gui source
 
