@@ -1,3 +1,28 @@
+local function makeGuiPersistent(gui)
+    -- Check if the GUI is a valid ScreenGui or CoreGui
+    if gui:IsA("ScreenGui") or gui:IsA("CoreGui") then
+        gui.ResetOnSpawn = false -- Prevents the GUI from being destroyed on respawn
+    end
+end
+
+-- Example usage: Apply this function to any existing GUI in the Player's PlayerGui
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+for _, gui in pairs(playerGui:GetChildren()) do
+    makeGuiPersistent(gui)
+end
+
+-- If you want to apply this to a CoreGui as well, you can loop through it like this:
+for _, coreGui in pairs(game:GetService("CoreGui"):GetChildren()) do
+    makeGuiPersistent(coreGui)
+end
+
+-- You can also connect this to the addition of new GUIs:
+playerGui.ChildAdded:Connect(makeGuiPersistent)
+game:GetService("CoreGui").ChildAdded:Connect(makeGuiPersistent)
+
+
 local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
 local tweenService = game:GetService("TweenService")
 function tween(object, goal, callback)
@@ -968,28 +993,3 @@ callback = callback or function() end
 	return InsideLibrary
 end
 return library
-
-
-local function makeGuiPersistent(gui)
-    -- Check if the GUI is a valid ScreenGui or CoreGui
-    if gui:IsA("ScreenGui") or gui:IsA("CoreGui") then
-        gui.ResetOnSpawn = false -- Prevents the GUI from being destroyed on respawn
-    end
-end
-
--- Example usage: Apply this function to any existing GUI in the Player's PlayerGui
-local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-
-for _, gui in pairs(playerGui:GetChildren()) do
-    makeGuiPersistent(gui)
-end
-
--- If you want to apply this to a CoreGui as well, you can loop through it like this:
-for _, coreGui in pairs(game:GetService("CoreGui"):GetChildren()) do
-    makeGuiPersistent(coreGui)
-end
-
--- You can also connect this to the addition of new GUIs:
-playerGui.ChildAdded:Connect(makeGuiPersistent)
-game:GetService("CoreGui").ChildAdded:Connect(makeGuiPersistent)
