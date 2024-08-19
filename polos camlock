@@ -73,8 +73,8 @@ UserInputService.InputBegan:Connect(function(input)
             -- Custom Notification
             NotificationLoad:NewNotification({
                 ["Mode"] = "Custom",
-                ["Title"] = "𝙿𝚘𝚕𝚘𝚜 𝙲𝚊𝚖𝚕𝚘𝚌𝚔",
-                ["Description"] = "𝙻𝚘𝚌𝚔𝚒𝚗𝚐 𝙾𝚗 " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
+                ["Title"] = "Polos Camlock",
+                ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
                 ["Notification_Image"] = "rbxassetid://18985517155",
                 ["Notification_Sound"] = "",
                 ["Timeout"] = 2,
@@ -87,8 +87,8 @@ UserInputService.InputBegan:Connect(function(input)
                 -- Custom Notification
                 NotificationLoad:NewNotification({
                     ["Mode"] = "Custom",
-                    ["Title"] = "𝙿𝚘𝚕𝚘𝚜 𝙲𝚊𝚖𝚕𝚘𝚌𝚔",
-                    ["Description"] = "𝚄𝚗𝚕𝚘𝚌𝚔𝚎𝚍",
+                    ["Title"] = "Polos Camlock",
+                    ["Description"] = "Unlocked",
                     ["Notification_Image"] = "rbxassetid://18985517155",
                     ["Notification_Sound"] = "",
                     ["Timeout"] = 2,
@@ -130,15 +130,15 @@ Frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(TopContainer)
 UICorner.Parent = Frame
 
 TextButton.Parent = Frame
-TextButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)  -- Set background to black
 TextButton.BackgroundTransparency = 1
 TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 TextButton.BorderSizePixel = 0
 TextButton.Position = UDim2.new(0.0792079195, 0, 0.18571429, 0)
 TextButton.Size = UDim2.new(0, 70, 0, 50)
 TextButton.Font = Enum.Font.SourceSansSemibold
-TextButton.Text = "𝙿𝚘𝚕𝚘𝚜 𝙲𝚊𝚖𝚕𝚘𝚌𝚔"
-TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.Text = "Polos Camlock"  -- Removed comma
+TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)  -- Set text color to white
 TextButton.TextScaled = true
 TextButton.TextSize = 24
 TextButton.TextWrapped = true
@@ -147,28 +147,28 @@ local state = true
 TextButton.MouseButton1Click:Connect(function()
     state = not state
     if not state then
-        TextButton.Text = "𝙿𝚘𝚕𝚘𝚜 𝙲𝚊𝚖𝚕𝚘𝚌𝚔 𝙾𝚗"
+        TextButton.Text = "Polos Camlock On"
         CamlockState = true
         enemy = FindNearestEnemy()
         -- Custom Notification
         NotificationLoad:NewNotification({
             ["Mode"] = "Custom",
-            ["Title"] = "𝙿𝚘𝚕𝚘𝚜 𝙲𝚊𝚖𝚕𝚘𝚌𝚔",
-            ["Description"] = "𝙻𝚘𝚌𝚔𝚒𝚗𝚐 𝙾𝚗 " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
+            ["Title"] = "Polos Camlock",
+            ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
             ["Notification_Image"] = "rbxassetid://18985517155",
             ["Notification_Sound"] = "",
             ["Timeout"] = 2,
             ["Audio"] = false
         })
     else
-        TextButton.Text = "𝙿𝚘𝚕𝚘𝚜 𝙲𝚊𝚖𝚕𝚘𝚌𝚔 𝙾𝚏𝚏"
+        TextButton.Text = "Polos Camlock Off"
         CamlockState = false
         enemy = nil
         -- Custom Notification
         NotificationLoad:NewNotification({
             ["Mode"] = "Custom",
-            ["Title"] = "𝙿𝚘𝚕𝚘𝚜 𝙲𝚊𝚖𝚕𝚘𝚌𝚔",
-            ["Description"] = "𝚄𝚗𝚕𝚘𝚌𝚔𝚎𝚍",
+            ["Title"] = "Polos Camlock",
+            ["Description"] = "Unlocked",
             ["Notification_Image"] = "rbxassetid://18985517155",
             ["Notification_Sound"] = "",
             ["Timeout"] = 2,
@@ -219,8 +219,8 @@ end)
 
 NotificationLoad:NewNotification({
     ["Mode"] = "Custom",
-    ["Title"] = "𝙿𝚘𝚕𝚘𝚜 𝙲𝚊𝚖𝚕𝚘𝚌𝚔 𝙻𝚘𝚊𝚍𝚎𝚍",
-    ["Description"] = "𝚆𝚎𝚕𝚌𝚘𝚖𝚎 𝚄𝚜𝚎𝚛, 𝙸𝚏 𝚢𝚘𝚞 𝚊𝚛𝚎 𝚘𝚗 𝙿𝙲 𝚘𝚛 𝚠𝚒𝚝𝚑 𝚊 𝚔𝚎𝚢𝚋𝚘𝚊𝚛𝚍, 𝚙𝚛𝚎𝚜𝚜 𝚀 𝚝𝚘 𝚝𝚞𝚛𝚗 𝚝𝚑𝚎 𝙲𝚊𝚖𝚕𝚘𝚌𝚔 𝙾𝚗 𝙰𝚗𝚍 𝙾𝚏𝚏.",
+    ["Title"] = "Polos Camlock Loaded",
+    ["Description"] = "Welcome User, If you are on PC or with a keyboard, press Q to turn the Camlock On And Off.",
     ["Notification_Image"] = "rbxassetid://18985517155",
     ["Notification_Sound"] = "rbxassetid://5153734608",
     ["Timeout"] = 10,
