@@ -132,8 +132,8 @@ TextButton.MouseButton1Click:Connect(function()
         enemy = FindNearestEnemy()
         game.StarterGui:SetCore("SendNotification", {
             Title = "Polo's Camlock",
-            Text = "Locking To"
-            Icon = "rbxassetid://82580136039053
+            Text = "Locking To",
+            Icon = "rbxassetid://82580136039053"
         })
     else
         TextButton.Text = "Polo Cam Off"
@@ -177,7 +177,7 @@ Frame.InputBegan:Connect(function(input)
 end)
 
 Frame.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType.Touch then
         dragInput = input
     end
 end)
@@ -187,3 +187,10 @@ RunService.Heartbeat:Connect(function()
         update(dragInput)
     end
 end)
+
+-- Notification
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Info",
+    Text = "If you are on Pc Or With An Keyboard Click Q To Turn On And Off the Camlock.",
+    Duration = 10
+})
