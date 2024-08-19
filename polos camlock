@@ -103,13 +103,11 @@ end)
 local BladLock = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local UICorner = Instance.new("UICorner")
-local Logo = Instance.new("ImageLabel")
 local TextButton = Instance.new("TextButton")
 local UICorner_2 = Instance.new("UICorner")
 local UIStroke = Instance.new("UIStroke")
 
 -- Properties
-
 BladLock.Name = "BlackGuy"
 BladLock.Parent = game.CoreGui
 BladLock.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -224,3 +222,13 @@ RunService.Heartbeat:Connect(function()
         update(dragInput)
     end
 end)
+
+NotificationLoad:NewNotification({
+    ["Mode"] = "Custom",
+    ["Title"] = "Polos Camlock Loaded",
+    ["Description"] = "Welcome User, If you are on PC or with a keyboard, press Q to turn the Camlock On And Off.",
+    ["Notification_Image"] = "rbxassetid://18985517155",
+    ["Notification_Sound"] = "rbxassetid://5153734608",
+    ["Timeout"] = 10,
+    ["Audio"] = true
+})
