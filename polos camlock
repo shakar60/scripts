@@ -227,26 +227,39 @@ NotificationLoad:NewNotification({
     ["Audio"] = true
 })
 
+-- Function to show the custom notification
+local function showNotification(title, description)
+    NotificationLoad:NewNotification({
+        ["Mode"] = "Custom", 
+        ["Title"] = title, 
+        ["Description"] = description, 
+        ["Notification_Image"] = "rbxassetid://18985517155", 
+        ["Notification_Sound"] = "rbxassetid://5153734608", 
+        ["Timeout"] = 10, 
+        ["Audio"] = true 
+    })
+end
+
 -- Initialize the Polo GUI
 local PoloGui = createToggleGui()
 
 -- Show initial notification when the script starts
-showNotification("Info", "Type /e killpolo to kill Polo, Type /e polo to bring Polo back")
+showNotification("Info", "Type /e killpolo To Kill The Polo, Type /e polo To Bring The Polo Back")
 
 -- Function to handle the chat commands
 local function onChatMessage(message)
     if message == "/e killpolo" then
-        -- Kill Polo and show notification
+        -- Kill the Polo GUI and show notification
         if PoloGui then
             PoloGui:Destroy()
             PoloGui = nil
-            showNotification("Info", "Polo Killed")
+            showNotification("Info", "Polo GUI Killed")
         end
     elseif message == "/e polo" then
-        -- Recreate the Polo button if it's not already active
+        -- Recreate the Polo GUI if it's not already active
         if not PoloGui then
             PoloGui = createToggleGui()
-            showNotification("Info", "Polo Restored")
+            showNotification("Info", "Polo GUI Restored")
         end
     end
 end
