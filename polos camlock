@@ -114,7 +114,7 @@ Logo.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Logo.BorderSizePixel = 0
 Logo.Position = UDim2.new(0.326732665, 0, 0, 0)
 Logo.Size = UDim2.new(0, 30, 0, 60)
-Logo.Image = "rbxassetid://11356766736"
+Logo.Image = "rbxassetid://80769537651888"
 Logo.ImageTransparency = 0.200
 
 TextButton.Parent = Frame
@@ -140,7 +140,8 @@ TextButton.MouseButton1Click:Connect(
             enemy = FindNearestEnemy()
 game.StarterGui:SetCore("SendNotification", {
     Title = "Polo's Camlock",
-    Text = "Locking To"
+    Text = "Locking On player.displayname"
+Icon = "rbxassetid://80769537651888";
 
 })
         else
@@ -150,7 +151,7 @@ game.StarterGui:SetCore("SendNotification", {
 game.StarterGui:SetCore("SendNotification", {
     Title = "Polo's Camlock";
     Text = "Unlocked";
-    Icon = "rbxassetid://3584129158";
+    Icon = "rbxassetid://80769537651888";
 })
         end
     end
@@ -159,3 +160,47 @@ game.StarterGui:SetCore("SendNotification", {
 UICorner_2.Parent = TextButton
 Frame.Active = true
 Frame.Draggable = true
+
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+local function update(input)
+    local delta = input.Position - dragStart
+    Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+Frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = Frame.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+Frame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+RunService.Heartbeat:Connect(function()
+    if dragging and dragInput then
+        update(dragInput)
+    end
+end)
+
+-- Notification
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Info",
+    Text = "If you are on Pc Or With An Keyboard Click Q To Turn On And Off the Camlock.",
+    Duration = 10
+    Icon = "rbxassetid://80769537651888",
+})
