@@ -55,10 +55,10 @@ RunService.Heartbeat:Connect(function()
         local camera = workspace.CurrentCamera
         local targetPosition = enemy.Position + enemy.Velocity * Prediction
         targetPosition = Vector3.new(targetPosition.X + XPrediction, targetPosition.Y + YPrediction, targetPosition.Z)
-        
+
         local currentPosition = camera.CFrame.Position
         local newPosition = currentPosition:Lerp(targetPosition, Smoothness)
-        
+
         camera.CFrame = CFrame.new(newPosition, targetPosition)
     end
 end)
@@ -219,16 +219,15 @@ end)
 
 NotificationLoad:NewNotification({
     ["Mode"] = "Custom",
-    ["Title"] = "Polos Camlock Loaded",
-    ["Description"] = "Welcome User, If you are on PC or with a keyboard, 
-press Q to turn the Camlock On And Off.",
+    ["Title"] = "Polos Camlock Loaded!",
+    ["Description"] = "Welcome User! Heres Some Cmds /e hidepolo To Hide Polo Gui /e showpolo To Show Polo Gui.",
     ["Notification_Image"] = "rbxassetid://18985517155",
     ["Notification_Sound"] = "rbxassetid://5153734608",
     ["Timeout"] = 10,
     ["Audio"] = true
 })
 
--- commands to show and hide polo
+-- Command Handlers
 local function onCommand(command)
     if command == "/e hidepolo" then
         if BladLock then
