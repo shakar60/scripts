@@ -1,31 +1,31 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
-local Mouse = LocalPlayer:GetMouse()
+local Mouse = game.Players.LocalPlayer:GetMouse()
 local CamlockState = true
 local Prediction = 0.1678963
 local HorizontalPrediction = 0.1760773
 local VerticalPrediction = 0.160692
 local XPrediction = 0.176073
 local YPrediction = 0.167092
-local Smoothness = 0.03 -- Adjust this value for smoother or faster camera movement
+local Smoothness = 0.03-- Adjust this value for smoother or faster camera movement 
 local Locked = true
 getgenv().Key = "q"
 
-local NotificationLoad = loadstring(game:HttpGet(('https://raw.githubusercontent.com/treeofplant/Notif/main/library.lua'),true))()
-
 function FindNearestEnemy()
     local ClosestDistance, ClosestPlayer = math.huge, nil
-    local CenterPosition = Vector2.new(
+    local CenterPosition =
+        Vector2.new(
         game:GetService("GuiService"):GetScreenResolution().X / 2,
         game:GetService("GuiService"):GetScreenResolution().Y / 2
     )
 
-    for _, Player in ipairs(Players:GetPlayers()) do
+    for _, Player in ipairs(game:GetService("Players"):GetPlayers()) do
         if Player ~= LocalPlayer then
             local Character = Player.Character
             if Character and Character:FindFirstChild("HumanoidRootPart") and Character.Humanoid.Health > 0 then
-                local Position, IsVisibleOnViewport = game:GetService("Workspace").CurrentCamera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
+                local Position, IsVisibleOnViewport =
+                    game:GetService("Workspace").CurrentCamera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
 
                 if IsVisibleOnViewport then
                     local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
@@ -43,58 +43,37 @@ end
 
 local enemy = nil
 
+-- Function to smoothly aim the camera at the nearest enemy's HumanoidRootPart with prediction values
 RunService.Heartbeat:Connect(function()
-    if CamlockState then
+    if CamlockState == true then
         if enemy then
             local camera = workspace.CurrentCamera
             local targetPosition = enemy.Position + enemy.Velocity * Prediction
             targetPosition = Vector3.new(targetPosition.X + XPrediction, targetPosition.Y + YPrediction, targetPosition.Z)
-
+            
             -- Interpolate between the current camera position and the target position
             local currentPosition = camera.CFrame.Position
             local newPosition = currentPosition:Lerp(targetPosition, Smoothness)
-
+            
             camera.CFrame = CFrame.new(newPosition, targetPosition)
         end
     end
 end)
 
-local function toggleCamlock(state)
-    if state then
-        enemy = FindNearestEnemy()
-        CamlockState = true
-        -- Custom Notification for Camlock On
-        NotificationLoad:NewNotification({
-            ["Mode"] = "Custom",
-            ["Title"] = "Polo's Camlock On",
-            ["Description"] = "Locking To",
-            ["Notification_Image"] = "rbxassetid://128846050098977",
-            ["Notification_Sound"] = "rbxassetid://5153734608",
-            ["Timeout"] = 5,
-            ["Audio"] = true
-        })
-    else
-        enemy = nil
-        CamlockState = false
-        -- Custom Notification for Camlock Off
-        NotificationLoad:NewNotification({
-            ["Mode"] = "Custom",
-            ["Title"] = "Polo's Camlock Off",
-            ["Description"] = "Unlocked",
-            ["Notification_Image"] = "rbxassetid://128846050098977",
-            ["Notification_Sound"] = "rbxassetid://5153734608",
-            ["Timeout"] = 5,
-            ["Audio"] = true
-        })
-    end
-end
-
-Mouse.KeyDown:Connect(function(k)
-    if k == getgenv().Key then
-        Locked = not Locked
-        toggleCamlock(Locked)
-    end
-end)
+Mouse.KeyDown:Connect(function(k)    
+    if k == getgenv().Key then    
+            Locked = not Locked    
+            if Locked then    
+                enemy = FindNearestEnemy()
+                CamlockState = true
+             else    
+                if enemy ~= nil then    
+                    enemy = nil    
+                    CamlockState = false
+                end    
+            end    
+    end    
+ end)
 
 local BladLock = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
@@ -102,6 +81,8 @@ local UICorner = Instance.new("UICorner")
 local Logo = Instance.new("ImageLabel")
 local TextButton = Instance.new("TextButton")
 local UICorner_2 = Instance.new("UICorner")
+
+--Properties:
 
 BladLock.Name = "BlackGuy"
 BladLock.Parent = game.CoreGui
@@ -133,7 +114,7 @@ Logo.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Logo.BorderSizePixel = 0
 Logo.Position = UDim2.new(0.326732665, 0, 0, 0)
 Logo.Size = UDim2.new(0, 30, 0, 60)
-Logo.Image = "rbxassetid://80769537651888"
+Logo.Image = "rbxassetid://11356766736"
 Logo.ImageTransparency = 0.200
 
 TextButton.Parent = Frame
@@ -150,72 +131,31 @@ TextButton.TextScaled = true
 TextButton.TextSize = 24.000
 TextButton.TextWrapped = true
 local state = true
-TextButton.MouseButton1Click:Connect(function()
-    state = not state
-    toggleCamlock(state)
-    if not state then
-        TextButton.Text = "Polo Cam On"
-    else
-        TextButton.Text = "Polo Cam Off"
+TextButton.MouseButton1Click:Connect(
+    function()
+        state = not state
+        if not state then
+            TextButton.Text = "Polo Cam On"
+            CamlockState = true
+            enemy = FindNearestEnemy()
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Polo's Camlock",
+    Text = "Locking To"
+
+})
+        else
+            TextButton.Text = "Polo Cam Off"
+            CamlockState = false
+            enemy = nil
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Polo's Camlock";
+    Text = "Unlocked";
+    Icon = "rbxassetid://3584129158";
+})
+        end
     end
-end)
+)
 
 UICorner_2.Parent = TextButton
 Frame.Active = true
 Frame.Draggable = true
-
--- Smoother dragging implementation
-local dragging
-local dragInput
-local dragStart
-local startPos
-local lastPosition
-local smoothness = 0.2 -- Lower value for smoother dragging
-
-local function update(input)
-    local delta = input.Position - dragStart
-    lastPosition = UDim2.new(
-        startPos.X.Scale,
-        startPos.X.Offset + delta.X,
-        startPos.Y.Scale,
-        startPos.Y.Offset + delta.Y
-    )
-end
-
-Frame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = Frame.Position
-
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-
-Frame.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType.Touch then
-        dragInput = input
-    end
-end)
-
-RunService.Heartbeat:Connect(function()
-    if dragging and dragInput then
-        update(dragInput)
-        Frame.Position = Frame.Position:Lerp(lastPosition, smoothness)
-    end
-end)
-
--- Custom Notification for Initial Info
-NotificationLoad:NewNotification({
-    ["Mode"] = "Custom", -- Leave like this
-    ["Title"] = "Info", -- Title of notification
-    ["Description"] = "If you are on PC or using a keyboard, click Q to turn on and off the Camlock.", -- Description of notification
-    ["Notification_Image"] = "rbxassetid://82580136039053",
-    ["Notification_Sound"] = "rbxassetid://5153734608",
-    ["Timeout"] = 10,
-    ["Audio"] = true
-})
