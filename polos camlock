@@ -4,6 +4,9 @@ local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
 
+-- Notification Library
+local NotificationLoad = loadstring(game:HttpGet('https://raw.githubusercontent.com/treeofplant/Notif/main/library.lua', true))()
+
 -- Local Variables
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
@@ -60,8 +63,9 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
-Mouse.KeyDown:Connect(function(key)
-    if key:lower() == getgenv().Key.Name:lower() then
+-- Function to Handle Key Presses
+UserInputService.InputBegan:Connect(function(input)
+    if input.KeyCode == getgenv().Key then
         Locked = not Locked
         if Locked then
             enemy = FindNearestEnemy()
@@ -222,21 +226,22 @@ local function update(input)
 end
 
 Frame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = Frame.Position
+if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+dragging = true
+dragStart = input.Position
+startPos = Frame.Position
 
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
+    input.Changed:Connect(function()
+        if input.UserInputState == Enum.UserInputState.End then
+            dragging = false
+        end
+    end)
+end
+
 end)
 
 Frame.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
 dragInput = input
 end
 end)
