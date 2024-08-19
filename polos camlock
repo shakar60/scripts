@@ -132,17 +132,6 @@ Frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(TopContainer)
 
 UICorner.Parent = Frame
 
-Logo.Name = "Logo"
-Logo.Parent = Frame
-Logo.BackgroundColor3 = Color3.fromRGB(0, 0, 0)  -- Set to black
-Logo.BackgroundTransparency = 1
-Logo.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Logo.BorderSizePixel = 0
-Logo.Position = UDim2.new(0.5, -15, 0, 5)  -- Centered position
-Logo.Size = UDim2.new(0, 30, 0, 60)
-Logo.Image = "rbxassetid://80769537651888"
-Logo.ImageTransparency = 0  -- Ensure it's visible
-
 TextButton.Parent = Frame
 TextButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 TextButton.BackgroundTransparency = 1
@@ -151,7 +140,7 @@ TextButton.BorderSizePixel = 0
 TextButton.Position = UDim2.new(0.0792079195, 0, 0.18571429, 0)
 TextButton.Size = UDim2.new(0, 70, 0, 50)
 TextButton.Font = Enum.Font.SourceSansSemibold
-TextButton.Text = "Polo Camlock"
+TextButton.Text = "Polos Camlock"
 TextButton.TextColor3 = Color3.fromRGB(0, 0, 0)  -- Set text color to black
 TextButton.TextScaled = true
 TextButton.TextSize = 24
@@ -235,13 +224,3 @@ RunService.Heartbeat:Connect(function()
         update(dragInput)
     end
 end)
-
-NotificationLoad:NewNotification({
-    ["Mode"] = "Custom", -- Leave like this
-    ["Title"] = "Polos Camlock Loaded", -- Title of notification
-    ["Description"] = "Welcome User, If you are on PC or with a keyboard, press Q to turn the Camlock On And Off.", -- Description of notification
-    ["Notification_Image"] = "rbxassetid://18985517155", -- Side image of notification
-    ["Notification_Sound"] = "rbxassetid://5153734608", -- Sound when notification open
-    ["Timeout"] = 10, -- Timer how long notification lasts
-    ["Audio"] = true -- Sound when notifications open
-})
