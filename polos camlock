@@ -11,7 +11,7 @@ local NotificationLoad = loadstring(game:HttpGet('https://raw.githubusercontent.
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local CamlockState = true
-local Prediction = 0.1678963
+local Prediction = 0.1830871
 local XPrediction = 0.176073
 local YPrediction = 0.167092
 local Smoothness = 0.095 -- Adjust for smoother or faster camera movement
@@ -226,3 +226,30 @@ NotificationLoad:NewNotification({
     ["Timeout"] = 10,
     ["Audio"] = true
 })
+
+-- Initialize the Polo GUI
+local PoloGui = createToggleGui()
+
+-- Show initial notification when the script starts
+showNotification("Info", "Type /e killpolo to kill Polo, Type /e polo to bring Polo back")
+
+-- Function to handle the chat commands
+local function onChatMessage(message)
+    if message == "/e killpolo" then
+        -- Kill Polo and show notification
+        if PoloGui then
+            PoloGui:Destroy()
+            PoloGui = nil
+            showNotification("Info", "Polo Killed")
+        end
+    elseif message == "/e polo" then
+        -- Recreate the Polo button if it's not already active
+        if not PoloGui then
+            PoloGui = createToggleGui()
+            showNotification("Info", "Polo Restored")
+        end
+    end
+end
+
+-- Connect the chat listener
+game.Players.LocalPlayer.Chatted:Connect(onChatMessage)
