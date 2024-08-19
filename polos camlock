@@ -236,13 +236,12 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- Initial Notification
 NotificationLoad:NewNotification({
-    ["Mode"] = "Custom",
-    ["Title"] = "Info",
-    ["Description"] = "If you are on PC or with a keyboard, press Q to turn the Camlock On And off.”,
-[“Notification_Image”] = “rbxassetid://18985517155”,
-[“Notification_Sound”] = “rbxassetid://5153734608”,
-[“Timeout”] = 10,
-[“Audio”] = true
+    ["Mode"] = "Custom", -- Leave like this
+    ["Title"] = "Polos Camlock Loaded", -- Title of notification
+    ["Description"] = "Welcome User, If you are on PC or with a keyboard, press Q to turn the Camlock On And Off.", -- Description of notification
+    ["Notification_Image"] = "rbxassetid://18985517155", -- Side image of notification
+    ["Notification_Sound"] = "rbxassetid://5153734608", -- Sound when notification open
+    ["Timeout"] = 10, -- Timer how long notification lasts
+    ["Audio"] = true -- Sound when notifications open
 })
