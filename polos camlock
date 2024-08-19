@@ -130,15 +130,15 @@ Frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(TopContainer)
 UICorner.Parent = Frame
 
 TextButton.Parent = Frame
-TextButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)  -- Set background to black
 TextButton.BackgroundTransparency = 1
 TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 TextButton.BorderSizePixel = 0
 TextButton.Position = UDim2.new(0.0792079195, 0, 0.18571429, 0)
 TextButton.Size = UDim2.new(0, 70, 0, 50)
 TextButton.Font = Enum.Font.SourceSansSemibold
-TextButton.Text = "Polos Camlock"
-TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.Text = "Polos Camlock"  -- Removed comma
+TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)  -- Set text color to white
 TextButton.TextScaled = true
 TextButton.TextSize = 24
 TextButton.TextWrapped = true
@@ -220,8 +220,7 @@ end)
 NotificationLoad:NewNotification({
     ["Mode"] = "Custom",
     ["Title"] = "Polos Camlock Loaded",
-    ["Description"] = "Welcome User, If you are on PC or with a keyboard,
-press Q to turn the Camlock On And Off Or Use The Button.",
+    ["Description"] = "Welcome User, If you are on PC or with a keyboard, press Q to turn the Camlock On And Off.",
     ["Notification_Image"] = "rbxassetid://18985517155",
     ["Notification_Sound"] = "rbxassetid://5153734608",
     ["Timeout"] = 10,
