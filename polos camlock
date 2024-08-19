@@ -220,7 +220,8 @@ end)
 NotificationLoad:NewNotification({
     ["Mode"] = "Custom",
     ["Title"] = "Polos Camlock Loaded",
-    ["Description"] = "Welcome User, If you are on PC or with a keyboard, press Q to turn the Camlock On And Off.",
+    ["Description"] = "Welcome User, If you are on PC or with a keyboard, 
+press Q to turn the Camlock On And Off.",
     ["Notification_Image"] = "rbxassetid://18985517155",
     ["Notification_Sound"] = "rbxassetid://5153734608",
     ["Timeout"] = 10,
