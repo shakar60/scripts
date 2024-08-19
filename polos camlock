@@ -220,7 +220,8 @@ end)
 NotificationLoad:NewNotification({
     ["Mode"] = "Custom",
     ["Title"] = "Polos Camlock Loaded",
-    ["Description"] = "Welcome User, If you are on PC or with a keyboard, press Q to turn the Camlock On And Off.",
+    ["Description"] = "Welcome User, If you are on PC or with a keyboard, 
+press Q to turn the Camlock On And Off.",
     ["Notification_Image"] = "rbxassetid://18985517155",
     ["Notification_Sound"] = "rbxassetid://5153734608",
     ["Timeout"] = 10,
@@ -237,19 +238,20 @@ local function onCommand(command)
         if BladLock then
             BladLock.Enabled = true
         end
-    elseif command == "/e killpolo" then
-        if BladLock then
-            BladLock:Destroy()
-            BladLock = nil
-        end
-    elseif command == "/e polo" then
-        if not BladLock then
-            createGUI()  -- Assumes createGUI() is defined elsewhere
-        end
     end
 end
 
--- Example of listening to commands (this part is for context and should be adjusted according to your implementation)
 game:GetService("Players").LocalPlayer.Chatted:Connect(function(message)
     onCommand(message)
 end)
+
+NotificationLoad:NewNotification({
+    ["Mode"] = "Custom",
+    ["Title"] = "Command List For Polos Camlock",
+    ["Description"] = "Type /e hidepolo to hide the polo button
+and type /e showpolo to show the polo button",
+    ["Notification_Image"] = "rbxassetid://18985517155",
+    ["Notification_Sound"] = "rbxassetid://5153734608",
+    ["Timeout"] = 10,
+    ["Audio"] = true
+})
