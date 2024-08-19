@@ -228,7 +228,7 @@ press Q to turn the Camlock On And Off.",
     ["Audio"] = true
 })
 
--- Command Handlers
+-- commands to show and hide polo
 local function onCommand(command)
     if command == "/e hidepolo" then
         if BladLock then
