@@ -153,7 +153,7 @@ local state = true
 TextButton.MouseButton1Click:Connect(function()
     state = not state
     if not state then
-        TextButton.Text = "Polo Cam On"
+        TextButton.Text = "Polos Camlock On"
         CamlockState = true
         enemy = FindNearestEnemy()
         -- Custom Notification
@@ -167,7 +167,7 @@ TextButton.MouseButton1Click:Connect(function()
             ["Audio"] = false
         })
     else
-        TextButton.Text = "Polo Cam Off"
+        TextButton.Text = "Polos Cam Off"
         CamlockState = false
         enemy = nil
         -- Custom Notification
