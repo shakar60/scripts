@@ -244,14 +244,3 @@ end
 game:GetService("Players").LocalPlayer.Chatted:Connect(function(message)
     onCommand(message)
 end)
-
-NotificationLoad:NewNotification({
-    ["Mode"] = "Custom",
-    ["Title"] = "Command List For Polos Camlock",
-    ["Description"] = "Type /e hidepolo to hide the polo button
-and type /e showpolo to show the polo button",
-    ["Notification_Image"] = "rbxassetid://18985517155",
-    ["Notification_Sound"] = "rbxassetid://5153734608",
-    ["Timeout"] = 10,
-    ["Audio"] = true
-})
