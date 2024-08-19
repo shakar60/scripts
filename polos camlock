@@ -68,7 +68,7 @@ local function toggleCamlock(state)
             ["Mode"] = "Custom",
             ["Title"] = "Polo's Camlock On",
             ["Description"] = "Locking To",
-            ["Notification_Image"] = "rbxassetid://82580136039053",
+            ["Notification_Image"] = "rbxassetid://128846050098977",
             ["Notification_Sound"] = "rbxassetid://5153734608",
             ["Timeout"] = 5,
             ["Audio"] = true
@@ -81,7 +81,7 @@ local function toggleCamlock(state)
             ["Mode"] = "Custom",
             ["Title"] = "Polo's Camlock Off",
             ["Description"] = "Unlocked",
-            ["Notification_Image"] = "rbxassetid://82580136039053",
+            ["Notification_Image"] = "rbxassetid://128846050098977",
             ["Notification_Sound"] = "rbxassetid://5153734608",
             ["Timeout"] = 5,
             ["Audio"] = true
