@@ -11,10 +11,10 @@ local NotificationLoad = loadstring(game:HttpGet('https://raw.githubusercontent.
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local CamlockState = true
-local Prediction = 0.1830871
+local Prediction = 0.1707779
 local XPrediction = 0.176073
 local YPrediction = 0.167092
-local Smoothness = 0.095-- Adjust for smoother or faster camera movement
+local Smoothness = 0.03 -- Adjust for smoother or faster camera movement
 local Locked = true
 getgenv().Key = Enum.KeyCode.Q -- Use Enum.KeyCode for consistency
 
