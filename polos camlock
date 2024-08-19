@@ -134,7 +134,7 @@ UICorner.Parent = Frame
 
 Logo.Name = "Logo"
 Logo.Parent = Frame
-Logo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Logo.BackgroundColor3 = Color3.fromRGB(0, 0, 0)  -- Set to black
 Logo.BackgroundTransparency = 1
 Logo.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Logo.BorderSizePixel = 0
@@ -152,30 +152,15 @@ TextButton.Position = UDim2.new(0.0792079195, 0, 0.18571429, 0)
 TextButton.Size = UDim2.new(0, 70, 0, 50)
 TextButton.Font = Enum.Font.SourceSansSemibold
 TextButton.Text = "Polo Camlock"
-TextButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.TextColor3 = Color3.fromRGB(0, 0, 0)  -- Set text color to black
 TextButton.TextScaled = true
 TextButton.TextSize = 24
 TextButton.TextWrapped = true
 
--- Add UIStroke for Rainbow Effect
+-- Add UIStroke
 UIStroke.Parent = TextButton
 UIStroke.Thickness = 2
-UIStroke.Color = Color3.fromRGB(255, 0, 0)  -- Initial color, will be updated by RainbowEffect
-
--- Function to create a rainbow effect for the UIStroke and text color
-local function RainbowEffect()
-    local hue = 0
-    while true do
-        hue = (hue + 1) % 360
-        local color = Color3.fromHSV(hue / 360, 1, 1)
-        UIStroke.Color = color
-        TextButton.TextColor3 = color
-        wait(0.01)
-    end
-end
-
--- Start the rainbow effect
-spawn(RainbowEffect)
+UIStroke.Color = Color3.fromRGB(0, 0, 0)  -- Set to black
 
 local state = true
 TextButton.MouseButton1Click:Connect(function()
@@ -214,3 +199,50 @@ end)
 UICorner_2.Parent = TextButton
 Frame.Active = true
 Frame.Draggable = true
+
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+local function update(input)
+    local delta = input.Position - dragStart
+    Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+Frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = Frame.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+Frame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+RunService.Heartbeat:Connect(function()
+    if dragging and dragInput then
+        update(dragInput)
+    end
+end)
+
+-- Initial Notification
+NotificationLoad:NewNotification({
+    ["Mode"] = "Custom",
+    ["Title"] = "Info",
+    ["Description"] = "If you are on PC or with a keyboard, press Q to turn the Camlock On And off.”,
+[“Notification_Image”] = “rbxassetid://18985517155”,
+[“Notification_Sound”] = “rbxassetid://5153734608”,
+[“Timeout”] = 10,
+[“Audio”] = true
+})
