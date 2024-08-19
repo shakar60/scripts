@@ -12,6 +12,8 @@ local Smoothness = 0.03 -- Adjust this value for smoother or faster camera movem
 local Locked = true
 getgenv().Key = "q"
 
+local NotificationLoad = loadstring(game:HttpGet(('https://raw.githubusercontent.com/treeofplant/Notif/main/library.lua'),true))()
+
 function FindNearestEnemy()
     local ClosestDistance, ClosestPlayer = math.huge, nil
     local CenterPosition = Vector2.new(
@@ -57,16 +59,40 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
+local function toggleCamlock(state)
+    if state then
+        enemy = FindNearestEnemy()
+        CamlockState = true
+        -- Custom Notification for Camlock On
+        NotificationLoad:NewNotification({
+            ["Mode"] = "Custom",
+            ["Title"] = "Polo's Camlock On",
+            ["Description"] = "Locking To",
+            ["Notification_Image"] = "rbxassetid://82580136039053",
+            ["Notification_Sound"] = "rbxassetid://5153734608",
+            ["Timeout"] = 5,
+            ["Audio"] = true
+        })
+    else
+        enemy = nil
+        CamlockState = false
+        -- Custom Notification for Camlock Off
+        NotificationLoad:NewNotification({
+            ["Mode"] = "Custom",
+            ["Title"] = "Polo's Camlock Off",
+            ["Description"] = "Unlocked",
+            ["Notification_Image"] = "rbxassetid://82580136039053",
+            ["Notification_Sound"] = "rbxassetid://5153734608",
+            ["Timeout"] = 5,
+            ["Audio"] = true
+        })
+    end
+end
+
 Mouse.KeyDown:Connect(function(k)
     if k == getgenv().Key then
         Locked = not Locked
-        if Locked then
-            enemy = FindNearestEnemy()
-            CamlockState = true
-        else
-            enemy = nil
-            CamlockState = false
-        end
+        toggleCamlock(Locked)
     end
 end)
 
@@ -107,7 +133,7 @@ Logo.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Logo.BorderSizePixel = 0
 Logo.Position = UDim2.new(0.326732665, 0, 0, 0)
 Logo.Size = UDim2.new(0, 30, 0, 60)
-Logo.Image = "rbxassetid://106193966860531"
+Logo.Image = "rbxassetid://85550160614953"
 Logo.ImageTransparency = 0.200
 
 TextButton.Parent = Frame
@@ -126,24 +152,11 @@ TextButton.TextWrapped = true
 local state = true
 TextButton.MouseButton1Click:Connect(function()
     state = not state
+    toggleCamlock(state)
     if not state then
         TextButton.Text = "Polo Cam On"
-        CamlockState = true
-        enemy = FindNearestEnemy()
-        game.StarterGui:SetCore("SendNotification", {
-            Title = "Polo's Camlock",
-            Text = "Locking To",
-            Icon = "rbxassetid://82580136039053"
-        })
     else
         TextButton.Text = "Polo Cam Off"
-        CamlockState = false
-        enemy = nil
-        game.StarterGui:SetCore("SendNotification", {
-            Title = "Polo's Camlock",
-            Text = "Unlocked",
-            Icon = "rbxassetid://82580136039053"
-        })
     end
 end)
 
@@ -151,15 +164,22 @@ UICorner_2.Parent = TextButton
 Frame.Active = true
 Frame.Draggable = true
 
--- Enable dragging of the entire Frame, including the button
+-- Smoother dragging implementation
 local dragging
 local dragInput
 local dragStart
 local startPos
+local lastPosition
+local smoothness = 0.2 -- Lower value for smoother dragging
 
 local function update(input)
     local delta = input.Position - dragStart
-    Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    lastPosition = UDim2.new(
+        startPos.X.Scale,
+        startPos.X.Offset + delta.X,
+        startPos.Y.Scale,
+        startPos.Y.Offset + delta.Y
+    )
 end
 
 Frame.InputBegan:Connect(function(input)
@@ -185,12 +205,17 @@ end)
 RunService.Heartbeat:Connect(function()
     if dragging and dragInput then
         update(dragInput)
+        Frame.Position = Frame.Position:Lerp(lastPosition, smoothness)
     end
 end)
 
--- Notification
-game.StarterGui:SetCore("SendNotification", {
-    Title = "Info",
-    Text = "If you are on Pc Or With An Keyboard Click Q To Turn On And Off the Camlock.",
-    Duration = 10
+-- Custom Notification for Initial Info
+NotificationLoad:NewNotification({
+    ["Mode"] = "Custom", -- Leave like this
+    ["Title"] = "Info", -- Title of notification
+    ["Description"] = "If you are on PC or using a keyboard, click Q to turn on and off the Camlock.", -- Description of notification
+    ["Notification_Image"] = "rbxassetid://82580136039053",
+    ["Notification_Sound"] = "rbxassetid://5153734608",
+    ["Timeout"] = 10,
+    ["Audio"] = true
 })
