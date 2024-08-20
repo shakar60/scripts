@@ -6,53 +6,82 @@ local TweenService = game:GetService("TweenService")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
--- Create ScreenGui
+-- Settings
+local settings = {
+    showCredits = true,  -- Toggle credits text
+    showMainText = true,  -- Toggle main text
+    showLoadingText = true,  -- Toggle loading text
+    showLoadedText = true,  -- Toggle loaded text
+    rainbowEffect = true,  -- Toggle rainbow effect on text
+    blurEnabled = true,  -- Toggle blur effect
+    creditText = "Credits to sh4k4r6o FOR MAKING THE LOADING GUI",  -- Custom credit text
+    mainText = "Orium Gui By Gragrillz Credits to Shakar",  -- Custom main text
+    loadingText = "Orium Gui LOADING",  -- Custom loading text
+    loadedText = "LOADED ORIUMS GUI",  -- Custom loaded text
+    creditDuration = 2.5,  -- Duration to show credit text
+    mainTextDuration = 2.5,  -- Duration to show main text
+    loadingTextDuration = 4,  -- Duration for the loading text and dots
+    loadedTextDuration = 0.5,  -- Duration to show loaded text
+    guiDuration = 3,  -- Total duration for the entire GUI before it gets destroyed
+    fadeEnabled = true,  -- Toggle fade effect
+    fadeDuration = 1  -- Duration of the fade effect in seconds
+}
+
+local function applyFadeEffect(element, duration)
+    local tweenInfo = TweenInfo.new(duration, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
+    local goal = {TextTransparency = 1, BackgroundTransparency = 1}
+    local tween = TweenService:Create(element, tweenInfo, goal)
+    tween:Play()
+    return tween
+end
+
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "BlurGui"
 screenGui.Parent = PlayerGui
 
--- Create BlurEffect
-local blurEffect = Instance.new("BlurEffect")
-blurEffect.Name = "BlurEffect"
-blurEffect.Size = 0
-blurEffect.Parent = game:GetService("Lighting")
+local blurEffect
+if settings.blurEnabled then
+    blurEffect = Instance.new("BlurEffect")
+    blurEffect.Name = "BlurEffect"
+    blurEffect.Size = 0
+    blurEffect.Parent = game:GetService("Lighting")
+end
 
--- Create Main TextLabel
 local textLabel = Instance.new("TextLabel")
 textLabel.Name = "TextLabel"
 textLabel.Parent = screenGui
 textLabel.BackgroundTransparency = 1
 textLabel.Position = UDim2.new(0.5, -200, 0.5, -50)
 textLabel.Size = UDim2.new(0, 400, 0, 100)
-textLabel.Font = Enum.Font.Arcade -- Use Arcade font
-textLabel.Text = "OriumGui By Gragrillz Credits To Shakar"
+textLabel.Font = Enum.Font.Arcade
+textLabel.Text = settings.mainText
 textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 textLabel.TextScaled = true
 textLabel.TextStrokeTransparency = 0.8
 textLabel.TextSize = 40
 
--- Create Credits TextLabel
-local creditsLabel = Instance.new("TextLabel")
-creditsLabel.Name = "CreditsLabel"
-creditsLabel.Parent = screenGui
-creditsLabel.BackgroundTransparency = 1
-creditsLabel.Position = UDim2.new(0.5, -200, 0.5, 60) -- Positioned below the main text
-creditsLabel.Size = UDim2.new(0, 400, 0, 50)
-creditsLabel.Font = Enum.Font.Arcade -- Use Arcade font
-creditsLabel.Text = "CREDITS TO sh4k4r6o FOR MAKING THE LOADING GUI"
-creditsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-creditsLabel.TextScaled = true
-creditsLabel.TextStrokeTransparency = 0.8
-creditsLabel.TextSize = 8 -- Adjusted text size to 8
+local creditsLabel
+if settings.showCredits then
+    creditsLabel = Instance.new("TextLabel")
+    creditsLabel.Name = "CreditsLabel"
+    creditsLabel.Parent = screenGui
+    creditsLabel.BackgroundTransparency = 1
+    creditsLabel.Position = UDim2.new(0.5, -200, 0.5, 60)
+    creditsLabel.Size = UDim2.new(0, 400, 0, 50)
+    creditsLabel.Font = Enum.Font.Arcade
+    creditsLabel.Text = settings.creditText
+    creditsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    creditsLabel.TextScaled = true
+    creditsLabel.TextStrokeTransparency = 0.8
+    creditsLabel.TextSize = 8
+end
 
--- Add a UIStroke for rainbow effect
 local function ApplyRainbowEffect(label)
     local UIStroke = Instance.new("UIStroke")
     UIStroke.Parent = label
     UIStroke.Thickness = 2
     UIStroke.Transparency = 0.5
-    
-    -- Function to create a rainbow effect for the UIStroke and text color
+
     local function RainbowEffect()
         local hue = 0
         while label and label.Parent do
@@ -64,44 +93,62 @@ local function ApplyRainbowEffect(label)
         end
     end
 
-    -- Start the rainbow effect
     spawn(RainbowEffect)
 end
 
--- Apply rainbow effect to main text and credits text
-ApplyRainbowEffect(textLabel)
-ApplyRainbowEffect(creditsLabel)
+if settings.rainbowEffect then
+    ApplyRainbowEffect(textLabel)
+    if creditsLabel then
+        ApplyRainbowEffect(creditsLabel)
+    end
+end
 
--- Tweening for blur effect
 local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
 local goal = {Size = 20}
 local tween = TweenService:Create(blurEffect, tweenInfo, goal)
 
--- Show blur and text
-tween:Play()
+if settings.blurEnabled then
+    tween:Play()
+end
 
--- Wait for 1 second
-wait(1)
-
--- Change text to loading message
-textLabel.Text = "Orium Gui LOADING"
-
--- Countdown effect with dots
 local function Countdown()
-    local countdowns = {".", "..", "...", "....", "....."}
+    local countdowns = {".", "..", "...", "....", ".....", "......", ".......", "........", ".........", ".........."}
     for i = 1, #countdowns do
-        textLabel.Text = "Orium Gui Loading" .. countdowns[i]
-        wait(1) -- Wait for 1 second before updating the text
+        if settings.showLoadingText then
+            textLabel.Text = settings.loadingText .. countdowns[i]
+        end
+        wait(1)
     end
 end
 
--- Run countdown
-Countdown()
+if settings.showMainText then
+    wait(settings.mainTextDuration)
+    if settings.showLoadingText then
+        textLabel.Text = settings.loadingText
+        Countdown()
+    end
+end
 
--- Update text to loaded message and clean up
-textLabel.Text = "LOADED POLOS CAMLOCK"
-wait(0.5) -- Wait for 0.5 seconds before destroying
+if settings.showLoadedText then
+    textLabel.Text = settings.loadedText
+    wait(settings.loadedTextDuration)
+end
 
--- Destroy blur effect and text label
+if settings.fadeEnabled then
+    local fadeTween
+    if creditsLabel then
+        fadeTween = applyFadeEffect(creditsLabel, settings.fadeDuration)
+    end
+    fadeTween = applyFadeEffect(textLabel, settings.fadeDuration)
+    if blurEffect then
+        fadeTween = applyFadeEffect(blurEffect, settings.fadeDuration)
+    end
+    wait(settings.fadeDuration)
+end
+
+wait(settings.guiDuration)
+
 screenGui:Destroy()
-blurEffect:Destroy()
+if blurEffect then
+    blurEffect:Destroy()
+end
