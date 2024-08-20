@@ -442,42 +442,76 @@ function(value) Smoothness = value end,
 Color3.fromRGB(0, 0, 0)
 )
 
+-- Variables
+local notificationSent = false
+
+-- Variables
+local notificationCooldown = false
+
+-- Variables
+local notificationSent = false
+
 -- Commands
+
 local function onCommand(command)
-if command == "/e hidepolo" then
-if BladLock then
-    BladLock.Enabled = false
-end
-elseif command == "/e showpolo" then
-if BladLock then
-    BladLock.Enabled = true
-end
-elseif command == "/e hidesets" then
-PredictionTextBox.Visible = false
-XPredictionTextBox.Visible = false
-YPredictionTextBox.Visible = false
-SmoothnessTextBox.Visible = false
-Frame.Size = UDim2.new(0, 155, 0, 75)
+  if command == "/e hidepolo" then
+      if BladLock then
+          BladLock.Enabled = false
+      end
+  elseif command == "/e showpolo" then
+      if BladLock then
+          BladLock.Enabled = true
+      end
+  elseif command == "/e hidesets" then
+      PredictionTextBox.Visible = false
+      XPredictionTextBox.Visible = false
+      YPredictionTextBox.Visible = false
+      SmoothnessTextBox.Visible = false
+      Frame.Size = UDim2.new(0, 152, 0, 72)
 
-TextButton.Size = UDim2.new(0, 150, 0, 70)
-TextButton.TextSize = 14
-TextButton.TextWrapped = true
-TextButton.Position = UDim2.new(0.5, -75, 0.5, -35)
-elseif command == "/e showsets" then
-PredictionTextBox.Visible = true
-XPredictionTextBox.Visible = true
-YPredictionTextBox.Visible = true
-SmoothnessTextBox.Visible = true
-Frame.Size = UDim2.new(0, 210, 0, 210)
+      TextButton.Size = UDim2.new(0, 150, 0, 70)
+      TextButton.TextSize = 14
+      TextButton.TextWrapped = true
+      TextButton.Position = UDim2.new(0.5, -75, 0.5, -35)
+  elseif command == "/e showsets" then
+      PredictionTextBox.Visible = true
+      XPredictionTextBox.Visible = true
+      YPredictionTextBox.Visible = true
+      SmoothnessTextBox.Visible = true
+      Frame.Size = UDim2.new(0, 210, 0, 210)
 
-TextButton.Size = UDim2.new(0, 170, 0, 50)
-TextButton.TextSize = 24
-TextButton.Position = UDim2.new(0.5, -85, 0.020, 0)
-end
+      TextButton.Size = UDim2.new(0, 170, 0, 50)
+      TextButton.TextSize = 24
+      TextButton.Position = UDim2.new(0.5, -85, 0.020, 0)
+  elseif command == "/e cmds" then
+      if not notificationSent then
+          NotificationLoad:NewNotification({
+              ["Mode"] = "Custom",
+              ["Title"] = "Command List 1:",
+              ["Description"] = "Here's The Commands List 1: Type /e hidepolo To Hide Polo Gui /e showpolo To Show Polo Gui.",
+              ["Notification_Image"] = "rbxassetid://18985517155",
+              ["Notification_Sound"] = "rbxassetid://5153734608",
+              ["Timeout"] = 10,
+              ["Audio"] = true
+          })
+
+          NotificationLoad:NewNotification({
+              ["Mode"] = "Custom",
+              ["Title"] = "Command List 2:",
+              ["Description"] = "Here's The Commands List 2: Type /e hidesets To Hide The Settings /e showsets To Show The Settings And /e cmds To See The Cmds.",
+              ["Notification_Image"] = "rbxassetid://18985517155",
+              ["Notification_Sound"] = "rbxassetid://5153734608",
+              ["Timeout"] = 10,
+              ["Audio"] = true
+          })
+
+          notificationSent = true
+      end
+  end
 end
 
 game:GetService("Players").LocalPlayer.Chatted:Connect(function(message)
-onCommand(message)
+  onCommand(message)
 end)
 
 -- Notifications
@@ -496,7 +530,7 @@ wait(2)
 NotificationLoad:NewNotification({
 ["Mode"] = "Custom",
 ["Title"] = "Command List 1:",
-["Description"] = "Heres The Commands List 1 : Type /e hidepolo To Hide Polo Gui /e showpolo To Show Polo Gui.",
+["Description"] = "1: Type /e hidepolo To Hide Polo Gui /e showpolo To Show Polo Gui /e cmds To See The Cmds Again.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
 ["Timeout"] = 60,
@@ -507,7 +541,7 @@ wait(2)
 NotificationLoad:NewNotification({
 ["Mode"] = "Custom",
 ["Title"] = "Command List 2:",
-["Description"] = "Heres The Commands List 2: Type /e hidesets To Hide The Settings /e showsets To Show The Settings.",
+["Description"] = "2: Type /e hidesets To Hide The Settings /e showsets To Show The Settings.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
 ["Timeout"] = 60,
@@ -518,7 +552,7 @@ wait(2)
 NotificationLoad:NewNotification({
 ["Mode"] = "Custom",
 ["Title"] = "Credits:",
-["Description"] = "Credits To sh4k4r6o On Discord For Making The Gui And Commands And The Notification And The Draggable Gui.",
+["Description"] = "Credits To sh4k4r6o On Discord Modifying The Free Version To A Better One.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
 ["Timeout"] = 60,
