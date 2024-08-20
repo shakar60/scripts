@@ -1,26 +1,24 @@
+-- OriumV1 Settings Script
+
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local CoreGui = game:GetService("CoreGui")
+
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local CamlockState = false
 local Prediction = 0.1707779
-local HorizontalPrediction = 0.176073
-local VerticalPrediction = 0.167092
-local XPrediction = 0.1300
-local YPrediction = 0.1300
+local XPrediction = 0.176073
+local YPrediction = 0.167092
 local Smoothness = 0.3
-
-local Players = game:GetService("Players")    
-local LP = Players.LocalPlayer    
-local Mouse = LP:GetMouse()    
-
 local Locked = true
-getgenv().Key = "q"
+getgenv().Key = Enum.KeyCode.Q
 
+-- Find Nearest Enemy Function
 function FindNearestEnemy()
     local ClosestDistance, ClosestPlayer = math.huge, nil
-    local CenterPosition =
-        Vector2.new(
+    local CenterPosition = Vector2.new(
         game:GetService("GuiService"):GetScreenResolution().X / 2,
         game:GetService("GuiService"):GetScreenResolution().Y / 2
     )
@@ -29,8 +27,8 @@ function FindNearestEnemy()
         if Player ~= LocalPlayer then
             local Character = Player.Character
             if Character and Character:FindFirstChild("HumanoidRootPart") and Character.Humanoid.Health > 0 then
-                local Position, IsVisibleOnViewport =
-                    game:GetService("Workspace").CurrentCamera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
+                local Position, IsVisibleOnViewport = 
+                    workspace.CurrentCamera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
 
                 if IsVisibleOnViewport then
                     local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
@@ -52,49 +50,53 @@ local function Smooth(targetCFrame, currentCFrame, smoothness)
     return currentCFrame:Lerp(targetCFrame, smoothness)
 end
 
-RunService.Heartbeat:Connect(
-    function()
-        if CamlockState and enemy then
-            local camera = workspace.CurrentCamera
-            local targetCFrame = CFrame.new(camera.CFrame.p, enemy.Position + enemy.Velocity * Prediction)
-            camera.CFrame = Smooth(targetCFrame, camera.CFrame, Smoothness)
-        end
+RunService.Heartbeat:Connect(function()
+    if CamlockState and enemy then
+        local camera = workspace.CurrentCamera
+        local targetPosition = enemy.Position + enemy.Velocity * Prediction
+        targetPosition = Vector3.new(targetPosition.X + XPrediction, targetPosition.Y + YPrediction, targetPosition.Z)
+        
+        local currentPosition = camera.CFrame.Position
+        local newPosition = currentPosition:Lerp(targetPosition, Smoothness)
+        
+        camera.CFrame = CFrame.new(newPosition, targetPosition)
     end
-)
-
-Mouse.KeyDown:Connect(function(k)    
-    if k == getgenv().Key then    
-        Locked = not Locked    
-        if Locked then    
-            enemy = FindNearestEnemy()
-            CamlockState = true
-        else    
-            if enemy ~= nil then    
-                enemy = nil    
-                CamlockState = false
-            end    
-        end    
-    end    
 end)
 
-local Blud = Instance.new("ScreenGui")
+-- Toggle Camlock on Key Press
+UserInputService.InputBegan:Connect(function(input)
+    if input.KeyCode == getgenv().Key then
+        Locked = not Locked
+        if Locked then
+            enemy = FindNearestEnemy()
+            CamlockState = true
+        else
+            if enemy then
+                enemy = nil
+                CamlockState = false
+            end
+        end
+    end
+end)
+
+-- GUI Setup
+local BladLock = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local UICorner = Instance.new("UICorner")
 local TextButton = Instance.new("TextButton")
 local UICorner_2 = Instance.new("UICorner")
 
--- Properties:
-Blud.Name = "Blud"
-Blud.Parent = game.CoreGui
-Blud.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+BladLock.Name = "OriumV1"
+BladLock.Parent = CoreGui
+BladLock.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-Frame.Parent = Blud
+Frame.Parent = BladLock
 Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Frame.BackgroundTransparency = 0.8 -- Increased transparency
+Frame.BackgroundTransparency = 0.8
 Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Frame.BorderSizePixel = 0
-Frame.Position = UDim2.new(0.5, -50, 0, 0)
-Frame.Size = UDim2.new(0, 200, 0, 70) 
+Frame.Position = UDim2.new(0.5, -105, 0.3, 0)
+Frame.Size = UDim2.new(0, 210, 0, 210)
 Frame.Active = true
 Frame.Draggable = true
 
@@ -102,17 +104,19 @@ UICorner.Parent = Frame
 
 TextButton.Parent = Frame
 TextButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-TextButton.BackgroundTransparency = 0.8 -- Increased transparency
+TextButton.BackgroundTransparency = 1
 TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 TextButton.BorderSizePixel = 0
-TextButton.Position = UDim2.new(0.1, 0, 0.1, 0)
-TextButton.Size = UDim2.new(0.8, 0, 0.8, 0) 
+TextButton.Position = UDim2.new(0.5, -85, 0.020, 0)
+TextButton.Size = UDim2.new(0, 170, 0, 50)
 TextButton.Font = Enum.Font.SourceSansSemibold
 TextButton.Text = "OriumV1 OFF"
-TextButton.TextColor3 = Color3.fromRGB(255, 255, 255) 
+TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextButton.TextScaled = true
-TextButton.TextSize = 11.000
+TextButton.TextSize = 24
 TextButton.TextWrapped = true
+
+UICorner_2.Parent = TextButton
 
 TextButton.MouseButton1Click:Connect(function()
     CamlockState = not CamlockState
@@ -120,4 +124,185 @@ TextButton.MouseButton1Click:Connect(function()
     enemy = CamlockState and FindNearestEnemy() or nil
 end)
 
-UICorner_2.Parent = TextButton
+-- Create TextBox Function
+local function createTextBox(parent, name, displayName, positionOffset, size, placeholder, text, changeCallback, outlineColor)
+    local textBox = Instance.new("TextBox")
+    textBox.Parent = parent
+    textBox.Name = name
+    textBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    textBox.Position = positionOffset
+    textBox.Size = size
+    textBox.PlaceholderText = displayName
+    textBox.Text = placeholder
+    textBox.ClearTextOnFocus = true
+    textBox.BorderSizePixel = 2
+    textBox.BorderColor3 = outlineColor or Color3.fromRGB(0, 0, 0)
+    textBox.TextScaled = true
+    textBox.Font = Enum.Font.SourceSans
+    textBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+    textBox.TextStrokeTransparency = 0.8
+    textBox.TextSize = 14
+
+    local function updateText()
+        textBox.Text = tostring(text)
+    end
+    updateText()
+
+    textBox.Focused:Connect(function()
+        if textBox.Text == displayName then
+            textBox.Text = ""
+        end
+    end)
+
+    textBox.FocusLost:Connect(function()
+        if textBox.Text == "" then
+            textBox.Text = displayName
+        else
+            local value = tonumber(textBox.Text)
+            if value then
+                changeCallback(value)
+            end
+        end
+    end)
+
+    return textBox
+end
+
+local function getDefaultText(value)
+    return value or "0"
+end
+
+local baseY = 60
+local spacing = 35
+
+-- TextBoxes
+local PredictionTextBox = createTextBox(
+    Frame,
+    "PredictionTextBox",
+    "Enter Prediction",
+    UDim2.new(0, 15, 0, baseY),
+    UDim2.new(0, 180, 0, 30),
+    "Prediction: " .. tostring(Prediction),
+    getDefaultText(Prediction),
+    function(value) Prediction = value end,
+    Color3.fromRGB(0, 0, 0)
+)
+
+local XPredictionTextBox = createTextBox(
+    Frame,
+    "XPredictionTextBox",
+    "Enter X Prediction",
+    UDim2.new(0, 15, 0, baseY + spacing),
+    UDim2.new(0, 180, 0, 30),
+    "X Prediction: " .. tostring(XPrediction),
+    getDefaultText(XPrediction),
+    function(value) XPrediction = value end,
+    Color3.fromRGB(0, 0, 0)
+)
+
+local YPredictionTextBox = createTextBox(
+    Frame,
+    "YPredictionTextBox",
+    "Enter Y Prediction",
+    UDim2.new(0, 15, 0, baseY + spacing * 2),
+    UDim2.new(0, 180, 0, 30),
+    "Y Prediction: " .. tostring(YPrediction),
+    getDefaultText(YPrediction),
+    function(value) YPrediction = value end,
+    Color3.fromRGB(0, 0, 0)
+)
+
+local SmoothnessTextBox = createTextBox(
+    Frame,
+    "SmoothnessTextBox",
+    "Enter Smoothness",
+    UDim2.new(0, 15, 0, baseY + spacing * 3),
+    UDim2.new(0, 180, 0, 30),
+    "Smoothness: " .. tostring(Smoothness),
+    getDefaultText(Smoothness),
+    function(value) Smoothness = value end,
+    Color3.fromRGB(0, 0, 0)
+)
+
+-- Commands
+local function onCommand(command)
+if command == "/e hideorium" then
+if BladLock then
+BladLock.Enabled = false
+end
+elseif command == "/e showorium" then
+if BladLock then
+BladLock.Enabled = true
+end
+elseif command == "/e hidesets" then
+PredictionTextBox.Visible = false
+XPredictionTextBox.Visible = false
+YPredictionTextBox.Visible = false
+SmoothnessTextBox.Visible = false
+Frame.Size = UDim2.new(0, 152, 0, 72)
+
+TextButton.Size = UDim2.new(0, 150, 0, 70)
+TextButton.TextSize = 14
+TextButton.TextWrapped = true
+TextButton.Position = UDim2.new(0.5, -75, 0.5, -35)
+elseif command == "/e showsets" then
+PredictionTextBox.Visible = true
+XPredictionTextBox.Visible = true
+YPredictionTextBox.Visible = true
+SmoothnessTextBox.Visible = true
+Frame.Size = UDim2.new(0, 210, 0, 210)
+
+TextButton.Size = UDim2.new(0, 170, 0, 50)
+TextButton.TextSize = 24
+TextButton.Position = UDim2.new(0.5, -85, 0.020, 0)
+end
+end
+
+game:GetService("Players").LocalPlayer.Chatted:Connect(function(message)
+onCommand(message)
+end)
+
+-- Notifications
+
+NotificationLoad:NewNotification({
+["Mode"] = "Custom",
+["Title"] = "Polos Camlock Loaded!",
+["Description"] = "Welcome User! Oriums Camlock Is An Camlock Script That Aims For You In Any Game.",
+["Notification_Image"] = "rbxassetid://18985517155",
+["Notification_Sound"] = "rbxassetid://5153734608",
+["Timeout"] = 10,
+["Audio"] = true
+})
+
+wait(2)
+NotificationLoad:NewNotification({
+["Mode"] = "Custom",
+["Title"] = "Command List 1:",
+["Description"] = "Heres The Commands List 1 : Type /e hideorium To Hide orium Gui /e showorium To Show orium Gui.",
+["Notification_Image"] = "rbxassetid://18985517155",
+["Notification_Sound"] = "rbxassetid://5153734608",
+["Timeout"] = 60,
+["Audio"] = true
+})
+
+wait(2)
+NotificationLoad:NewNotification({
+["Mode"] = "Custom",
+["Title"] = "Command List 2:",
+["Description"] = "Heres The Commands List 2: Type /e hidesets To Hide The Settings /e showsets To Show The Settings.",
+["Notification_Image"] = "rbxassetid://18985517155",
+["Notification_Sound"] = "rbxassetid://5153734608",
+["Timeout"] = 60,
+["Audio"] = true
+})
+
+wait(2)
+NotificationLoad:NewNotification({
+["Mode"] = "Custom",
+["Title"] = "Credits:",
+["Description"] = "Credits To sh4k4r6o On Discord And gragrillz.",
+["Notification_Image"] = "rbxassetid://18985517155",
+["Notification_Sound"] = "rbxassetid://5153734608",
+["Timeout"] = 60,
+["Audio"] = true
+})
