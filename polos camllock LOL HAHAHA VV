@@ -1,4 +1,86 @@
-wait(1)
+-- Services
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+
+-- Variables
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+-- Create ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "BlurGui"
+screenGui.Parent = PlayerGui
+
+-- Create BlurEffect
+local blurEffect = Instance.new("BlurEffect")
+blurEffect.Name = "BlurEffect"
+blurEffect.Size = 0
+blurEffect.Parent = game:GetService("Lighting")
+
+-- Create TextLabel
+local textLabel = Instance.new("TextLabel")
+textLabel.Name = "TextLabel"
+textLabel.Parent = screenGui
+textLabel.BackgroundTransparency = 1
+textLabel.Position = UDim2.new(0.5, -200, 0.5, -50)
+textLabel.Size = UDim2.new(0, 400, 0, 100)
+textLabel.Font = Enum.Font.SourceSans
+textLabel.Text = "POLOS SKIDDED CAMLOCK LOADING.."
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.TextScaled = true
+textLabel.TextStrokeTransparency = 0.8
+textLabel.TextSize = 40
+
+-- Add a UIStroke for rainbow effect
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Parent = textLabel
+UIStroke.Thickness = 2
+UIStroke.Transparency = 0.5
+
+-- Function to create a rainbow effect for the UIStroke and text color
+local function RainbowEffect()
+    local hue = 0
+    while screenGui and screenGui.Parent do
+        hue = (hue + 1) % 360
+        local color = Color3.fromHSV(hue / 360, 1, 1)
+        UIStroke.Color = color
+        textLabel.TextColor3 = color
+        wait(0.01)
+    end
+end
+
+-- Start the rainbow effect
+spawn(RainbowEffect)
+
+-- Tweening for blur effect
+local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
+local goal = {Size = 20}
+local tween = TweenService:Create(blurEffect, tweenInfo, goal)
+
+-- Show blur and text
+tween:Play()
+
+-- Countdown effect with dots
+local function Countdown()
+    local countdowns = {".", "..", "…"}
+    for i = 1, #countdowns do
+        textLabel.Text = "POLOS SKIDDED CAMLOCK LOADING" .. countdowns[i]
+        wait(1) -- Wait for 1 second before updating the text
+    end
+end
+
+-- Run countdown
+Countdown()
+
+-- Update text to loaded message and clean up
+textLabel.Text = "LOADED POLOS CAMLOCK"
+wait(0.5) -- Wait for 0.5 seconds before destroying
+
+-- Destroy blur effect and text label
+screenGui:Destroy()
+blurEffect:Destroy()
+
+wait(3.5)
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
