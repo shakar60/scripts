@@ -25,7 +25,7 @@ textLabel.BackgroundTransparency = 1
 textLabel.Position = UDim2.new(0.5, -200, 0.5, -50)
 textLabel.Size = UDim2.new(0, 400, 0, 100)
 textLabel.Font = Enum.Font.SourceSans
-textLabel.Text = "POLOS SKIDDED CAMLOCK LOADING.."
+textLabel.Text = "change this to what you want Loading.."
 textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 textLabel.TextScaled = true
 textLabel.TextStrokeTransparency = 0.8
@@ -64,7 +64,7 @@ tween:Play()
 local function Countdown()
     local countdowns = {".", "..", "…"}
     for i = 1, #countdowns do
-        textLabel.Text = "POLOS SKIDDED CAMLOCK LOADING" .. countdowns[i]
+        textLabel.Text = "change this to what you want" .. countdowns[i]
         wait(1) -- Wait for 1 second before updating the text
     end
 end
