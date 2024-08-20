@@ -6,6 +6,20 @@ local TweenService = game:GetService("TweenService")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
+-- Settings
+local settings = {
+    guiDuration = 3,  -- Total duration for the entire GUI before it gets destroyed
+    mainText = "Polos Skidded Camlock",  -- Custom main text
+    loadingText = "Polos Camlock LOADING",  -- Custom loading text
+    loadedText = "LOADED POLOS CAMLOCK",  -- Custom loaded text
+    creditsText = "Credits To sh4k4r6o For Making The Loading Gui.",  -- Custom credits text
+    fontSettings = {
+        mainTextFont = Enum.Font.Arcade,  -- Font for main text
+        creditsFont = Enum.Font.Arcade,  -- Font for credits text
+        countdownFont = Enum.Font.Arcade  -- Font for countdown text
+    }
+}
+
 -- Create ScreenGui
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "BlurGui"
@@ -17,40 +31,76 @@ blurEffect.Name = "BlurEffect"
 blurEffect.Size = 0
 blurEffect.Parent = game:GetService("Lighting")
 
--- Create TextLabel
+-- Create Main TextLabel
 local textLabel = Instance.new("TextLabel")
 textLabel.Name = "TextLabel"
 textLabel.Parent = screenGui
 textLabel.BackgroundTransparency = 1
 textLabel.Position = UDim2.new(0.5, -200, 0.5, -50)
 textLabel.Size = UDim2.new(0, 400, 0, 100)
-textLabel.Font = Enum.Font.SourceSans
-textLabel.Text = "change this to what you want Loading.."
+textLabel.Font = settings.fontSettings.mainTextFont
+textLabel.Text = settings.mainText
 textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 textLabel.TextScaled = true
 textLabel.TextStrokeTransparency = 0.8
 textLabel.TextSize = 40
 
--- Add a UIStroke for rainbow effect
-local UIStroke = Instance.new("UIStroke")
-UIStroke.Parent = textLabel
-UIStroke.Thickness = 2
-UIStroke.Transparency = 0.5
+-- Create Credits TextLabel
+local creditsLabel = Instance.new("TextLabel")
+creditsLabel.Name = "CreditsLabel"
+creditsLabel.Parent = screenGui
+creditsLabel.BackgroundTransparency = 1
+creditsLabel.Position = UDim2.new(0.5, -200, 0.5, 60) -- Positioned below the main text
+creditsLabel.Size = UDim2.new(0, 400, 0, 50)
+creditsLabel.Font = settings.fontSettings.creditsFont
+creditsLabel.Text = settings.creditsText
+creditsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+creditsLabel.TextScaled = true
+creditsLabel.TextStrokeTransparency = 0.8
+creditsLabel.TextSize = 8 -- Adjusted text size to 8
 
--- Function to create a rainbow effect for the UIStroke and text color
-local function RainbowEffect()
-    local hue = 0
-    while screenGui and screenGui.Parent do
-        hue = (hue + 1) % 360
-        local color = Color3.fromHSV(hue / 360, 1, 1)
-        UIStroke.Color = color
-        textLabel.TextColor3 = color
-        wait(0.01)
+-- Create Countdown TextLabel
+local countdownLabel = Instance.new("TextLabel")
+countdownLabel.Name = "CountdownLabel"
+countdownLabel.Parent = screenGui
+countdownLabel.BackgroundTransparency = 1
+countdownLabel.Position = UDim2.new(0.5, -200, 0.5, -100) -- Positioned above the main text
+countdownLabel.Size = UDim2.new(0, 400, 0, 50)
+countdownLabel.Font = settings.fontSettings.countdownFont
+countdownLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+countdownLabel.TextScaled = true
+countdownLabel.TextStrokeTransparency = 0.8
+countdownLabel.TextSize = 20 -- Adjusted text size to 20
+countdownLabel.Text = ""  -- Initially empty
+countdownLabel.Visible = false  -- Initially hidden
+
+-- Add a UIStroke for rainbow effect
+local function ApplyRainbowEffect(label)
+    local UIStroke = Instance.new("UIStroke")
+    UIStroke.Parent = label
+    UIStroke.Thickness = 2
+    UIStroke.Transparency = 0.5
+    
+    -- Function to create a rainbow effect for the UIStroke and text color
+    local function RainbowEffect()
+        local hue = 0
+        while label and label.Parent do
+            hue = (hue + 1) % 360
+            local color = Color3.fromHSV(hue / 360, 1, 1)
+            UIStroke.Color = color
+            label.TextColor3 = color
+            wait(0.01)
+        end
     end
+
+    -- Start the rainbow effect
+    spawn(RainbowEffect)
 end
 
--- Start the rainbow effect
-spawn(RainbowEffect)
+-- Apply rainbow effect to main text, credits text, and countdown text
+ApplyRainbowEffect(textLabel)
+ApplyRainbowEffect(creditsLabel)
+ApplyRainbowEffect(countdownLabel)
 
 -- Tweening for blur effect
 local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
@@ -62,19 +112,32 @@ tween:Play()
 
 -- Countdown effect with dots
 local function Countdown()
-    local countdowns = {".", "..", "…"}
+    local countdowns = {".", "..", "...", "....", "....."}
     for i = 1, #countdowns do
-        textLabel.Text = "change this to what you want" .. countdowns[i]
+        textLabel.Text = settings.loadingText .. countdowns[i]
         wait(1) -- Wait for 1 second before updating the text
     end
 end
 
--- Run countdown
+-- Function to update the countdown label
+local function UpdateCountdownLabel()
+    local timeLeft = settings.guiDuration
+    countdownLabel.Visible = true  -- Show countdown label when starting countdown
+    while timeLeft > 0 do
+        countdownLabel.Text = "Please wait " .. timeLeft .. " seconds"
+        wait(1)
+        timeLeft = timeLeft - 1
+    end
+    countdownLabel.Text = "Please wait 0 seconds"  -- Display final message
+end
+
+-- Run countdown for loading text and countdown label
 Countdown()
+UpdateCountdownLabel()
 
 -- Update text to loaded message and clean up
-textLabel.Text = "LOADED POLOS CAMLOCK"
-wait(0.5) -- Wait for 0.5 seconds before destroying
+textLabel.Text = settings.loadedText
+wait(1) -- Wait for 1 second before destroying
 
 -- Destroy blur effect and text label
 screenGui:Destroy()
