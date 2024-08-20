@@ -1,8 +1,6 @@
--- Services
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 
--- Variables
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -14,17 +12,23 @@ local settings = {
     showLoadedText = true,  -- Toggle loaded text
     rainbowEffect = true,  -- Toggle rainbow effect on text
     blurEnabled = true,  -- Toggle blur effect
-    creditText = "Credits to sh4k4r6o FOR MAKING THE LOADING GUI",  -- Custom credit text
-    mainText = "Orium Gui By Gragrillz Credits to Shakar",  -- Custom main text
+    creditText = "Credits to sh4k4r6o On Discord For Making The Loading Gui",  -- Custom credit text
+    mainText = "Orium Gui By gragrillz Credits to sh4k4r6o",  -- Custom main text
     loadingText = "Orium Gui LOADING",  -- Custom loading text
     loadedText = "LOADED ORIUMS GUI",  -- Custom loaded text
-    creditDuration = 2.5,  -- Duration to show credit text
+    creditDuration = 3.5,  -- Duration to show credit text
     mainTextDuration = 2.5,  -- Duration to show main text
     loadingTextDuration = 4,  -- Duration for the loading text and dots
     loadedTextDuration = 0.5,  -- Duration to show loaded text
-    guiDuration = 3,  -- Total duration for the entire GUI before it gets destroyed
+    guiDuration = 10,  -- Total duration for the entire GUI before it gets destroyed
     fadeEnabled = true,  -- Toggle fade effect
-    fadeDuration = 1  -- Duration of the fade effect in seconds
+    fadeDuration = 2,  -- Duration of the fade effect in seconds
+    fontSettings = {
+        mainTextFont = Enum.Font.Arcade,  -- Font for main text
+        creditsFont = Enum.Font.Arcade,  -- Font for credits text
+        loadingTextFont = Enum.Font.Arcade,  -- Font for loading text
+        loadedTextFont = Enum.Font.Arcade  -- Font for loaded text
+    }
 }
 
 local function applyFadeEffect(element, duration)
@@ -53,7 +57,7 @@ textLabel.Parent = screenGui
 textLabel.BackgroundTransparency = 1
 textLabel.Position = UDim2.new(0.5, -200, 0.5, -50)
 textLabel.Size = UDim2.new(0, 400, 0, 100)
-textLabel.Font = Enum.Font.Arcade
+textLabel.Font = settings.fontSettings.mainTextFont
 textLabel.Text = settings.mainText
 textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 textLabel.TextScaled = true
@@ -68,12 +72,44 @@ if settings.showCredits then
     creditsLabel.BackgroundTransparency = 1
     creditsLabel.Position = UDim2.new(0.5, -200, 0.5, 60)
     creditsLabel.Size = UDim2.new(0, 400, 0, 50)
-    creditsLabel.Font = Enum.Font.Arcade
+    creditsLabel.Font = settings.fontSettings.creditsFont
     creditsLabel.Text = settings.creditText
     creditsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     creditsLabel.TextScaled = true
     creditsLabel.TextStrokeTransparency = 0.8
     creditsLabel.TextSize = 8
+end
+
+local loadingLabel
+if settings.showLoadingText then
+    loadingLabel = Instance.new("TextLabel")
+    loadingLabel.Name = "LoadingLabel"
+    loadingLabel.Parent = screenGui
+    loadingLabel.BackgroundTransparency = 1
+    loadingLabel.Position = UDim2.new(0.5, -200, 0.5, -50)
+    loadingLabel.Size = UDim2.new(0, 400, 0, 100)
+    loadingLabel.Font = settings.fontSettings.loadingTextFont
+    loadingLabel.Text = settings.loadingText
+    loadingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    loadingLabel.TextScaled = true
+    loadingLabel.TextStrokeTransparency = 0.8
+    loadingLabel.TextSize = 40
+end
+
+local loadedLabel
+if settings.showLoadedText then
+    loadedLabel = Instance.new("TextLabel")
+    loadedLabel.Name = "LoadedLabel"
+    loadedLabel.Parent = screenGui
+    loadedLabel.BackgroundTransparency = 1
+    loadedLabel.Position = UDim2.new(0.5, -200, 0.5, -50)
+    loadedLabel.Size = UDim2.new(0, 400, 0, 100)
+    loadedLabel.Font = settings.fontSettings.loadedTextFont
+    loadedLabel.Text = settings.loadedText
+    loadedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    loadedLabel.TextScaled = true
+    loadedLabel.TextStrokeTransparency = 0.8
+    loadedLabel.TextSize = 40
 end
 
 local function ApplyRainbowEffect(label)
@@ -101,6 +137,12 @@ if settings.rainbowEffect then
     if creditsLabel then
         ApplyRainbowEffect(creditsLabel)
     end
+    if loadingLabel then
+        ApplyRainbowEffect(loadingLabel)
+    end
+    if loadedLabel then
+        ApplyRainbowEffect(loadedLabel)
+    end
 end
 
 local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
@@ -115,7 +157,7 @@ local function Countdown()
     local countdowns = {".", "..", "...", "....", ".....", "......", ".......", "........", ".........", ".........."}
     for i = 1, #countdowns do
         if settings.showLoadingText then
-            textLabel.Text = settings.loadingText .. countdowns[i]
+            loadingLabel.Text = settings.loadingText .. countdowns[i]
         end
         wait(1)
     end
@@ -139,7 +181,15 @@ if settings.fadeEnabled then
     if creditsLabel then
         fadeTween = applyFadeEffect(creditsLabel, settings.fadeDuration)
     end
-    fadeTween = applyFadeEffect(textLabel, settings.fadeDuration)
+    if textLabel then
+        fadeTween = applyFadeEffect(textLabel, settings.fadeDuration)
+    end
+    if loadingLabel then
+        fadeTween = applyFadeEffect(loadingLabel, settings.fadeDuration)
+    end
+    if loadedLabel then
+        fadeTween = applyFadeEffect(loadedLabel, settings.fadeDuration)
+    end
     if blurEffect then
         fadeTween = applyFadeEffect(blurEffect, settings.fadeDuration)
     end
