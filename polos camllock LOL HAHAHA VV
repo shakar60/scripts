@@ -1,3 +1,4 @@
+wait(1)
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
@@ -20,26 +21,26 @@ getgenv().Key = Enum.KeyCode.Q
 function FindNearestEnemy()
 local ClosestDistance, ClosestPlayer = math.huge, nil
 local CenterPosition = Vector2.new(
-    game:GetService("GuiService"):GetScreenResolution().X / 2,
-    game:GetService("GuiService"):GetScreenResolution().Y / 2
+game:GetService("GuiService"):GetScreenResolution().X / 2,
+game:GetService("GuiService"):GetScreenResolution().Y / 2
 )
 
 for _, Player in ipairs(game:GetService("Players"):GetPlayers()) do
-    if Player ~= LocalPlayer then
-        local Character = Player.Character
-        if Character and Character:FindFirstChild("HumanoidRootPart") and Character.Humanoid.Health > 0 then
-            local Position, IsVisibleOnViewport = 
-                workspace.CurrentCamera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
+if Player ~= LocalPlayer then
+    local Character = Player.Character
+    if Character and Character:FindFirstChild("HumanoidRootPart") and Character.Humanoid.Health > 0 then
+        local Position, IsVisibleOnViewport = 
+            workspace.CurrentCamera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
 
-            if IsVisibleOnViewport then
-                local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
-                if Distance < ClosestDistance then
-                    ClosestPlayer = Character.HumanoidRootPart
-                    ClosestDistance = Distance
-                end
+        if IsVisibleOnViewport then
+            local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
+            if Distance < ClosestDistance then
+                ClosestPlayer = Character.HumanoidRootPart
+                ClosestDistance = Distance
             end
         end
     end
+end
 end
 
 return ClosestPlayer
@@ -49,14 +50,14 @@ local enemy = nil
 
 RunService.Heartbeat:Connect(function()
 if CamlockState and enemy then
-    local camera = workspace.CurrentCamera
-    local targetPosition = enemy.Position + enemy.Velocity * Prediction
-    targetPosition = Vector3.new(targetPosition.X + XPrediction, targetPosition.Y + YPrediction, targetPosition.Z)
+local camera = workspace.CurrentCamera
+local targetPosition = enemy.Position + enemy.Velocity * Prediction
+targetPosition = Vector3.new(targetPosition.X + XPrediction, targetPosition.Y + YPrediction, targetPosition.Z)
 
-    local currentPosition = camera.CFrame.Position
-    local newPosition = currentPosition:Lerp(targetPosition, Smoothness)
+local currentPosition = camera.CFrame.Position
+local newPosition = currentPosition:Lerp(targetPosition, Smoothness)
 
-    camera.CFrame = CFrame.new(newPosition, targetPosition)
+camera.CFrame = CFrame.new(newPosition, targetPosition)
 end
 end)
 
@@ -64,34 +65,34 @@ end)
 
 UserInputService.InputBegan:Connect(function(input)
 if input.KeyCode == getgenv().Key then
-    Locked = not Locked
-    if Locked then
-        enemy = FindNearestEnemy()
-        CamlockState = true
+Locked = not Locked
+if Locked then
+    enemy = FindNearestEnemy()
+    CamlockState = true
+    NotificationLoad:NewNotification({
+        ["Mode"] = "Custom",
+        ["Title"] = "Polos Camlock",
+        ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
+        ["Notification_Image"] = "rbxassetid://18985517155",
+        ["Notification_Sound"] = "",
+        ["Timeout"] = 2,
+        ["Audio"] = false
+    })
+else
+    if enemy then
+        enemy = nil
+        CamlockState = false
         NotificationLoad:NewNotification({
             ["Mode"] = "Custom",
             ["Title"] = "Polos Camlock",
-            ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
+            ["Description"] = "Unlocked",
             ["Notification_Image"] = "rbxassetid://18985517155",
             ["Notification_Sound"] = "",
             ["Timeout"] = 2,
             ["Audio"] = false
         })
-    else
-        if enemy then
-            enemy = nil
-            CamlockState = false
-            NotificationLoad:NewNotification({
-                ["Mode"] = "Custom",
-                ["Title"] = "Polos Camlock",
-                ["Description"] = "Unlocked",
-                ["Notification_Image"] = "rbxassetid://18985517155",
-                ["Notification_Sound"] = "",
-                ["Timeout"] = 2,
-                ["Audio"] = false
-            })
-        end
     end
+end
 end
 end)
 
@@ -140,31 +141,31 @@ local state = true
 TextButton.MouseButton1Click:Connect(function()
 state = not state
 if not state then
-    TextButton.Text = "Polos Camlock On"
-    CamlockState = true
-    enemy = FindNearestEnemy()
-    NotificationLoad:NewNotification({
-        ["Mode"] = "Custom",
-        ["Title"] = "Polos Camlock",
-        ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
-        ["Notification_Image"] = "rbxassetid://18985517155",
-        ["Notification_Sound"] = "",
-        ["Timeout"] = 2,
-        ["Audio"] = false
-    })
+TextButton.Text = "Polos Camlock On"
+CamlockState = true
+enemy = FindNearestEnemy()
+NotificationLoad:NewNotification({
+    ["Mode"] = "Custom",
+    ["Title"] = "Polos Camlock",
+    ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
+    ["Notification_Image"] = "rbxassetid://18985517155",
+    ["Notification_Sound"] = "",
+    ["Timeout"] = 2,
+    ["Audio"] = false
+})
 else
-    TextButton.Text = "Polos Camlock Off"
-    CamlockState = false
-    enemy = nil
-    NotificationLoad:NewNotification({
-        ["Mode"] = "Custom",
-        ["Title"] = "Polos Camlock",
-        ["Description"] = "Unlocked",
-        ["Notification_Image"] = "rbxassetid://18985517155",
-        ["Notification_Sound"] = "",
-        ["Timeout"] = 2,
-        ["Audio"] = false
-    })
+TextButton.Text = "Polos Camlock Off"
+CamlockState = false
+enemy = nil
+NotificationLoad:NewNotification({
+    ["Mode"] = "Custom",
+    ["Title"] = "Polos Camlock",
+    ["Description"] = "Unlocked",
+    ["Notification_Image"] = "rbxassetid://18985517155",
+    ["Notification_Sound"] = "",
+    ["Timeout"] = 2,
+    ["Audio"] = false
+})
 end
 end)
 
@@ -191,25 +192,25 @@ textBox.TextStrokeTransparency = 0.8
 textBox.TextSize = 14
 
 local function updateText()
-    textBox.Text = tostring(text)
+textBox.Text = tostring(text)
 end
 updateText()
 
 textBox.Focused:Connect(function()
-    if textBox.Text == displayName then
-        textBox.Text = ""
-    end
+if textBox.Text == displayName then
+    textBox.Text = ""
+end
 end)
 
 textBox.FocusLost:Connect(function()
-    if textBox.Text == "" then
-        textBox.Text = displayName
-    else
-        local value = tonumber(textBox.Text)
-        if value then
-            changeCallback(value)
-        end
+if textBox.Text == "" then
+    textBox.Text = displayName
+else
+    local value = tonumber(textBox.Text)
+    if value then
+        changeCallback(value)
     end
+end
 end)
 
 return textBox
@@ -275,34 +276,34 @@ Color3.fromRGB(0, 0, 0)
 -- Commands
 local function onCommand(command)
 if command == "/e hidepolo" then
-    if BladLock then
-        BladLock.Enabled = false
-    end
+if BladLock then
+    BladLock.Enabled = false
+end
 elseif command == "/e showpolo" then
-    if BladLock then
-        BladLock.Enabled = true
-    end
+if BladLock then
+    BladLock.Enabled = true
+end
 elseif command == "/e hidesets" then
-    PredictionTextBox.Visible = false
-    XPredictionTextBox.Visible = false
-    YPredictionTextBox.Visible = false
-    SmoothnessTextBox.Visible = false
-    Frame.Size = UDim2.new(0, 152, 0, 72)
+PredictionTextBox.Visible = false
+XPredictionTextBox.Visible = false
+YPredictionTextBox.Visible = false
+SmoothnessTextBox.Visible = false
+Frame.Size = UDim2.new(0, 152, 0, 72)
 
-    TextButton.Size = UDim2.new(0, 150, 0, 70)
-    TextButton.TextSize = 14
-    TextButton.TextWrapped = true
-    TextButton.Position = UDim2.new(0.5, -75, 0.5, -35)
+TextButton.Size = UDim2.new(0, 150, 0, 70)
+TextButton.TextSize = 14
+TextButton.TextWrapped = true
+TextButton.Position = UDim2.new(0.5, -75, 0.5, -35)
 elseif command == "/e showsets" then
-    PredictionTextBox.Visible = true
-    XPredictionTextBox.Visible = true
-    YPredictionTextBox.Visible = true
-    SmoothnessTextBox.Visible = true
-    Frame.Size = UDim2.new(0, 210, 0, 210)
+PredictionTextBox.Visible = true
+XPredictionTextBox.Visible = true
+YPredictionTextBox.Visible = true
+SmoothnessTextBox.Visible = true
+Frame.Size = UDim2.new(0, 210, 0, 210)
 
-    TextButton.Size = UDim2.new(0, 170, 0, 50)
-    TextButton.TextSize = 24
-    TextButton.Position = UDim2.new(0.5, -85, 0.020, 0)
+TextButton.Size = UDim2.new(0, 170, 0, 50)
+TextButton.TextSize = 24
+TextButton.Position = UDim2.new(0.5, -85, 0.020, 0)
 end
 end
 
@@ -333,7 +334,7 @@ NotificationLoad:NewNotification({
 ["Audio"] = true
 })
 
-wait(3)
+wait(2)
 NotificationLoad:NewNotification({
 ["Mode"] = "Custom",
 ["Title"] = "Command List 2:",
@@ -344,13 +345,13 @@ NotificationLoad:NewNotification({
 ["Audio"] = true
 })
 
-wait(4)
+wait(2)
 NotificationLoad:NewNotification({
 ["Mode"] = "Custom",
 ["Title"] = "Credits:",
-["Description"] = "Credits To Polo For Making The Camlock Also Credits To sh4k4r6o On Discord For Making The Gui And Commands.",
+["Description"] = "Credits To sh4k4r6o On Discord For Making The Gui And Commands And The Notification And The Draggable Gui.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
 ["Timeout"] = 60,
-["Audio"] = false
+["Audio"] = true
 })
