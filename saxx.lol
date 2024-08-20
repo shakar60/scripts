@@ -428,5 +428,5 @@ StarterGui:SetCore("SendNotification", {
 StarterGui:SetCore("SendNotification", {
     Title = "Credits";
     Text = "Credits To sh4k4r6o For Making All The Button And Esp Stuff,\nCredits To saxxgooder1 For The Lock Only";
-    Duration = 10;
+    Duration = 25;
 })
