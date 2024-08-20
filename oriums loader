@@ -8,7 +8,7 @@ local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
 -- Settings
 local settings = {
-    guiDuration = 10,  -- Total duration for the entire GUI before it gets destroyed
+    guiDuration = 3,  -- Total duration for the entire GUI before it gets destroyed
     mainText = "OriumGui By Gragrillz Credits To Shakar",  -- Custom main text
     loadingText = "Orium Gui LOADING",  -- Custom loading text
     loadedText = "LOADED POLOS CAMLOCK",  -- Custom loaded text
