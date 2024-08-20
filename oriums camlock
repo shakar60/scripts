@@ -1,0 +1,123 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local Mouse = LocalPlayer:GetMouse()
+local CamlockState = false
+local Prediction = 0.1707779
+local HorizontalPrediction = 0.176073
+local VerticalPrediction = 0.167092
+local XPrediction = 0.1300
+local YPrediction = 0.1300
+local Smoothness = 0.3
+
+local Players = game:GetService("Players")    
+local LP = Players.LocalPlayer    
+local Mouse = LP:GetMouse()    
+
+local Locked = true
+getgenv().Key = "q"
+
+function FindNearestEnemy()
+    local ClosestDistance, ClosestPlayer = math.huge, nil
+    local CenterPosition =
+        Vector2.new(
+        game:GetService("GuiService"):GetScreenResolution().X / 2,
+        game:GetService("GuiService"):GetScreenResolution().Y / 2
+    )
+
+    for _, Player in ipairs(game:GetService("Players"):GetPlayers()) do
+        if Player ~= LocalPlayer then
+            local Character = Player.Character
+            if Character and Character:FindFirstChild("HumanoidRootPart") and Character.Humanoid.Health > 0 then
+                local Position, IsVisibleOnViewport =
+                    game:GetService("Workspace").CurrentCamera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
+
+                if IsVisibleOnViewport then
+                    local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
+                    if Distance < ClosestDistance then
+                        ClosestPlayer = Character.HumanoidRootPart
+                        ClosestDistance = Distance
+                    end
+                end
+            end
+        end
+    end
+
+    return ClosestPlayer
+end
+
+local enemy = nil
+
+local function Smooth(targetCFrame, currentCFrame, smoothness)
+    return currentCFrame:Lerp(targetCFrame, smoothness)
+end
+
+RunService.Heartbeat:Connect(
+    function()
+        if CamlockState and enemy then
+            local camera = workspace.CurrentCamera
+            local targetCFrame = CFrame.new(camera.CFrame.p, enemy.Position + enemy.Velocity * Prediction)
+            camera.CFrame = Smooth(targetCFrame, camera.CFrame, Smoothness)
+        end
+    end
+)
+
+Mouse.KeyDown:Connect(function(k)    
+    if k == getgenv().Key then    
+        Locked = not Locked    
+        if Locked then    
+            enemy = FindNearestEnemy()
+            CamlockState = true
+        else    
+            if enemy ~= nil then    
+                enemy = nil    
+                CamlockState = false
+            end    
+        end    
+    end    
+end)
+
+local Blud = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local TextButton = Instance.new("TextButton")
+local UICorner_2 = Instance.new("UICorner")
+
+-- Properties:
+Blud.Name = "Blud"
+Blud.Parent = game.CoreGui
+Blud.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Frame.Parent = Blud
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BackgroundTransparency = 0.8 -- Increased transparency
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.5, -50, 0, 0)
+Frame.Size = UDim2.new(0, 200, 0, 70) 
+Frame.Active = true
+Frame.Draggable = true
+
+UICorner.Parent = Frame
+
+TextButton.Parent = Frame
+TextButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BackgroundTransparency = 0.8 -- Increased transparency
+TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BorderSizePixel = 0
+TextButton.Position = UDim2.new(0.1, 0, 0.1, 0)
+TextButton.Size = UDim2.new(0.8, 0, 0.8, 0) 
+TextButton.Font = Enum.Font.SourceSansSemibold
+TextButton.Text = "OriumV1 OFF"
+TextButton.TextColor3 = Color3.fromRGB(255, 255, 255) 
+TextButton.TextScaled = true
+TextButton.TextSize = 11.000
+TextButton.TextWrapped = true
+
+TextButton.MouseButton1Click:Connect(function()
+    CamlockState = not CamlockState
+    TextButton.Text = CamlockState and "OriumV1 ON" or "OriumV1 OFF"
+    enemy = CamlockState and FindNearestEnemy() or nil
+end)
+
+UICorner_2.Parent = TextButton
