@@ -225,41 +225,68 @@ local SmoothnessTextBox = createTextBox(
 )
 
 -- Commands
+
+-- Commands
+
 local function onCommand(command)
-if command == "/e hideorium" then
-if BladLock then
-BladLock.Enabled = false
-end
-elseif command == "/e showorium" then
-if BladLock then
-BladLock.Enabled = true
-end
-elseif command == "/e hidesets" then
-PredictionTextBox.Visible = false
-XPredictionTextBox.Visible = false
-YPredictionTextBox.Visible = false
-SmoothnessTextBox.Visible = false
-Frame.Size = UDim2.new(0, 152, 0, 72)
+  if command == "/e hideorium" then
+      if BladLock then
+          BladLock.Enabled = false
+      end
+  elseif command == "/e showorium" then
+      if BladLock then
+          BladLock.Enabled = true
+      end
+  elseif command == "/e hidesets" then
+      PredictionTextBox.Visible = false
+      XPredictionTextBox.Visible = false
+      YPredictionTextBox.Visible = false
+      SmoothnessTextBox.Visible = false
+      Frame.Size = UDim2.new(0, 152, 0, 72)
 
-TextButton.Size = UDim2.new(0, 150, 0, 70)
-TextButton.TextSize = 14
-TextButton.TextWrapped = true
-TextButton.Position = UDim2.new(0.5, -75, 0.5, -35)
-elseif command == "/e showsets" then
-PredictionTextBox.Visible = true
-XPredictionTextBox.Visible = true
-YPredictionTextBox.Visible = true
-SmoothnessTextBox.Visible = true
-Frame.Size = UDim2.new(0, 210, 0, 210)
+      TextButton.Size = UDim2.new(0, 150, 0, 70)
+      TextButton.TextSize = 14
+      TextButton.TextWrapped = true
+      TextButton.Position = UDim2.new(0.5, -75, 0.5, -35)
+  elseif command == "/e showsets" then
+      PredictionTextBox.Visible = true
+      XPredictionTextBox.Visible = true
+      YPredictionTextBox.Visible = true
+      SmoothnessTextBox.Visible = true
+      Frame.Size = UDim2.new(0, 210, 0, 210)
 
-TextButton.Size = UDim2.new(0, 170, 0, 50)
-TextButton.TextSize = 24
-TextButton.Position = UDim2.new(0.5, -85, 0.020, 0)
-end
+      TextButton.Size = UDim2.new(0, 170, 0, 50)
+      TextButton.TextSize = 24
+      TextButton.Position = UDim2.new(0.5, -85, 0.020, 0)
+  elseif command == "/e cmds" then
+      if not notificationSent then
+          NotificationLoad:NewNotification({
+              ["Mode"] = "Custom",
+              ["Title"] = "Command List 1:",
+              ["Description"] = "Here's The Commands List 1: Type /e hideorium To Hide The Orium Gui /e showorium To Show The Orium Gui.",
+              ["Notification_Image"] = "rbxassetid://18985517155",
+              ["Notification_Sound"] = "rbxassetid://5153734608",
+              ["Timeout"] = 10,
+              ["Audio"] = true
+          })
+wait(1)
+          NotificationLoad:NewNotification({
+              ["Mode"] = "Custom",
+              ["Title"] = "Command List 2:",
+              ["Description"] = "Here's The Commands List 2: Type /e hidesets To Hide The Settings /e showsets To Show The Settings.",
+              ["Notification_Image"] = "rbxassetid://18985517155",
+              ["Notification_Sound"] = "rbxassetid://5153734608",
+              ["Timeout"] = 10,
+              ["Audio"] = true
+          })
+
+          notificationSent = true
+      end
+  end
 end
 
 game:GetService("Players").LocalPlayer.Chatted:Connect(function(message)
-onCommand(message)
+  onCommand(message)
 end)
 
 -- Notifications
@@ -278,7 +305,7 @@ wait(2)
 NotificationLoad:NewNotification({
 ["Mode"] = "Custom",
 ["Title"] = "Command List 1:",
-["Description"] = "Heres The Commands List 1 : Type /e hideorium To Hide orium Gui /e showorium To Show orium Gui.",
+["Description"] = "Heres The Commands List 1 : Type /e hideorium To Hide The Orium Gui /e showorium To Show The Orium Gui /e cmds To See The Cmds.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
 ["Timeout"] = 60,
