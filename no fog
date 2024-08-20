@@ -1,0 +1,25 @@
+-- Function to remove fog
+local function removeFog()
+    local lighting = game:GetService("Lighting")
+    lighting.FogEnd = 1e10
+    lighting.FogStart = 1e10
+    lighting.FogColor = Color3.new(1, 1, 1) -- Optional: Set to desired color
+end
+
+-- Initial fog removal
+removeFog()
+
+-- Re-apply fog removal if Lighting properties change
+game:GetService("Lighting"):GetPropertyChangedSignal("FogEnd"):Connect(removeFog)
+game:GetService("Lighting"):GetPropertyChangedSignal("FogStart"):Connect(removeFog)
+game:GetService("Lighting"):GetPropertyChangedSignal("FogColor"):Connect(removeFog)
+
+-- Re-apply fog removal if Lighting service is changed
+game:GetService("Lighting").Changed:Connect(removeFog)
+
+-- Notification
+game.StarterGui:SetCore("SendNotification", {
+    Title = "No Fog Script Activated",
+    Text = "Fog has been removed from the game",
+    Duration = 5,
+})
