@@ -1,6 +1,8 @@
+-- Services
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 
+-- Variables
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -17,12 +19,12 @@ local settings = {
     loadingText = "Orium Gui LOADING",  -- Custom loading text
     loadedText = "LOADED ORIUMS GUI",  -- Custom loaded text
     creditDuration = 2,  -- Duration to show credit text
-    mainTextDuration = 2.5,  -- Duration to show main text
-    loadingTextDuration = 4,  -- Duration for the loading text and dots
+    mainTextDuration = 2,  -- Duration to show main text
+    loadingTextDuration = 2.5,  -- Duration for the loading text and dots
     loadedTextDuration = 0.5,  -- Duration to show loaded text
     guiDuration = 3,  -- Total duration for the entire GUI before it gets destroyed
     fadeEnabled = true,  -- Toggle fade effect
-    fadeDuration = 2,  -- Duration of the fade effect in seconds
+    fadeDuration = 2.5,  -- Duration of the fade effect in seconds
     fontSettings = {
         mainTextFont = Enum.Font.Arcade,  -- Font for main text
         creditsFont = Enum.Font.Arcade,  -- Font for credits text
@@ -51,18 +53,21 @@ if settings.blurEnabled then
     blurEffect.Parent = game:GetService("Lighting")
 end
 
-local textLabel = Instance.new("TextLabel")
-textLabel.Name = "TextLabel"
-textLabel.Parent = screenGui
-textLabel.BackgroundTransparency = 1
-textLabel.Position = UDim2.new(0.5, -200, 0.5, -50)
-textLabel.Size = UDim2.new(0, 400, 0, 100)
-textLabel.Font = settings.fontSettings.mainTextFont
-textLabel.Text = settings.mainText
-textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-textLabel.TextScaled = true
-textLabel.TextStrokeTransparency = 0.8
-textLabel.TextSize = 40
+local textLabel
+if settings.showMainText then
+    textLabel = Instance.new("TextLabel")
+    textLabel.Name = "TextLabel"
+    textLabel.Parent = screenGui
+    textLabel.BackgroundTransparency = 1
+    textLabel.Position = UDim2.new(0.5, -200, 0.5, -50)
+    textLabel.Size = UDim2.new(0, 400, 0, 100)
+    textLabel.Font = settings.fontSettings.mainTextFont
+    textLabel.Text = settings.mainText
+    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textLabel.TextScaled = true
+    textLabel.TextStrokeTransparency = 0.8
+    textLabel.TextSize = 40
+end
 
 local creditsLabel
 if settings.showCredits then
@@ -133,7 +138,9 @@ local function ApplyRainbowEffect(label)
 end
 
 if settings.rainbowEffect then
-    ApplyRainbowEffect(textLabel)
+    if textLabel then
+        ApplyRainbowEffect(textLabel)
+    end
     if creditsLabel then
         ApplyRainbowEffect(creditsLabel)
     end
@@ -156,7 +163,7 @@ end
 local function Countdown()
     local countdowns = {".", "..", "...", "....", ".....", "......", ".......", "........", ".........", ".........."}
     for i = 1, #countdowns do
-        if settings.showLoadingText then
+        if settings.showLoadingText and loadingLabel then
             loadingLabel.Text = settings.loadingText .. countdowns[i]
         end
         wait(1)
@@ -177,21 +184,20 @@ if settings.showLoadedText then
 end
 
 if settings.fadeEnabled then
-    local fadeTween
     if creditsLabel then
-        fadeTween = applyFadeEffect(creditsLabel, settings.fadeDuration)
+        applyFadeEffect(creditsLabel, settings.fadeDuration)
     end
     if textLabel then
-        fadeTween = applyFadeEffect(textLabel, settings.fadeDuration)
+        applyFadeEffect(textLabel, settings.fadeDuration)
     end
     if loadingLabel then
-        fadeTween = applyFadeEffect(loadingLabel, settings.fadeDuration)
+        applyFadeEffect(loadingLabel, settings.fadeDuration)
     end
     if loadedLabel then
-        fadeTween = applyFadeEffect(loadedLabel, settings.fadeDuration)
+        applyFadeEffect(loadedLabel, settings.fadeDuration)
     end
     if blurEffect then
-        fadeTween = applyFadeEffect(blurEffect, settings.fadeDuration)
+        applyFadeEffect(blurEffect, settings.fadeDuration)
     end
     wait(settings.fadeDuration)
 end
