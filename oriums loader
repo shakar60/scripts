@@ -12,35 +12,50 @@ local settings = {
     showMainText = true,  -- Toggle main text
     showLoadingText = true,  -- Toggle loading text
     showLoadedText = true,  -- Toggle loaded text
+    showCountdownText = true,  -- Toggle countdown text
     rainbowEffect = true,  -- Toggle rainbow effect on text
     blurEnabled = true,  -- Toggle blur effect
     creditText = "Credits to sh4k4r6o On Discord For Making The Loading Gui",  -- Custom credit text
     mainText = "Orium Gui By gragrillz Credits to sh4k4r6o",  -- Custom main text
     loadingText = "Orium Gui LOADING",  -- Custom loading text
     loadedText = "LOADED ORIUMS GUI",  -- Custom loaded text
+    countdownText = "Please wait ",  -- Countdown text
     creditDuration = 2,  -- Duration to show credit text
     mainTextDuration = 2,  -- Duration to show main text
     loadingTextDuration = 2.5,  -- Duration for the loading text and dots
     loadedTextDuration = 0.5,  -- Duration to show loaded text
-    guiDuration = 3,  -- Total duration for the entire GUI before it gets destroyed
-    fadeEnabled = true,  -- Toggle fade effect
-    fadeDuration = 2.5,  -- Duration of the fade effect in seconds
+    guiDuration = 5,  -- Total duration for the entire GUI before it gets destroyed
     fontSettings = {
         mainTextFont = Enum.Font.Arcade,  -- Font for main text
         creditsFont = Enum.Font.Arcade,  -- Font for credits text
         loadingTextFont = Enum.Font.Arcade,  -- Font for loading text
-        loadedTextFont = Enum.Font.Arcade  -- Font for loaded text
+        loadedTextFont = Enum.Font.Arcade,  -- Font for loaded text
+        countdownTextFont = Enum.Font.Arcade  -- Font for countdown text
     }
 }
 
-local function applyFadeEffect(element, duration)
-    local tweenInfo = TweenInfo.new(duration, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
-    local goal = {TextTransparency = 1, BackgroundTransparency = 1}
-    local tween = TweenService:Create(element, tweenInfo, goal)
-    tween:Play()
-    return tween
+-- Function to apply rainbow effect
+local function ApplyRainbowEffect(label)
+    local UIStroke = Instance.new("UIStroke")
+    UIStroke.Parent = label
+    UIStroke.Thickness = 2
+    UIStroke.Transparency = 0.5
+
+    local function RainbowEffect()
+        local hue = 0
+        while label and label.Parent do
+            hue = (hue + 1) % 360
+            local color = Color3.fromHSV(hue / 360, 1, 1)
+            UIStroke.Color = color
+            label.TextColor3 = color
+            wait(0.01)
+        end
+    end
+
+    spawn(RainbowEffect)
 end
 
+-- Initialize GUI elements
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "BlurGui"
 screenGui.Parent = PlayerGui
@@ -117,26 +132,23 @@ if settings.showLoadedText then
     loadedLabel.TextSize = 40
 end
 
-local function ApplyRainbowEffect(label)
-    local UIStroke = Instance.new("UIStroke")
-    UIStroke.Parent = label
-    UIStroke.Thickness = 2
-    UIStroke.Transparency = 0.5
-
-    local function RainbowEffect()
-        local hue = 0
-        while label and label.Parent do
-            hue = (hue + 1) % 360
-            local color = Color3.fromHSV(hue / 360, 1, 1)
-            UIStroke.Color = color
-            label.TextColor3 = color
-            wait(0.01)
-        end
-    end
-
-    spawn(RainbowEffect)
+local countdownLabel
+if settings.showCountdownText then
+    countdownLabel = Instance.new("TextLabel")
+    countdownLabel.Name = "CountdownLabel"
+    countdownLabel.Parent = screenGui
+    countdownLabel.BackgroundTransparency = 1
+    countdownLabel.Position = UDim2.new(0.5, -200, 0.5, 120)
+    countdownLabel.Size = UDim2.new(0, 400, 0, 50)
+    countdownLabel.Font = settings.fontSettings.countdownTextFont
+    countdownLabel.Text = settings.countdownText .. settings.guiDuration
+    countdownLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    countdownLabel.TextScaled = true
+    countdownLabel.TextStrokeTransparency = 0.8
+    countdownLabel.TextSize = 20
 end
 
+-- Apply rainbow effect if enabled
 if settings.rainbowEffect then
     if textLabel then
         ApplyRainbowEffect(textLabel)
@@ -150,8 +162,12 @@ if settings.rainbowEffect then
     if loadedLabel then
         ApplyRainbowEffect(loadedLabel)
     end
+    if countdownLabel then
+        ApplyRainbowEffect(countdownLabel)
+    end
 end
 
+-- Apply blur effect
 local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
 local goal = {Size = 20}
 local tween = TweenService:Create(blurEffect, tweenInfo, goal)
@@ -160,6 +176,7 @@ if settings.blurEnabled then
     tween:Play()
 end
 
+-- Countdown function
 local function Countdown()
     local countdowns = {".", "..", "...", "....", ".....", "......", ".......", "........", ".........", ".........."}
     for i = 1, #countdowns do
@@ -170,6 +187,7 @@ local function Countdown()
     end
 end
 
+-- Main script logic
 if settings.showMainText then
     wait(settings.mainTextDuration)
     if settings.showLoadingText then
@@ -183,25 +201,16 @@ if settings.showLoadedText then
     wait(settings.loadedTextDuration)
 end
 
-if settings.fadeEnabled then
-    if creditsLabel then
-        applyFadeEffect(creditsLabel, settings.fadeDuration)
+if settings.showCountdownText then
+    local timeLeft = settings.guiDuration
+    while timeLeft > 0 do
+        countdownLabel.Text = settings.countdownText .. timeLeft
+        wait(1)
+        timeLeft = timeLeft - 1
     end
-    if textLabel then
-        applyFadeEffect(textLabel, settings.fadeDuration)
-    end
-    if loadingLabel then
-        applyFadeEffect(loadingLabel, settings.fadeDuration)
-    end
-    if loadedLabel then
-        applyFadeEffect(loadedLabel, settings.fadeDuration)
-    end
-    if blurEffect then
-        applyFadeEffect(blurEffect, settings.fadeDuration)
-    end
-    wait(settings.fadeDuration)
 end
 
+-- Cleanup
 wait(settings.guiDuration)
 
 screenGui:Destroy()
