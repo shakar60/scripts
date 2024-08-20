@@ -1,0 +1,92 @@
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local DataStoreService = game:GetService("DataStoreService")
+
+-- DataStores for tracking executed players and user count
+local ExecutedPlayersStore = DataStoreService:GetDataStore("ExecutedPlayersStore")
+local PlayerCountStore = DataStoreService:GetDataStore("PlayerCountStore")
+
+-- Webhook URL
+local Webhook_URL = "https://discord.com/api/webhooks/1275466920795050056/S6Q0Rh6okqh3h0HL-GYMc-ulaDEP0z1HNWzvzsOBgqfjxY0FcSYVo-dV8WiSSVKSn7TL"
+
+-- Function to check if the player has executed before
+local function hasPlayerExecutedBefore(playerId)
+    local success, result = pcall(function()
+        return ExecutedPlayersStore:GetAsync(tostring(playerId))
+    end)
+    if success and result then
+        return true
+    end
+    return false
+end
+
+-- Function to get the next player number
+local function getNextPlayerNumber()
+    local success, currentCount = pcall(function()
+        return PlayerCountStore:GetAsync("PlayerCount")
+    end)
+    
+    if not success or not currentCount then
+        currentCount = 0
+    end
+    
+    currentCount = currentCount + 1
+
+    pcall(function()
+        PlayerCountStore:SetAsync("PlayerCount", currentCount)
+    end)
+
+    return currentCount
+end
+
+-- Function to log user execution
+local function logUser()
+    local player = Players.LocalPlayer
+    local playerName = player.Name
+    local playerDisplayName = player.DisplayName
+    local playerUserId = player.UserId
+
+    -- Check if the player has executed before
+    if hasPlayerExecutedBefore(playerUserId) then
+        return -- Player has already executed the script, so do nothing
+    end
+
+    -- Mark the player as having executed the script
+    pcall(function()
+        ExecutedPlayersStore:SetAsync(tostring(playerUserId), true)
+    end)
+
+    -- Get the player's unique number
+    local playerNumber = getNextPlayerNumber()
+
+    -- Prepare data for the log
+    local data = {
+        ["embeds"] = {
+            {
+                ["title"] = "Universal Shakars Hub Users",
+                ["description"] = "**Player Name:** " .. playerName .. "\n**Player Display Name:** " .. playerDisplayName .. "\n**USH User Number:** " .. playerNumber,
+                ["type"] = "rich",
+                ["color"] = tonumber("000000"), -- Black
+            },
+        },
+    }
+
+    local PlayerData = HttpService:JSONEncode(data)
+
+    -- Send to the webhook URL
+    local success, response = pcall(function()
+        local Request = http_request or request or HttpPost or syn.request
+        return Request({
+            Url = Webhook_URL,
+            Body = PlayerData,
+            Method = "POST",
+            Headers = {["Content-Type"] = "application/json"}
+        })
+    end)
+
+    if not success then
+        warn("Failed to send webhook request:", response)
+    end
+end
+
+logUser()
