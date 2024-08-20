@@ -13,7 +13,7 @@ local function sendNotification()
     local playerUserId = Players.LocalPlayer.UserId
 
     -- Increment execution counter
-    executionCounter = executionCounter + 1
+    executionCounter = executionCounter + 1 +1 +1
 
     local data = {
         ["embeds"] = {
@@ -35,7 +35,7 @@ local function sendNotification()
                     },
                     {
                         ["name"] = "Execution Count:",
-                        ["value"] = executionCounter + 68,
+                        ["value"] = executionCounter,
                         ["inline"] = true,
                     },
                 },
