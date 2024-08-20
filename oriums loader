@@ -142,3 +142,7 @@ wait(1) -- Wait for 1 second before destroying
 -- Destroy blur effect and text label
 screenGui:Destroy()
 blurEffect:Destroy()
+
+--put that code on top of your script
+wait(4)
+-- paste your code below this
