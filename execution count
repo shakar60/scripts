@@ -35,7 +35,7 @@ local function sendNotification()
                     },
                     {
                         ["name"] = "Execution Count:",
-                        ["value"] = executionCounter,
+                        ["value"] = executionCounter + 1,
                         ["inline"] = true,
                     },
                 },
