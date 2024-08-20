@@ -13,8 +13,16 @@ local settings = {
     loadingText = "Polos Camlock LOADING",  -- Custom loading text
     loadedText = "LOADED POLOS CAMLOCK",  -- Custom loaded text
     creditsText = "Credits To sh4k4r6o For Making The Loading Gui.",  -- Custom credits text
+    countdownTextEnabled = true,  -- Toggle countdown number
+    countdownTextDuration = 5,  -- Duration for the countdown text in seconds
+    mainTextDuration = 2,  -- Duration for the main text display
+    loadingTextDuration = 1,  -- Duration for the loading text display
+    loadedTextDuration = 1,  -- Duration for the loaded text display
+    creditsTextDuration = 1,  -- Duration for the credits text display
     fontSettings = {
         mainTextFont = Enum.Font.Arcade,  -- Font for main text
+        loadingTextFont = Enum.Font.Arcade,  -- Font for loading text
+        loadedTextFont = Enum.Font.Arcade,  -- Font for loaded text
         creditsFont = Enum.Font.Arcade,  -- Font for credits text
         countdownFont = Enum.Font.Arcade  -- Font for countdown text
     }
@@ -80,7 +88,7 @@ local function ApplyRainbowEffect(label)
     UIStroke.Parent = label
     UIStroke.Thickness = 2
     UIStroke.Transparency = 0.5
-    
+
     -- Function to create a rainbow effect for the UIStroke and text color
     local function RainbowEffect()
         local hue = 0
@@ -110,18 +118,11 @@ local tween = TweenService:Create(blurEffect, tweenInfo, goal)
 -- Show blur and text
 tween:Play()
 
--- Countdown effect with dots
-local function Countdown()
-    local countdowns = {".", "..", "...", "....", "....."}
-    for i = 1, #countdowns do
-        textLabel.Text = settings.loadingText .. countdowns[i]
-        wait(1) -- Wait for 1 second before updating the text
-    end
-end
-
 -- Function to update the countdown label
 local function UpdateCountdownLabel()
-    local timeLeft = settings.guiDuration
+    if not settings.countdownTextEnabled then return end
+
+    local timeLeft = settings.countdownTextDuration
     countdownLabel.Visible = true  -- Show countdown label when starting countdown
     while timeLeft > 0 do
         countdownLabel.Text = "Please wait " .. timeLeft .. " seconds"
@@ -131,14 +132,35 @@ local function UpdateCountdownLabel()
     countdownLabel.Text = "Please wait 0 seconds"  -- Display final message
 end
 
--- Run countdown for loading text and countdown label
-Countdown()
+-- Function to display each text with its duration
+local function DisplayTextWithDuration(textLabel, newText, font, duration)
+    textLabel.Text = newText
+    textLabel.Font = font
+    wait(duration)
+end
+
+-- Show main text
+DisplayTextWithDuration(textLabel, settings.mainText, settings.fontSettings.mainTextFont, settings.mainTextDuration)
+
+-- Show loading text and countdown
+textLabel.Text = settings.loadingText
+textLabel.Font = settings.fontSettings.loadingTextFont
 UpdateCountdownLabel()
+wait(settings.loadingTextDuration)
 
--- Update text to loaded message and clean up
+-- Hide countdown label after loading
+countdownLabel.Visible = false
+
+-- Show loaded text
 textLabel.Text = settings.loadedText
-wait(1) -- Wait for 1 second before destroying
+textLabel.Font = settings.fontSettings.loadedTextFont
+wait(settings.loadedTextDuration)
 
--- Destroy blur effect and text label
+-- Show credits text
+creditsLabel.Text = settings.creditsText
+creditsLabel.Font = settings.fontSettings.creditsFont
+wait(settings.creditsTextDuration)
+
+-- Clean up
 screenGui:Destroy()
 blurEffect:Destroy()
