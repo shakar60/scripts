@@ -467,7 +467,7 @@ local function onCommand(command)
       XPredictionTextBox.Visible = false
       YPredictionTextBox.Visible = false
       SmoothnessTextBox.Visible = false
-      Frame.Size = UDim2.new(0, 152, 0, 72)
+      Frame.Size = UDim2.new(0, 165, 0, 85)
 
       TextButton.Size = UDim2.new(0, 150, 0, 70)
       TextButton.TextSize = 14
