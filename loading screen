@@ -9,12 +9,12 @@ local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 -- Settings
 local settings = {
     guiDuration = 3,  -- Total duration for the entire GUI before it gets destroyed
-    mainText = "Polos Skidded Camlock",  -- Custom main text
-    loadingText = "Polos Camlock LOADING",  -- Custom loading text
-    loadedText = "LOADED POLOS CAMLOCK",  -- Custom loaded text
+    mainText = "Text",  -- Custom main text
+    loadingText = "Text Loading",  -- Custom loading text
+    loadedText = "Text Loaded",  -- Custom loaded text
     creditsText = "Credits To sh4k4r6o For Making The Loading Gui.",  -- Custom credits text
     countdownTextEnabled = true,  -- Toggle countdown number
-    countdownTextDuration = 5,  -- Duration for the countdown text in seconds
+    countdownTextDuration = 3,  -- Duration for the countdown text in seconds
     mainTextDuration = 2,  -- Duration for the main text display
     loadingTextDuration = 1,  -- Duration for the loading text display
     loadedTextDuration = 1,  -- Duration for the loaded text display
