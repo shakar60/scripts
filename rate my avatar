@@ -1,5 +1,3 @@
-
-
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/thanhdat4461/GUI-Library/main/Kavo%20Library.lua",true))()
 local Window = Library.CreateLib("Rate my Avatar GUI | made by | pyst | Modified By | sh4k4r6o", "BloodTheme")
 
