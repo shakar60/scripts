@@ -196,7 +196,7 @@ UserInputService.InputBegan:Connect(function(input)
                 ["Timeout"] = 2,
                 ["Audio"] = false
             })
-            TextButton.Image = "rbxassetid://105713683367381"  -- Set image for ON state
+            TextButton.Image = "rbxassetid://72590084838674"  -- Set image for ON state
         else
             if enemy then
                 enemy = nil
@@ -211,7 +211,7 @@ UserInputService.InputBegan:Connect(function(input)
                     ["Audio"] = false
                 })
             end
-            TextButton.Image = "rbxassetid://72590084838674"  -- Set image for OFF state
+            TextButton.Image = "rbxassetid://105713683367381"  -- Set image for OFF state
         end
     end
 end)
@@ -265,7 +265,7 @@ TextButton.MouseButton1Click:Connect(function()
             ["Timeout"] = 2,
             ["Audio"] = false
         })
-        TextButton.Image = "rbxassetid://105713683367381"  -- Set image for ON state
+        TextButton.Image = "rbxassetid://72590084838674"  -- Set image for ON state
     else
         if enemy then
             enemy = nil
@@ -280,7 +280,7 @@ TextButton.MouseButton1Click:Connect(function()
                 ["Audio"] = false
             })
         end
-        TextButton.Image = "rbxassetid://72590084838674"  -- Set image for OFF state
+        TextButton.Image = "rbxassetid://105713683367381"  -- Set image for OFF state
     end
 end)
 
