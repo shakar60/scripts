@@ -1,3 +1,10 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local Mouse = game.Players.LocalPlayer:GetMouse()
+
+--
+
 -- Silent Aim Configuration
 
 getgenv().HornSilentaim = {
