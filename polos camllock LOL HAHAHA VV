@@ -248,7 +248,7 @@ TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 TextButton.BorderSizePixel = 0
 TextButton.Position = UDim2.new(0.5, -85, 0.020, 0)
 TextButton.Size = UDim2.new(0, 170, 0, 50)
-TextButton.Image = "rbxassetid://72590084838674"  -- Initial image for OFF state
+TextButton.Image = "rbxassetid://105713683367381"  -- Initial image for OFF state
 TextButton.ScaleType = Enum.ScaleType.Fit
 TextButton.ImageTransparency = 0.5
 TextButton.MouseButton1Click:Connect(function()
@@ -265,7 +265,7 @@ TextButton.MouseButton1Click:Connect(function()
             ["Timeout"] = 2,
             ["Audio"] = false
         })
-        TextButton.Image = "rbxassetid://105713683367381"  -- Set image for ON state
+        TextButton.Image = "rbxassetid://72590084838674"  -- Set image for ON state
     else
         if enemy then
             enemy = nil
