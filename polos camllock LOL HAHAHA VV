@@ -216,19 +216,19 @@ UserInputService.InputBegan:Connect(function(input)
     end
 end)
 
-local BladLock = Instance.new("ScreenGui")
+local PolosGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local UICorner = Instance.new("UICorner")
-local TextButton = Instance.new("ImageButton")  -- Change from TextButton to ImageButton
+local TextButton = Instance.new("ImageButton")
 local UICorner_2 = Instance.new("UICorner")
 
 -- Toggle Button Gui
 
-BladLock.Name = "BlackGuy"
-BladLock.Parent = game.CoreGui
-BladLock.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+PolosGui.Name = "PolosGui"
+PolosGui.Parent = game.CoreGui
+PolosGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-Frame.Parent = BladLock
+Frame.Parent = PolosGui
 Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Frame.BorderSizePixel = 0
@@ -243,7 +243,7 @@ UICorner.Parent = Frame
 
 TextButton.Parent = Frame
 TextButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-TextButton.BackgroundTransparency = 0.5  -- Set transparency to 0.5
+TextButton.BackgroundTransparency = 0.5
 TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 TextButton.BorderSizePixel = 0
 TextButton.Position = UDim2.new(0.5, -85, 0.020, 0)
@@ -265,7 +265,7 @@ TextButton.MouseButton1Click:Connect(function()
             ["Timeout"] = 2,
             ["Audio"] = false
         })
-        TextButton.Image = "rbxassetid://72590084838674"  -- Set image for ON state
+        TextButton.Image = "rbxassetid://105713683367381"  -- Set image for ON state
     else
         if enemy then
             enemy = nil
@@ -391,73 +391,64 @@ SmoothnessTextBox = createTextBox(
 -- Variables
 local notificationSent = false
 
--- Variables
-local notificationCooldown = false
-
--- Variables
-local notificationSent = false
-
 -- Commands
 
 local function onCommand(command)
-  if command == "/e hidepolo" then
-      if BladLock then
-          BladLock.Enabled = false
-      end
-  elseif command == "/e showpolo" then
-      if BladLock then
-          BladLock.Enabled = true
-      end
-  elseif command == "/e hidesets" then
-      PredictionTextBox.Visible = false
-      XPredictionTextBox.Visible = false
-      YPredictionTextBox.Visible = false
-      SmoothnessTextBox.Visible = false
-      Frame.Size = UDim2.new(0, 165, 0, 85)
+    if command == "/e hidepolo" then
+        if PolosGui then
+            PolosGui.Enabled = false
+        end
+    elseif command == "/e showpolo" then
+        if PolosGui then
+            PolosGui.Enabled = true
+        end
+    elseif command == "/e hidesets" then
+        PredictionTextBox.Visible = false
+        XPredictionTextBox.Visible = false
+        YPredictionTextBox.Visible = false
+        SmoothnessTextBox.Visible = false
+        Frame.Size = UDim2.new(0, 165, 0, 85)
 
-      TextButton.Size = UDim2.new(0, 150, 0, 70)
-      TextButton.TextSize = 14
-      TextButton.TextWrapped = true
-      TextButton.Position = UDim2.new(0.5, -75, 0.5, -35)
-  elseif command == "/e showsets" then
-      PredictionTextBox.Visible = true
-      XPredictionTextBox.Visible = true
-      YPredictionTextBox.Visible = true
-      SmoothnessTextBox.Visible = true
-      Frame.Size = UDim2.new(0, 210, 0, 210)
+        TextButton.Size = UDim2.new(0, 150, 0, 70)
+        TextButton.Position = UDim2.new(0.5, -75, 0.5, -35)
+    elseif command == "/e showsets" then
+        PredictionTextBox.Visible = true
+        XPredictionTextBox.Visible = true
+        YPredictionTextBox.Visible = true
+        SmoothnessTextBox.Visible = true
+        Frame.Size = UDim2.new(0, 210, 0, 210)
 
-      TextButton.Size = UDim2.new(0, 170, 0, 50)
-      TextButton.TextSize = 24
-      TextButton.Position = UDim2.new(0.5, -85, 0.020, 0)
-  elseif command == "/e cmds" then
-      if not notificationSent then
-          NotificationLoad:NewNotification({
-              ["Mode"] = "Custom",
-              ["Title"] = "Command List 1:",
-              ["Description"] = "Here's The Commands List 1: Type /e hidepolo To Hide Polo Gui /e showpolo To Show Polo Gui.",
-              ["Notification_Image"] = "rbxassetid://18985517155",
-              ["Notification_Sound"] = "rbxassetid://5153734608",
-              ["Timeout"] = 10,
-              ["Audio"] = true
-          })
+        TextButton.Size = UDim2.new(0, 170, 0, 50)
+        TextButton.Position = UDim2.new(0.5, -85, 0.020, 0)
+    elseif command == "/e cmds" then
+        if not notificationSent then
+            NotificationLoad:NewNotification({
+                ["Mode"] = "Custom",
+                ["Title"] = "Command List 1:",
+                ["Description"] = "Here's The Commands List 1: Type /e hidepolo To Hide Polo Gui /e showpolo To Show Polo Gui.",
+                ["Notification_Image"] = "rbxassetid://18985517155",
+                ["Notification_Sound"] = "rbxassetid://5153734608",
+                ["Timeout"] = 10,
+                ["Audio"] = true
+            })
 
-          NotificationLoad:NewNotification({
-              ["Mode"] = "Custom",
-              ["Title"] = "Command List 2:",
-              ["Description"] = "Here's The Commands List 2: Type /e hidesets To Hide The Settings /e showsets To Show The Settings And /e cmds To See The Cmds.",
-              ["Notification_Image"] = "rbxassetid://18985517155",
-              ["Notification_Sound"] = "rbxassetid://5153734608",
-              ["Timeout"] = 10,
-              ["Audio"] = true
-          })
+            NotificationLoad:NewNotification({
+                ["Mode"] = "Custom",
+                ["Title"] = "Command List 2:",
+                ["Description"] = "Here's The Commands List 2: Type /e hidesets To Hide The Settings /e showsets To Show The Settings And /e cmds To See The Cmds.",
+                ["Notification_Image"] = "rbxassetid://18985517155",
+                ["Notification_Sound"] = "rbxassetid://5153734608",
+                ["Timeout"] = 10,
+                ["Audio"] = true
+            })
 
-          notificationSent = true
-      end
-  end
+            notificationSent = true
+        end
+    end
 end
 
 game:GetService("Players").LocalPlayer.Chatted:Connect(function(message)
-  onCommand(message)
+    onCommand(message)
 end)
 
 -- Notifications
