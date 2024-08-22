@@ -164,3 +164,86 @@ wait(settings.creditsTextDuration)
 -- Clean up
 screenGui:Destroy()
 blurEffect:Destroy()
+
+--[[ an simple version of the loader ]--
+
+--[[-- Services
+local Players, TweenService, LocalPlayer, PlayerGui = game:GetService("Players"), game:GetService("TweenService"), Players.LocalPlayer, Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Create ScreenGui and BlurEffect
+local screenGui, blurEffect = Instance.new("ScreenGui", PlayerGui), Instance.new("BlurEffect", game:GetService("Lighting"))
+screenGui.Name, blurEffect.Name, blurEffect.Size = "BlurGui", "BlurEffect", 0
+
+-- Settings
+local settings = {
+    guiDuration = 3, mainText = "Text", loadingText = "Text Loading", loadedText = "Text Loaded",
+    creditsText = "Credits To sh4k4r6o For Making The Loading Gui.", countdownTextEnabled = true, countdownTextDuration = 3,
+    mainTextDuration = 2, loadingTextDuration = 1, loadedTextDuration = 1, creditsTextDuration = 1,
+    font = Enum.Font.Arcade
+}
+
+-- Create Labels
+local function createLabel(name, text, position, size, font, textSize, visible)
+    local label = Instance.new("TextLabel", screenGui)
+    label.Name, label.BackgroundTransparency, label.Position, label.Size, label.Font, label.Text, label.TextColor3, label.TextScaled, label.TextStrokeTransparency, label.TextSize, label.Visible =
+        name, 1, position, size, font, text, Color3.fromRGB(255, 255, 255), true, 0.8, textSize, visible
+    return label
+end
+
+local textLabel = createLabel("TextLabel", settings.mainText, UDim2.new(0.5, -200, 0.5, -50), UDim2.new(0, 400, 0, 100), settings.font, 40, true)
+local creditsLabel = createLabel("CreditsLabel", settings.creditsText, UDim2.new(0.5, -200, 0.5, 60), UDim2.new(0, 400, 0, 50), settings.font, 8, false)
+local countdownLabel = createLabel("CountdownLabel", "", UDim2.new(0.5, -200, 0.5, -100), UDim2.new(0, 400, 0, 50), settings.font, 20, false)
+
+-- Rainbow Effect
+local function applyRainbowEffect(label)
+    local UIStroke = Instance.new("UIStroke", label)
+    UIStroke.Thickness, UIStroke.Transparency = 2, 0.5
+    spawn(function()
+        local hue = 0
+        while label and label.Parent do
+            hue = (hue + 1) % 360
+            local color = Color3.fromHSV(hue / 360, 1, 1)
+            UIStroke.Color, label.TextColor3 = color, color
+            wait(0.01)
+        end
+    end)
+end
+
+applyRainbowEffect(textLabel)
+applyRainbowEffect(creditsLabel)
+applyRainbowEffect(countdownLabel)
+
+-- Tween Blur Effect
+TweenService:Create(blurEffect, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {Size = 20}):Play()
+
+-- Countdown Update
+local function updateCountdown()
+    if settings.countdownTextEnabled then
+        countdownLabel.Visible = true
+        for timeLeft = settings.countdownTextDuration, 0, -1 do
+            countdownLabel.Text = "Please wait " .. timeLeft .. " seconds"
+            wait(1)
+        end
+        countdownLabel.Text = "Please wait 0 seconds"
+        wait(1)
+        countdownLabel.Visible = false
+    end
+end
+
+-- Show Text
+local function showText(label, text, duration)
+    label.Text = text
+    wait(duration)
+end
+
+showText(textLabel, settings.mainText, settings.mainTextDuration)
+showText(textLabel, settings.loadingText, settings.loadingTextDuration)
+updateCountdown()
+wait(settings.loadingTextDuration)
+showText(textLabel, settings.loadedText, settings.loadedTextDuration)
+creditsLabel.Visible = true
+wait(settings.creditsTextDuration)
+
+-- Cleanup
+screenGui:Destroy()
+blurEffect:Destroy() ]]--
