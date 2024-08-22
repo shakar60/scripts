@@ -1,96 +1,73 @@
+-- loading screen
+
 -- Services
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 
--- Variables
-local LocalPlayer = Players.LocalPlayer
-local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
-
 -- Settings
 local settings = {
-    guiDuration = 3,  -- Total duration for the entire GUI before it gets destroyed
-    mainText = "Polos Skidded Camlock",  -- Custom main text
-    loadingText = "Polos Camlock LOADING",  -- Custom loading text
-    loadedText = "LOADED POLOS CAMLOCK",  -- Custom loaded text
-    creditsText = "Credits To sh4k4r6o For Making The Loading Gui.",  -- Custom credits text
-    countdownTextEnabled = true,  -- Toggle countdown number
-    countdownTextDuration = 3,  -- Duration for the countdown text in seconds
-    mainTextDuration = 2,  -- Duration for the main text display
-    loadingTextDuration = 1,  -- Duration for the loading text display
-    loadedTextDuration = 1,  -- Duration for the loaded text display
-    creditsTextDuration = 1,  -- Duration for the credits text display
-    fontSettings = {
-        mainTextFont = Enum.Font.Arcade,  -- Font for main text
-        loadingTextFont = Enum.Font.Arcade,  -- Font for loading text
-        loadedTextFont = Enum.Font.Arcade,  -- Font for loaded text
-        creditsFont = Enum.Font.Arcade,  -- Font for credits text
-        countdownFont = Enum.Font.Arcade  -- Font for countdown text
-    }
+    guiDuration = 3,
+    mainText = "Polos Skidded Camlock",
+    loadingText = "Polos Skidded Camlock Loading",
+    loadedText = "Polos Skidded Camlock Loaded",
+    creditsText = "Credits to sh4k4r6o for making the loading GUI.",
+    countdownTextEnabled = true,
+    countdownTextDuration = 3,
+    mainTextDuration = 1,
+    loadingTextDuration = 1,
+    loadedTextDuration = 1,
+    creditsTextDuration = 1,
+    font = Enum.Font.Arcade
 }
 
--- Create ScreenGui
-local screenGui = Instance.new("ScreenGui")
+-- Create ScreenGui and BlurEffect
+local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
+local screenGui = Instance.new("ScreenGui", playerGui)
 screenGui.Name = "BlurGui"
-screenGui.Parent = PlayerGui
 
--- Create BlurEffect
-local blurEffect = Instance.new("BlurEffect")
+local blurEffect = Instance.new("BlurEffect", game:GetService("Lighting"))
 blurEffect.Name = "BlurEffect"
 blurEffect.Size = 0
-blurEffect.Parent = game:GetService("Lighting")
 
--- Create Main TextLabel
-local textLabel = Instance.new("TextLabel")
-textLabel.Name = "TextLabel"
-textLabel.Parent = screenGui
-textLabel.BackgroundTransparency = 1
-textLabel.Position = UDim2.new(0.5, -200, 0.5, -50)
-textLabel.Size = UDim2.new(0, 400, 0, 100)
-textLabel.Font = settings.fontSettings.mainTextFont
-textLabel.Text = settings.mainText
-textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-textLabel.TextScaled = true
-textLabel.TextStrokeTransparency = 0.8
-textLabel.TextSize = 40
+-- Create ImageLabels
+local leftImageLabel = Instance.new("ImageLabel", screenGui)
+leftImageLabel.Name = "LeftImageLabel"
+leftImageLabel.BackgroundTransparency = 1
+leftImageLabel.Image = "rbxassetid://138192283248709"
+leftImageLabel.Size = UDim2.new(0, 200, 0, 200)
+leftImageLabel.Position = UDim2.new(0.05, 0, 0.5, -100)  -- Position adjusted to match text
+leftImageLabel.ScaleType = Enum.ScaleType.Fit
 
--- Create Credits TextLabel
-local creditsLabel = Instance.new("TextLabel")
-creditsLabel.Name = "CreditsLabel"
-creditsLabel.Parent = screenGui
-creditsLabel.BackgroundTransparency = 1
-creditsLabel.Position = UDim2.new(0.5, -200, 0.5, 60) -- Positioned below the main text
-creditsLabel.Size = UDim2.new(0, 400, 0, 50)
-creditsLabel.Font = settings.fontSettings.creditsFont
-creditsLabel.Text = settings.creditsText
-creditsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-creditsLabel.TextScaled = true
-creditsLabel.TextStrokeTransparency = 0.8
-creditsLabel.TextSize = 8 -- Adjusted text size to 8
+local UICornerLeft = Instance.new("UICorner", leftImageLabel)
+UICornerLeft.CornerRadius = UDim.new(0.1, 0)
 
--- Create Countdown TextLabel
-local countdownLabel = Instance.new("TextLabel")
-countdownLabel.Name = "CountdownLabel"
-countdownLabel.Parent = screenGui
-countdownLabel.BackgroundTransparency = 1
-countdownLabel.Position = UDim2.new(0.5, -200, 0.5, -100) -- Positioned above the main text
-countdownLabel.Size = UDim2.new(0, 400, 0, 50)
-countdownLabel.Font = settings.fontSettings.countdownFont
-countdownLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-countdownLabel.TextScaled = true
-countdownLabel.TextStrokeTransparency = 0.8
-countdownLabel.TextSize = 20 -- Adjusted text size to 20
-countdownLabel.Text = ""  -- Initially empty
-countdownLabel.Visible = false  -- Initially hidden
+-- Create Labels
+local function createLabel(name, text, position, size, textSize, visible)
+    local label = Instance.new("TextLabel", screenGui)
+    label.Name = name
+    label.BackgroundTransparency = 1
+    label.Position = position
+    label.Size = size
+    label.Font = settings.font
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextScaled = true
+    label.TextStrokeTransparency = 0.8
+    label.TextSize = textSize
+    label.Visible = visible
+    return label
+end
 
--- Add a UIStroke for rainbow effect
-local function ApplyRainbowEffect(label)
-    local UIStroke = Instance.new("UIStroke")
-    UIStroke.Parent = label
+local textLabel = createLabel("TextLabel", settings.mainText, UDim2.new(0.5, -200, 0.5, -50), UDim2.new(0, 400, 0, 100), 40, true)
+local creditsLabel = createLabel("CreditsLabel", settings.creditsText, UDim2.new(0.5, -200, 0.5, 60), UDim2.new(0, 400, 0, 50), 8, true)
+local countdownLabel = createLabel("CountdownLabel", "", UDim2.new(0.5, -200, 0.5, -100), UDim2.new(0, 400, 0, 50), 20, false)
+
+-- Rainbow Effect
+local function applyRainbowEffect(label)
+    local UIStroke = Instance.new("UIStroke", label)
     UIStroke.Thickness = 2
     UIStroke.Transparency = 0.5
-
-    -- Function to create a rainbow effect for the UIStroke and text color
-    local function RainbowEffect()
+    spawn(function()
         local hue = 0
         while label and label.Parent do
             hue = (hue + 1) % 360
@@ -99,69 +76,42 @@ local function ApplyRainbowEffect(label)
             label.TextColor3 = color
             wait(0.01)
         end
-    end
-
-    -- Start the rainbow effect
-    spawn(RainbowEffect)
+    end)
 end
 
--- Apply rainbow effect to main text, credits text, and countdown text
-ApplyRainbowEffect(textLabel)
-ApplyRainbowEffect(creditsLabel)
-ApplyRainbowEffect(countdownLabel)
+applyRainbowEffect(textLabel)
+applyRainbowEffect(creditsLabel)
+applyRainbowEffect(countdownLabel)
 
--- Tweening for blur effect
-local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
-local goal = {Size = 20}
-local tween = TweenService:Create(blurEffect, tweenInfo, goal)
+-- Tween Blur Effect
+TweenService:Create(blurEffect, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {Size = 20}):Play()
 
--- Show blur and text
-tween:Play()
-
--- Function to update the countdown label
-local function UpdateCountdownLabel()
+-- Countdown Update
+local function updateCountdown()
     if not settings.countdownTextEnabled then return end
-
-    local timeLeft = settings.countdownTextDuration
-    countdownLabel.Visible = true  -- Show countdown label when starting countdown
-    while timeLeft > 0 do
+    countdownLabel.Visible = true
+    for timeLeft = settings.countdownTextDuration, 0, -1 do
         countdownLabel.Text = "Please wait " .. timeLeft .. " seconds"
         wait(1)
-        timeLeft = timeLeft - 1
     end
-    countdownLabel.Text = "Please wait 0 seconds"  -- Display final message
+    countdownLabel.Text = "Please wait 0 seconds"
+    wait(1)
+    countdownLabel.Visible = false
 end
 
--- Function to display each text with its duration
-local function DisplayTextWithDuration(textLabel, newText, font, duration)
-    textLabel.Text = newText
-    textLabel.Font = font
+-- Show Text
+local function showText(label, text, duration)
+    label.Text = text
     wait(duration)
 end
 
--- Show main text
-DisplayTextWithDuration(textLabel, settings.mainText, settings.fontSettings.mainTextFont, settings.mainTextDuration)
-
--- Show loading text and countdown
-textLabel.Text = settings.loadingText
-textLabel.Font = settings.fontSettings.loadingTextFont
-UpdateCountdownLabel()
-wait(settings.loadingTextDuration)
-
--- Hide countdown label after loading
-countdownLabel.Visible = false
-
--- Show loaded text
-textLabel.Text = settings.loadedText
-textLabel.Font = settings.fontSettings.loadedTextFont
-wait(settings.loadedTextDuration)
-
--- Show credits text
-creditsLabel.Text = settings.creditsText
-creditsLabel.Font = settings.fontSettings.creditsFont
+showText(textLabel, settings.mainText, settings.mainTextDuration)
+showText(textLabel, settings.loadingText, settings.loadingTextDuration)
+updateCountdown()
+showText(textLabel, settings.loadedText, settings.loadedTextDuration)
 wait(settings.creditsTextDuration)
 
--- Clean up
+-- Cleanup
 screenGui:Destroy()
 blurEffect:Destroy()
 
