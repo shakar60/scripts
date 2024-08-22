@@ -1,4 +1,4 @@
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/oriums%20ui%20library",true))()
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bckugrillz/bckugrillz/main/README.md",true))()
 local Main = library:CreateWindow("Orium Gui | By Gragrillz On Discord","Crimson")
 local tab1 = Main:CreateTab("OpScripts")
 local tab2 = Main:CreateTab("Misc")
