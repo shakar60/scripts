@@ -1,8 +1,3 @@
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local LocalPlayer = Players.LocalPlayer
-local Mouse = game.Players.LocalPlayer:GetMouse(
-
 -- Silent Aim Configuration
 
 getgenv().HornSilentaim = {
@@ -25,7 +20,7 @@ local StarterGui = game:GetService("StarterGui")
 
 -- Variables
 
-local CamlockState = false
+local CamlockState = true
 local SelectedTarget = nil
 local Prediction = 0.15662
 local JumpOffset = 2.50
