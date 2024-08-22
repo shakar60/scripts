@@ -191,7 +191,7 @@ UserInputService.InputBegan:Connect(function(input)
                 ["Mode"] = "Custom",
                 ["Title"] = "Polos Camlock",
                 ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
-                ["Notification_Image"] = "rbxassetid://72590084838674",
+                ["Notification_Image"] = "rbxassetid://78342062013795",
                 ["Notification_Sound"] = "",
                 ["Timeout"] = 2,
                 ["Audio"] = false
@@ -205,7 +205,7 @@ UserInputService.InputBegan:Connect(function(input)
                     ["Mode"] = "Custom",
                     ["Title"] = "Polos Camlock",
                     ["Description"] = "Unlocked",
-                    ["Notification_Image"] = "rbxassetid://18985517155",
+                    ["Notification_Image"] = "rbxassetid://134820707156642",
                     ["Notification_Sound"] = "",
                     ["Timeout"] = 2,
                     ["Audio"] = false
@@ -260,7 +260,7 @@ TextButton.MouseButton1Click:Connect(function()
             ["Mode"] = "Custom",
             ["Title"] = "Polos Camlock",
             ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
-            ["Notification_Image"] = "rbxassetid://72590084838674",
+            ["Notification_Image"] = "rbxassetid://78342062013795",
             ["Notification_Sound"] = "",
             ["Timeout"] = 2,
             ["Audio"] = false
@@ -274,7 +274,7 @@ TextButton.MouseButton1Click:Connect(function()
                 ["Mode"] = "Custom",
                 ["Title"] = "Polos Camlock",
                 ["Description"] = "Unlocked",
-                ["Notification_Image"] = "rbxassetid://105713683367381",
+                ["Notification_Image"] = "rbxassetid://134820707156642",
                 ["Notification_Sound"] = "",
                 ["Timeout"] = 2,
                 ["Audio"] = false
