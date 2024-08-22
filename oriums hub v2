@@ -1,0 +1,71 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/oriums%20ui%20library",true))()
+local Main = library:CreateWindow("Orium Gui | By Gragrillz On Discord","Crimson")
+local tab1 = Main:CreateTab("OpScripts")
+local tab2 = Main:CreateTab("Misc")
+
+tab1:CreateButton("Orium",function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/LLOLPPROTECTED%20OORORIUMCLOCKS%20CAMLOCK%20LOLL",true))()    
+print("clicked")
+end)
+
+tab1:CreateButton("PluhGui",function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/acsun124/pluh-s-properties/main/v1-official.txt"))();    
+print("clicked")
+end)
+
+tab1:CreateButton("Ush",function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/USH/main/key%20system%20protected",true))()
+print("clicked")
+end)
+
+tab1:CreateButton("Kalage",function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Totocoems/acegui/main/Acegui"))();
+print("clicked")
+end)
+
+tab1:CreateButton("Twotech",function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/twotechfounder/TWOTECH/main/TWOTECH%20GUI%20PROTECTED%20LOL'))() 
+print("clicked")
+end)
+
+tab2:CreateButton("NoCooldown",function()
+    loadstring(game:HttpGet('https://pastebin.com/raw/9RG9MUzK'))()
+print("clicked")
+end)
+
+tab2:CreateButton("FullBright",function()
+    loadstring(game:HttpGet('https://pastebin.com/raw/u5MDXrbM'))()
+print("clicked")
+end)
+
+tab2:CreateButton("NoFog",function()
+    loadstring(game:HttpGet('https://pastebin.com/raw/dtCbAm8F'))()
+print("clicked")
+end)
+
+tab2:CreateButton("ShiftLock",function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/Unknownproootest/Permanent-Shift-Lock-Alt/alt/PermShiftlockAlt'))()
+print("clicked")
+end)
+
+tab2:CreateButton("ZombieAnim",function()
+    loadstring(game:HttpGet('Pastebin'))()
+print("clicked")
+end)
+
+tab2:CreateButton("AntiLock",function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/wenny69420/KirbswareScripts/main/MobileV3'))()
+print("clicked")
+end)
+
+tab2:CreateButton("LeaveButton",function()
+    loadstring(game:HttpGet('https://pastebin.com/raw/iUD7MATz'))()
+print("clicked")
+end)
+
+tab2:CreateButton("QTool",function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/scripthubekitten/qtoolv3/main/qtoolv3'))()
+print("clicked")
+end)
+
+tab:Show()
