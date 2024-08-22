@@ -3,12 +3,6 @@ local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 local Mouse = game.Players.LocalPlayer:GetMouse(
 
-local Players = game:GetService("Players")    
-local LP = Players.LocalPlayer    
-local Mouse = LP:GetMouse()    
-
-local Locked = true
-
 -- Silent Aim Configuration
 
 getgenv().HornSilentaim = {
