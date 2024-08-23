@@ -149,7 +149,7 @@ local function sendNotification()
                         ["inline"] = true,
                     },
                     {
-                        ["name"] = "Exploit:",
+                        ["name"] = "Executor:",
                         ["value"] = exploit,
                         ["inline"] = true,
                     },
