@@ -5,9 +5,9 @@ getgenv().HornSilentaim = {
     Sync_With_Aimbot     = true,
     KnockedCheck         = true,
     Part                 = "HumanoidRootPart",
-    AirPart               = "HumanoidRootPart",
-    Use_Radius            = false,
-    Radius                = 200
+    AirPart              = "HumanoidRootPart",
+    Use_Radius           = false,
+    Radius               = 200
 }
 
 -- Services
@@ -20,7 +20,7 @@ local StarterGui = game:GetService("StarterGui")
 
 -- Variables
 
-local CamlockState = true
+local CamlockState = true  -- Set CamlockState to true as requested
 local SelectedTarget = nil
 local Prediction = 0.15662
 local JumpOffset = 2.50
@@ -31,6 +31,7 @@ local JumpSmoothness = 0.1
 local FlickSmoothness = 0.1
 local CurrentJumpOffset = 2.50
 local FlickRotation = 1.25
+local guiCreated = false  -- New variable to track GUI creation
 
 -- Function to create and adjust the highlight effect
 
@@ -237,6 +238,75 @@ local UserInputService = game:GetService("UserInputService")
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if not gameProcessed and input.KeyCode == Enum.KeyCode.Q then
         ToggleCamlock()
+    end
+end)
+
+-- Player highlighter source code
+
+-- Services
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+-- Variables
+local localPlayer = Players.LocalPlayer
+local targetPlayer = nil
+local highlighting = false
+local highlightColor = Color3.fromRGB(255, 0, 0) -- Red color
+
+-- Function to highlight the target player
+local function highlightPlayer(player)
+    if player and player.Character then
+        local highlight = player.Character:FindFirstChildOfClass("Highlight")
+        if not highlight then
+            highlight = Instance.new("Highlight")
+            highlight.Parent = player.Character
+            highlight.FillColor = highlightColor
+            highlight.FillTransparency = 0.7
+            highlight.OutlineTransparency = 0.4
+            highlight.Adornee = player.Character
+        end
+    end
+end
+
+-- Function to remove highlight from the target player
+local function removeHighlight(player)
+    if player and player.Character then
+        local highlight = player.Character:FindFirstChildOfClass("Highlight")
+        if highlight then
+            highlight:Destroy()
+        end
+    end
+end
+
+-- Toggle function
+local function toggleHighlight()
+    highlighting = not highlighting
+    if highlighting then
+        ShowNotification("Highlight ON")
+        RunService.RenderStepped:Connect(function()
+            if targetPlayer and targetPlayer.Character then
+                highlightPlayer(targetPlayer)
+            end
+        end)
+    else
+        ShowNotification("Highlight OFF")
+        removeHighlight(targetPlayer)
+    end
+end
+
+-- Update the target player
+local function updateTargetPlayer()
+    if CamlockState and SelectedTarget then
+        targetPlayer = SelectedTarget
+    end
+end
+
+RunService.Heartbeat:Connect(updateTargetPlayer)
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed and input.KeyCode == Enum.KeyCode.E then
+        toggleHighlight()
     end
 end)
 
