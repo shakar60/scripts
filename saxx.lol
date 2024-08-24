@@ -22,11 +22,11 @@ local StarterGui = game:GetService("StarterGui")
 
 local CamlockState = true
 local SelectedTarget = nil
-local Prediction = 0.15662
+local Prediction = 0.1455
 local JumpOffset = 2.50
 local currentHighlight = nil
 local AutoClickerEnabled = true
-local CameraSmoothness = 0.999
+local CameraSmoothness = 0.073
 local JumpSmoothness = 0.1
 local FlickSmoothness = 0.1
 local CurrentJumpOffset = 2.50
