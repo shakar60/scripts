@@ -423,6 +423,58 @@ StarterGui:SetCore("SendNotification", {
     Duration = 15;
 })
 
+-- List of available hit parts
+local HitParts = {"HumanoidRootPart", "UpperTorso", "LowerTorso", "Head"}
+local CurrentHitPartIndex = 1
+
+-- Function to get the current hit part name
+local function GetCurrentHitPart()
+    return HitParts[CurrentHitPartIndex]
+end
+
+-- Function to switch to the next hit part
+local function SwitchHitPart()
+    CurrentHitPartIndex = CurrentHitPartIndex % #HitParts + 1
+    getgenv().HornSilentaim.Part = GetCurrentHitPart()
+    print("Hit Part Changed to " .. GetCurrentHitPart())
+end
+
+-- GUI for hit part selection
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 200, 0, 140)
+frame.Position = UDim2.new(0.5, -100, 0.5, -70)
+frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+frame.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 10)
+UICorner.Parent = frame
+
+local hitPartButton = Instance.new("TextButton")
+hitPartButton.Size = UDim2.new(0, 160, 0, 40)
+hitPartButton.Position = UDim2.new(0.5, -80, 0.5, 60)
+hitPartButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+hitPartButton.BorderSizePixel = 0
+hitPartButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+hitPartButton.Text = "Change Hit Part"
+hitPartButton.Font = Enum.Font.SourceSans
+hitPartButton.TextSize = 16
+hitPartButton.TextScaled = true
+hitPartButton.Parent = frame
+
+local UICornerHitPart = Instance.new("UICorner")
+UICornerHitPart.CornerRadius = UDim.new(0, 5)
+UICornerHitPart.Parent = hitPartButton
+
+hitPartButton.MouseButton1Click:Connect(function()
+    local success, errorMessage = pcall(function()
+        SwitchHitPart()
+    end)
+    if not success then
+        print("Error changing hit part: " .. errorMessage)
+    end
+end)
+
 --credits notification
 
 StarterGui:SetCore("SendNotification", {
