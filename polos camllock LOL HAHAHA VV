@@ -413,7 +413,7 @@ circleButton.Size = UDim2.new(1, 0, 1, 0)
 circleButton.Image = "rbxassetid://138192283248709" -- Asset ID for the camlock button
 circleButton.BackgroundTransparency = 1
 circleButton.Parent = frame
-circleButton.Draggable = false -- Made non-draggable
+circleButton.Draggable = true
 
 local UICornerButton = Instance.new("UICorner")
 UICornerButton.CornerRadius = UDim.new(1, 0)
