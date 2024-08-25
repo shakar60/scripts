@@ -33,3 +33,41 @@ end)
 
 -- Handle blacklisting for players already in the game
 handleExistingPlayers()
+
+--[[ WhiteLisr Version]]--
+
+--[[ Whitelist of usernames
+local whitelist = {"Username1", "Username2", "Username3"}
+
+-- Define the specific game ID to check
+local gameId = 18376355901  -- Replace with your specific game ID
+
+-- Function to check if a player is whitelisted
+local function isWhitelisted(player)
+    for _, whitelistedPlayer in pairs(whitelist) do
+        if player.Name == whitelistedPlayer then
+            return true
+        end
+    end
+    return false
+end
+
+-- Function to handle whitelist for players already in the game
+local function handleExistingPlayers()
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if not isWhitelisted(player) then
+            player:Kick("You are not whitelisted in this game!")
+        end
+    end
+end
+
+-- Check if the player is joining the specific game and is whitelisted
+game.Players.PlayerAdded:Connect(function(player)
+    -- Check if the player is joining the specific game and is not whitelisted
+    if not isWhitelisted(player) then
+        player:Kick("You are not whitelisted in this game!")
+    end
+end)
+
+-- Handle whitelist for players already in the game
+handleExistingPlayers() ]]
