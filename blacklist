@@ -23,3 +23,31 @@ if isBlacklisted(player) then
 player:Kick("You are blacklisted from USH!")
 end
 end)
+
+--[[ WhiteList Version]]--
+
+--[[ local whitelist = {"Username1", "Username2", "Username3"}
+
+-- Function to check if a player is whitelisted
+local function isWhitelisted(player)
+    for _, whitelistedPlayer in pairs(whitelist) do
+        if player.Name == whitelistedPlayer then
+            return true
+        end
+    end
+    return false
+end
+
+-- Kick players who are not whitelisted
+for _, player in pairs(game.Players:GetPlayers()) do
+    if not isWhitelisted(player) then
+        player:Kick("You are blacklisted from USH!")
+    end
+end
+
+-- Listen for new players joining
+game.Players.PlayerAdded:Connect(function(player)
+    if not isWhitelisted(player) then
+        player:Kick("You are blacklisted from USH!")
+    end
+end) ]]
