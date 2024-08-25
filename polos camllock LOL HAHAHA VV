@@ -115,25 +115,77 @@ wait(settings.creditsTextDuration)
 screenGui:Destroy()
 blurEffect:Destroy()
 
--- polos camlock
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/cat"))()
+local Window = Library:CreateWindow("Polos Skidded Camlock | By sh4k4r6o", Vector2.new(440, 450), Enum.KeyCode.V)
+local PoloTab = Window:CreateTab("Polos Camlock")
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
-local StarterGui = game:GetService("StarterGui")
+local PoloSection = PoloTab:CreateSector("Settings", "left")
 
 local NotificationLoad = loadstring(game:HttpGet('https://raw.githubusercontent.com/treeofplant/Notif/main/library.lua', true))()
 
--- Settings
+local NotificationsEnabled = true
 
-local LocalPlayer = Players.LocalPlayer
-local Mouse = LocalPlayer:GetMouse()
-local CamlockState = true
+local NotificationToggle = PoloSection:AddToggle("Notifications", true, function(isEnabled)
+NotificationsEnabled = isEnabled
+if not NotificationsEnabled then
+    RemoveNotifications()
+end
+end)
+
+function SendNotification(message)
+if NotificationsEnabled then
+    NotificationLoad:NewNotification({
+        ["Mode"] = "Custom",
+        ["Title"] = "Polos Camlock",
+        ["Description"] = message,
+        ["Notification_Image"] = "rbxassetid://78342062013795",
+        ["Notification_Sound"] = "",
+        ["Timeout"] = 2,
+        ["Audio"] = false
+    })
+end
+end
+
+function RemoveNotifications()
+-- Implement logic to remove notifications if supported by the library
+end
+
+-- Initialize settings with default values
 local Prediction = 0.13875
 local XPrediction = 0.176073
 local YPrediction = 0.167092
 local Smoothness = 0.073
+
+PoloSection:AddTextbox("Prediction", tostring(Prediction), function(State)
+Prediction = tonumber(State) or 0.13875
+end)
+
+PoloSection:AddTextbox("X Prediction", tostring(XPrediction), function(State)
+XPrediction = tonumber(State) or 0.176073
+end)
+
+PoloSection:AddTextbox("Y Prediction", tostring(YPrediction), function(State)
+YPrediction = tonumber(State) or 0.167092
+end)
+
+PoloSection:AddTextbox("Smoothness", tostring(Smoothness), function(State)
+Smoothness = tonumber(State) or 0.073
+end)
+
+PoloTab:CreateConfigSystem("right")
+
+-- Camlock script
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
 local Locked = true
+local CamlockState = true
+
 getgenv().Key = Enum.KeyCode.Q
 
 function FindNearestEnemy()
@@ -143,12 +195,12 @@ local CenterPosition = Vector2.new(
     game:GetService("GuiService"):GetScreenResolution().Y / 2
 )
 
-for _, Player in ipairs(game:GetService("Players"):GetPlayers()) do
+for _, Player in ipairs(Players:GetPlayers()) do
     if Player ~= LocalPlayer then
         local Character = Player.Character
         if Character and Character:FindFirstChild("HumanoidRootPart") and Character.Humanoid.Health > 0 then
             local Position, IsVisibleOnViewport = 
-                workspace.CurrentCamera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
+                Camera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
 
             if IsVisibleOnViewport then
                 local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
@@ -168,18 +220,15 @@ local enemy = nil
 
 RunService.Heartbeat:Connect(function()
 if CamlockState and enemy then
-    local camera = workspace.CurrentCamera
     local targetPosition = enemy.Position + enemy.Velocity * Prediction
     targetPosition = Vector3.new(targetPosition.X + XPrediction, targetPosition.Y + YPrediction, targetPosition.Z)
 
-    local currentPosition = camera.CFrame.Position
+    local currentPosition = Camera.CFrame.Position
     local newPosition = currentPosition:Lerp(targetPosition, Smoothness)
 
-    camera.CFrame = CFrame.new(newPosition, targetPosition)
+    Camera.CFrame = CFrame.new(newPosition, targetPosition)
 end
 end)
-
--- Camlock Status (On And Off Notification)
 
 UserInputService.InputBegan:Connect(function(input)
 if input.KeyCode == getgenv().Key then
@@ -187,42 +236,26 @@ if input.KeyCode == getgenv().Key then
     if Locked then
         enemy = FindNearestEnemy()
         CamlockState = true
-        NotificationLoad:NewNotification({
-            ["Mode"] = "Custom",
-            ["Title"] = "Polos Camlock",
-            ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
-            ["Notification_Image"] = "rbxassetid://78342062013795",
-            ["Notification_Sound"] = "",
-            ["Timeout"] = 2,
-            ["Audio"] = false
-        })
-        TextButton.Image = "rbxassetid://72590084838674"  -- Set image for ON state
+        SendNotification("Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"))
+        TextButton.Image = "rbxassetid://72590084838674"
     else
         if enemy then
             enemy = nil
             CamlockState = false
-            NotificationLoad:NewNotification({
-                ["Mode"] = "Custom",
-                ["Title"] = "Polos Camlock",
-                ["Description"] = "Unlocked",
-                ["Notification_Image"] = "rbxassetid://134820707156642",
-                ["Notification_Sound"] = "",
-                ["Timeout"] = 2,
-                ["Audio"] = false
-            })
+            SendNotification("Unlocked")
         end
-        TextButton.Image = "rbxassetid://105713683367381"  -- Set image for OFF state
+        TextButton.Image = "rbxassetid://105713683367381"
     end
 end
 end)
 
 local PolosGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
-local UICorner = Instance.new("UICorner")
+local UICornerFrame = Instance.new("UICorner")
 local TextButton = Instance.new("ImageButton")
-local UICorner_2 = Instance.new("UICorner")
-
--- Toggle Button Gui
+local UICornerButton = Instance.new("UICorner")
+local CircleButton = Instance.new("ImageButton")
+local UICornerCircle = Instance.new("UICorner")
 
 PolosGui.Name = "PolosGui"
 PolosGui.Parent = game.CoreGui
@@ -232,23 +265,22 @@ Frame.Parent = PolosGui
 Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Frame.BorderSizePixel = 0
-Frame.Position = UDim2.new(0.5, -105, 0.3, 0)
-Frame.Size = UDim2.new(0, 210, 0, 150)
+Frame.Position = UDim2.new(0.5, -85, 0.3, 0)  -- Adjusted position
+Frame.Size = UDim2.new(0, 165, 0, 85)  -- Reduced height
 Frame.Active = true
 Frame.Draggable = true
 
-UICorner.Parent = Frame
-
--- Camlock Button
+UICornerFrame.Parent = Frame
+UICornerFrame.CornerRadius = UDim.new(0, 10)  -- Rounded corners for the Frame
 
 TextButton.Parent = Frame
 TextButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 TextButton.BackgroundTransparency = 0.5
 TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 TextButton.BorderSizePixel = 0
-TextButton.Position = UDim2.new(0.5, -85, 0.020, 0)
-TextButton.Size = UDim2.new(0, 170, 0, 50)
-TextButton.Image = "rbxassetid://105713683367381"  -- Initial image for OFF state
+TextButton.Position = UDim2.new(0.5, -70, 0.1, 0)  -- Adjusted position
+TextButton.Size = UDim2.new(0, 140, 0, 67)  -- Adjusted size
+TextButton.Image = "rbxassetid://105713683367381"
 TextButton.ScaleType = Enum.ScaleType.Fit
 TextButton.ImageTransparency = 0.5
 TextButton.MouseButton1Click:Connect(function()
@@ -256,121 +288,84 @@ Locked = not Locked
 if Locked then
     enemy = FindNearestEnemy()
     CamlockState = true
-    NotificationLoad:NewNotification({
-        ["Mode"] = "Custom",
-        ["Title"] = "Polos Camlock",
-        ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
-        ["Notification_Image"] = "rbxassetid://78342062013795",
-        ["Notification_Sound"] = "",
-        ["Timeout"] = 2,
-        ["Audio"] = false
-    })
-    TextButton.Image = "rbxassetid://72590084838674"  -- Set image for ON state
+    SendNotification("Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"))
+    TextButton.Image = "rbxassetid://72590084838674"
 else
     if enemy then
         enemy = nil
         CamlockState = false
-        NotificationLoad:NewNotification({
-            ["Mode"] = "Custom",
-            ["Title"] = "Polos Camlock",
-            ["Description"] = "Unlocked",
-            ["Notification_Image"] = "rbxassetid://134820707156642",
-            ["Notification_Sound"] = "",
-            ["Timeout"] = 2,
-            ["Audio"] = false
-        })
+        SendNotification("Unlocked")
     end
-    TextButton.Image = "rbxassetid://105713683367381"  -- Set image for OFF state
+    TextButton.Image = "rbxassetid://105713683367381"
 end
 end)
 
-UICorner_2.Parent = TextButton
+UICornerButton.Parent = TextButton
+UICornerButton.CornerRadius = UDim.new(0, 10)
 
--- Setting Up The TextBox
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local CoreGui = game:GetService("CoreGui")
+local UserInputService = game:GetService("UserInputService")
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
+-- Toggle Gui
 
-local function createTextBox(parent, name, displayName, positionOffset, size, placeholder, text, changeCallback, outlineColor)
-    local textBox = Instance.new("TextBox")
-    textBox.Parent = parent
-    textBox.Name = name
-    textBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    textBox.Position = positionOffset -- Position is fixed relative to Frame
-    textBox.Size = size
-    textBox.PlaceholderText = displayName
-    textBox.Text = placeholder
-    textBox.ClearTextOnFocus = true
-    textBox.BorderSizePixel = 2
-    textBox.BorderColor3 = outlineColor or Color3.fromRGB(0, 0, 0)
-    textBox.TextScaled = true
-    textBox.Font = Enum.Font.Arcade
-    textBox.TextColor3 = Color3.fromRGB(0, 0, 0)
-    textBox.TextStrokeTransparency = 0.8
-    textBox.TextSize = 14
+local gui = Instance.new("ScreenGui")
+gui.Name = "DraggableCircleGui"
+gui.ResetOnSpawn = false
+gui.Parent = CoreGui
 
-    local UICorner = Instance.new("UICorner")
-    UICorner.Parent = textBox
-    UICorner.CornerRadius = UDim.new(0, 8) -- Adjust the corner radius as needed
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 50, 0, 50)
+frame.Position = UDim2.new(0.5, -25, 0, 10)
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.BackgroundTransparency = 0.7
+frame.BorderSizePixel = 0
+frame.Parent = gui
 
-    local function updateText()
-        textBox.Text = tostring(text)
-    end
-    updateText()
+local UICornerFrame = Instance.new("UICorner")
+UICornerFrame.CornerRadius = UDim.new(1, 0)
+UICornerFrame.Parent = frame
 
-    textBox.Focused:Connect(function()
-        if textBox.Text == displayName then
-            textBox.Text = ""
-        end
-    end)
+local circleButton = Instance.new("ImageButton")
+circleButton.Size = UDim2.new(1, 0, 1, 0)
+circleButton.Image = "rbxassetid://138192283248709"
+circleButton.BackgroundTransparency = 1
+circleButton.Parent = frame
+circleButton.Draggable = true
 
-    textBox.FocusLost:Connect(function()
-        if textBox.Text == "" then
-            textBox.Text = displayName
-        else
-            changeCallback(textBox.Text)
-        end
-    end)
+local UICornerButton = Instance.new("UICorner")
+UICornerButton.CornerRadius = UDim.new(1, 0)
+UICornerButton.Parent = circleButton
 
-    return textBox
-end
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 16, 0, 16)
+closeButton.Position = UDim2.new(1, -18, 0, 2)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+closeButton.BorderSizePixel = 0
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.TextSize = 14
+closeButton.Font = Enum.Font.SourceSans
+closeButton.BackgroundTransparency = 0.5
+closeButton.Parent = circleButton
 
-local function getDefaultText(value)
-    return value or "0"
-end
+local UICornerClose = Instance.new("UICorner")
+UICornerClose.CornerRadius = UDim.new(1, 0)
+UICornerClose.Parent = closeButton
 
-local baseY = 60
-local spacing = 35
+circleButton.MouseButton1Click:Connect(function()
+VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.V, false, game)
+VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.V, false, game)
+end)
 
--- Prediction TextBox
-local PredictionTextBox = createTextBox(
-    Frame,
-    "PredictionTextBox",
-    "Enter Prediction",
-    UDim2.new(0, 15, 0, baseY),
-    UDim2.new(0, 180, 0, 30),
-    "Prediction: " .. tostring(Prediction),
-    getDefaultText(Prediction),
-    function(value) Prediction = value end,
-    Color3.fromRGB(0, 0, 0))
-
--- Smoothness TextBox
-
-local SmoothnessTextBox = createTextBox(
-    Frame,
-    "SmoothnessTextBox",
-    "Enter Smoothness",
-    UDim2.new(0, 15, 0, baseY + spacing),
-    UDim2.new(0, 180, 0, 30),
-    "Smoothness: " .. tostring(Smoothness),
-    getDefaultText(Smoothness),
-    function(value) Smoothness = value end,
-    Color3.fromRGB(0, 0, 0))
-
--- Variables
-local notificationSent = false
+closeButton.MouseButton1Click:Connect(function()
+gui:Destroy()
+end)
 
 -- Commands
+
+local originalSize = TextButton.Size
+local originalPosition = TextButton.Position
 
 local function onCommand(command)
 if command == "/e hidepolo" then
@@ -380,27 +375,16 @@ if command == "/e hidepolo" then
 elseif command == "/e showpolo" then
     if PolosGui then
         PolosGui.Enabled = true
+        -- Restore the original size and position
+        TextButton.Size = originalSize
+        TextButton.Position = originalPosition
     end
-elseif command == "/e hidesets" then
-    PredictionTextBox.Visible = false
-    SmoothnessTextBox.Visible = false
-    Frame.Size = UDim2.new(0, 165, 0, 85)
-
-    TextButton.Size = UDim2.new(0, 150, 0, 70)
-    TextButton.Position = UDim2.new(0.5, -75, 0.5, -35)
-elseif command == "/e showsets" then
-    PredictionTextBox.Visible = true
-    SmoothnessTextBox.Visible = true
-    Frame.Size = UDim2.new(0, 210, 0, 150)
-
-    TextButton.Size = UDim2.new(0, 170, 0, 50)
-    TextButton.Position = UDim2.new(0.5, -85, 0.020, 0)
-elseif command == "/e cmds" then
+elseif command == "/e info" then
     if not notificationSent then
         NotificationLoad:NewNotification({
             ["Mode"] = "Custom",
-            ["Title"] = "Command List 1:",
-            ["Description"] = "Here's The Commands List 1: Type /e hidepolo To Hide Polo Gui /e showpolo To Show Polo Gui.",
+            ["Title"] = "Info 1:",
+            ["Description"] = "1: Type /e hidepolo To Hide The Polo Gui, /e showpolo To Show The Polo Gui.",
             ["Notification_Image"] = "rbxassetid://18985517155",
             ["Notification_Sound"] = "rbxassetid://5153734608",
             ["Timeout"] = 10,
@@ -409,8 +393,8 @@ elseif command == "/e cmds" then
 
         NotificationLoad:NewNotification({
             ["Mode"] = "Custom",
-            ["Title"] = "Command List 2:",
-            ["Description"] = "Here's The Commands List 2: Type /e hidesets To Hide The Settings /e showsets To Show The Settings And /e cmds To See The Cmds.",
+            ["Title"] = "Info 2:",
+            ["Description"] = "Click The Toggle Button Ontop Of Your Screen To Hide And Show The Settings Gui.",
             ["Notification_Image"] = "rbxassetid://18985517155",
             ["Notification_Sound"] = "rbxassetid://5153734608",
             ["Timeout"] = 10,
@@ -441,8 +425,8 @@ NotificationLoad:NewNotification({
 wait(2)
 NotificationLoad:NewNotification({
 ["Mode"] = "Custom",
-["Title"] = "Command List 1:",
-["Description"] = "1: Type /e hidepolo To Hide Polo Gui /e showpolo To Show Polo Gui /e cmds To See The Cmds Again.",
+["Title"] = "Info 1:",
+["Description"] = "Type /e hidepolo To Hide The Polo Gui, /e showpolo To Show The Polo Gui, /e Info To See The Infos.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
 ["Timeout"] = 60,
@@ -452,8 +436,8 @@ NotificationLoad:NewNotification({
 wait(2)
 NotificationLoad:NewNotification({
 ["Mode"] = "Custom",
-["Title"] = "Command List 2:",
-["Description"] = "2: Type /e hidesets To Hide The Settings /e showsets To Show The Settings.",
+["Title"] = "Info 2:",
+["Description"] = "Click The Toggle Button Ontop Of Your Screen To Hide And Show The Settings Gui.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
 ["Timeout"] = 60,
