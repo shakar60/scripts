@@ -41,13 +41,13 @@ end
 -- Kick players who are not whitelisted
 for _, player in pairs(game.Players:GetPlayers()) do
     if not isWhitelisted(player) then
-        player:Kick("You are blacklisted from USH!")
+        player:Kick("You are not whitelisted from USH!")
     end
 end
 
 -- Listen for new players joining
 game.Players.PlayerAdded:Connect(function(player)
     if not isWhitelisted(player) then
-        player:Kick("You are blacklisted from USH!")
+        player:Kick("You are not whitelisted from USH!")
     end
 end) ]]
