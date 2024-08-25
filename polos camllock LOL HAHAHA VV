@@ -126,28 +126,28 @@ local NotificationLoad = loadstring(game:HttpGet('https://raw.githubusercontent.
 local NotificationsEnabled = true
 
 local NotificationToggle = PoloSection:AddToggle("Notifications", true, function(isEnabled)
-NotificationsEnabled = isEnabled
-if not NotificationsEnabled then
-    RemoveNotifications()
-end
+    NotificationsEnabled = isEnabled
+    if not NotificationsEnabled then
+        RemoveNotifications()
+    end
 end)
 
 function SendNotification(message)
-if NotificationsEnabled then
-    NotificationLoad:NewNotification({
-        ["Mode"] = "Custom",
-        ["Title"] = "Polos Camlock",
-        ["Description"] = message,
-        ["Notification_Image"] = "rbxassetid://78342062013795",
-        ["Notification_Sound"] = "",
-        ["Timeout"] = 2,
-        ["Audio"] = false
-    })
-end
+    if NotificationsEnabled then
+        NotificationLoad:NewNotification({
+            ["Mode"] = "Custom",
+            ["Title"] = "Polos Camlock",
+            ["Description"] = message,
+            ["Notification_Image"] = "rbxassetid://78342062013795",
+            ["Notification_Sound"] = "",
+            ["Timeout"] = 2,
+            ["Audio"] = false
+        })
+    end
 end
 
 function RemoveNotifications()
--- Implement logic to remove notifications if supported by the library
+    -- Implement logic to remove notifications if supported by the library
 end
 
 -- Initialize settings with default values
@@ -155,21 +155,26 @@ local Prediction = 0.13875
 local XPrediction = 0.176073
 local YPrediction = 0.167092
 local Smoothness = 0.073
+local SelectedPart = "Head"  -- Default to Head
 
 PoloSection:AddTextbox("Prediction", tostring(Prediction), function(State)
-Prediction = tonumber(State) or 0.13875
+    Prediction = tonumber(State) or 0.13875
 end)
 
 PoloSection:AddTextbox("X Prediction", tostring(XPrediction), function(State)
-XPrediction = tonumber(State) or 0.176073
+    XPrediction = tonumber(State) or 0.176073
 end)
 
 PoloSection:AddTextbox("Y Prediction", tostring(YPrediction), function(State)
-YPrediction = tonumber(State) or 0.167092
+    YPrediction = tonumber(State) or 0.167092
 end)
 
 PoloSection:AddTextbox("Smoothness", tostring(Smoothness), function(State)
-Smoothness = tonumber(State) or 0.073
+    Smoothness = tonumber(State) or 0.073
+end)
+
+PoloSection:AddDropdown("HitPart", {"Head", "UpperTorso", "LowerTorso"}, "Head", false, function(dropdown)
+    SelectedPart = dropdown
 end)
 
 -- Initialize _G.ESPToggle
@@ -177,40 +182,40 @@ _G.ESPToggle = false -- Default to false, meaning the ESP is off initially
 
 -- Function to add a highlight to a character
 local function addHighlightToCharacter(character)
-if not character:FindFirstChild("HumanoidRootPart") then return end
-local highlight = character:FindFirstChild("Highlight")
-if not highlight then
-    highlight = Instance.new("Highlight")
-    highlight.Name = "Highlight"
-    highlight.Adornee = character
-    highlight.Parent = character
-end
-highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-highlight.FillColor = _G.ESPToggle and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(0, 0, 0) -- Change color based on toggle
-highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-highlight.FillTransparency = 0.5
+    if not character:FindFirstChild("HumanoidRootPart") then return end
+    local highlight = character:FindFirstChild("Highlight")
+    if not highlight then
+        highlight = Instance.new("Highlight")
+        highlight.Name = "Highlight"
+        highlight.Adornee = character
+        highlight.Parent = character
+    end
+    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+    highlight.FillColor = _G.ESPToggle and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(0, 0, 0) -- Change color based on toggle
+    highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+    highlight.FillTransparency = 0.5
 end
 
 -- Function to remove highlight from a character
 local function removeHighlightFromCharacter(character)
-local highlight = character:FindFirstChild("Highlight")
-if highlight then
-    highlight:Destroy()
-end
+    local highlight = character:FindFirstChild("Highlight")
+    if highlight then
+        highlight:Destroy()
+    end
 end
 
 -- Update highlights based on _G.ESPToggle
 local function updateHighlights()
-for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
-    local character = player.Character
-    if character then
-        if _G.ESPToggle then
-            addHighlightToCharacter(character)
-        else
-            removeHighlightFromCharacter(character)
+    for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+        local character = player.Character
+        if character then
+            if _G.ESPToggle then
+                addHighlightToCharacter(character)
+            else
+                removeHighlightFromCharacter(character)
+            end
         end
     end
-end
 end
 
 -- Listen to RenderStepped to continuously update highlights
@@ -218,30 +223,30 @@ game:GetService("RunService").RenderStepped:Connect(updateHighlights)
 
 -- Add highlight to newly joined players
 game:GetService("Players").PlayerAdded:Connect(function(player)
-player.CharacterAdded:Connect(function(character)
-    if _G.ESPToggle then
-        addHighlightToCharacter(character)
-    end
-end)
+    player.CharacterAdded:Connect(function(character)
+        if _G.ESPToggle then
+            addHighlightToCharacter(character)
+        end
+    end)
 end)
 
 -- Remove highlight from players who leave
 game:GetService("Players").PlayerRemoving:Connect(function(player)
-local character = player.Character
-if character then
-    removeHighlightFromCharacter(character)
-end
+    local character = player.Character
+    if character then
+        removeHighlightFromCharacter(character)
+    end
 end)
 
 -- Example toggle button callback function
 local function toggleHighlighter(v)
-_G.ESPToggle = v
-updateHighlights() -- Update highlights immediately when toggled
+    _G.ESPToggle = v
+    updateHighlights() -- Update highlights immediately when toggled
 end
 
 -- GUI toggle button setup (assuming this is part of a larger UI setup)
 PoloSection:AddToggle("ESP", false, function(v)
-toggleHighlighter(v)
+    toggleHighlighter(v)
 end)
 
 PoloTab:CreateConfigSystem("right")
@@ -261,7 +266,7 @@ local CamlockState = true
 getgenv().Key = Enum.KeyCode.Q
 
 function FindNearestEnemy()
-local ClosestDistance, ClosestPlayer = math.huge, nil
+local ClosestDistance, ClosestPart = math.huge, nil
 local CenterPosition = Vector2.new(
     game:GetService("GuiService"):GetScreenResolution().X / 2,
     game:GetService("GuiService"):GetScreenResolution().Y / 2
@@ -271,34 +276,38 @@ for _, Player in ipairs(Players:GetPlayers()) do
     if Player ~= LocalPlayer then
         local Character = Player.Character
         if Character and Character:FindFirstChild("HumanoidRootPart") and Character.Humanoid.Health > 0 then
-            local Position, IsVisibleOnViewport = 
-                Camera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
+            local part = Character:FindFirstChild(SelectedPart)
+            if part then
+                local Position, IsVisibleOnViewport = Camera:WorldToViewportPoint(part.Position)
 
-            if IsVisibleOnViewport then
-                local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
-                if Distance < ClosestDistance then
-                    ClosestPlayer = Character.HumanoidRootPart
-                    ClosestDistance = Distance
+                if IsVisibleOnViewport then
+                    local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
+                    if Distance < ClosestDistance then
+                        ClosestPart = part
+                        ClosestDistance = Distance
+                    end
                 end
             end
         end
     end
 end
 
-return ClosestPlayer
+return ClosestPart
 end
 
 local enemy = nil
 
 RunService.Heartbeat:Connect(function()
 if CamlockState and enemy then
-    local targetPosition = enemy.Position + enemy.Velocity * Prediction
-    targetPosition = Vector3.new(targetPosition.X + XPrediction, targetPosition.Y + YPrediction, targetPosition.Z)
+    if enemy.Parent and enemy.Parent:FindFirstChild(SelectedPart) then
+        local targetPosition = enemy.Parent[SelectedPart].Position + enemy.Parent[SelectedPart].Velocity * Prediction
+        targetPosition = Vector3.new(targetPosition.X + XPrediction, targetPosition.Y + YPrediction, targetPosition.Z)
 
-    local currentPosition = Camera.CFrame.Position
-    local newPosition = currentPosition:Lerp(targetPosition, Smoothness)
+        local currentPosition = Camera.CFrame.Position
+        local newPosition = currentPosition:Lerp(targetPosition, Smoothness)
 
-    Camera.CFrame = CFrame.new(newPosition, targetPosition)
+        Camera.CFrame = CFrame.new(newPosition, targetPosition)
+    end
 end
 end)
 
@@ -379,6 +388,7 @@ local VirtualInputManager = game:GetService("VirtualInputManager")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
 
+
 -- Toggle Gui
 
 local gui = Instance.new("ScreenGui")
@@ -400,10 +410,10 @@ UICornerFrame.Parent = frame
 
 local circleButton = Instance.new("ImageButton")
 circleButton.Size = UDim2.new(1, 0, 1, 0)
-circleButton.Image = "rbxassetid://138192283248709"
+circleButton.Image = "rbxassetid://138192283248709" -- Asset ID for the camlock button
 circleButton.BackgroundTransparency = 1
 circleButton.Parent = frame
-circleButton.Draggable = true
+circleButton.Draggable = false -- Made non-draggable
 
 local UICornerButton = Instance.new("UICorner")
 UICornerButton.CornerRadius = UDim.new(1, 0)
@@ -426,12 +436,12 @@ UICornerClose.CornerRadius = UDim.new(1, 0)
 UICornerClose.Parent = closeButton
 
 circleButton.MouseButton1Click:Connect(function()
-VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.V, false, game)
-VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.V, false, game)
+    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.V, false, game)
+    VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.V, false, game)
 end)
 
 closeButton.MouseButton1Click:Connect(function()
-gui:Destroy()
+    gui:Destroy()
 end)
 
 -- Commands
