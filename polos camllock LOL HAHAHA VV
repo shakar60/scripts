@@ -1,4 +1,4 @@
--- loading screen
+--loading screen
 
 -- Services
 local Players = game:GetService("Players")
@@ -116,7 +116,7 @@ screenGui:Destroy()
 blurEffect:Destroy()
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/cat"))()
-local Window = Library:CreateWindow("Polos Skidded Camlock | By sh4k4r6o", Vector2.new(440, 450), Enum.KeyCode.V)
+local Window = Library:CreateWindow("Polos Skidded Camlock | By sh4k4r6o", Vector2.new(440, 400), Enum.KeyCode.V)
 local PoloTab = Window:CreateTab("Polos Camlock")
 
 local PoloSection = PoloTab:CreateSector("Settings", "left")
@@ -170,6 +170,78 @@ end)
 
 PoloSection:AddTextbox("Smoothness", tostring(Smoothness), function(State)
 Smoothness = tonumber(State) or 0.073
+end)
+
+-- Initialize _G.ESPToggle
+_G.ESPToggle = false -- Default to false, meaning the ESP is off initially
+
+-- Function to add a highlight to a character
+local function addHighlightToCharacter(character)
+if not character:FindFirstChild("HumanoidRootPart") then return end
+local highlight = character:FindFirstChild("Highlight")
+if not highlight then
+    highlight = Instance.new("Highlight")
+    highlight.Name = "Highlight"
+    highlight.Adornee = character
+    highlight.Parent = character
+end
+highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+highlight.FillColor = _G.ESPToggle and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(0, 0, 0) -- Change color based on toggle
+highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+highlight.FillTransparency = 0.5
+end
+
+-- Function to remove highlight from a character
+local function removeHighlightFromCharacter(character)
+local highlight = character:FindFirstChild("Highlight")
+if highlight then
+    highlight:Destroy()
+end
+end
+
+-- Update highlights based on _G.ESPToggle
+local function updateHighlights()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character then
+        if _G.ESPToggle then
+            addHighlightToCharacter(character)
+        else
+            removeHighlightFromCharacter(character)
+        end
+    end
+end
+end
+
+-- Listen to RenderStepped to continuously update highlights
+game:GetService("RunService").RenderStepped:Connect(updateHighlights)
+
+-- Add highlight to newly joined players
+game:GetService("Players").PlayerAdded:Connect(function(player)
+player.CharacterAdded:Connect(function(character)
+    if _G.ESPToggle then
+        addHighlightToCharacter(character)
+    end
+end)
+end)
+
+-- Remove highlight from players who leave
+game:GetService("Players").PlayerRemoving:Connect(function(player)
+local character = player.Character
+if character then
+    removeHighlightFromCharacter(character)
+end
+end)
+
+-- Example toggle button callback function
+local function toggleHighlighter(v)
+_G.ESPToggle = v
+updateHighlights() -- Update highlights immediately when toggled
+end
+
+-- GUI toggle button setup (assuming this is part of a larger UI setup)
+PoloSection:AddToggle("ESP", false, function(v)
+toggleHighlighter(v)
 end)
 
 PoloTab:CreateConfigSystem("right")
