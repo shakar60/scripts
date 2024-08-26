@@ -546,15 +546,23 @@ if character then
 end
 end)
 
-MiscSection:AddButton("Polos Old Camlock", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/polos%20old%20camlock%20protected",true))()
+MiscSection:AddButton("Polos Old Camlock", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/polos%20old%20camlock%20protected",true))()
     print("script executed")
 end)
 
-MiscSection:AddButton("Shop To Good Ms", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/server%20hop%20to%20good%20ms",true))()
+MiscSection:AddButton("Q Gui", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/protected%20Q%20Gui",true))()
     print("script executed")
 end)
 
-MiscSection:AddButton("Shiftlock Button", function() loadstring(game:HttpGet('https://raw.githubusercontent.com/Unknownproootest/Permanent-Shift-Lock-Alt/alt/PermShiftlockAlt'))()
+MiscSection:AddButton("Shop To Good Ms", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/server%20hop%20to%20good%20ms",true))()
+    print("script executed")
+end)
+
+MiscSection:AddButton("Shiftlock Button", function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/Unknownproootest/Permanent-Shift-Lock-Alt/alt/PermShiftlockAlt'))()
     print("script executed")
 end)
 
