@@ -181,11 +181,106 @@ PoloSection:AddDropdown("HitPart", {"Head", "UpperTorso", "LowerTorso"}, "Head",
     SelectedPart = dropdown
 end)
 
--- Initialize _G.ESPToggle
-_G.ESPToggle = false -- Default to false, meaning the ESP is off initially
+local ESPSettings = {
+Highlighter = false,
+DisplayName = false,
+HealthBar = false,
+OutlineESP = false,  -- Added OutlineESP setting
+}
 
--- Function to add a highlight to a character
-local function addHighlightToCharacter(character)
+-- Functions to manage ESPs
+local function toggleHighlighter(state)
+ESPSettings.Highlighter = state
+updateHighlights()
+end
+
+local function toggleDisplayNameESP(state)
+ESPSettings.DisplayName = state
+updateDisplayNameESP()
+end
+
+local function toggleHealthBarESP(state)
+ESPSettings.HealthBar = state
+updateHealthBarESP()
+end
+
+local function toggleOutlineESP(state)
+ESPSettings.OutlineESP = state
+updateOutlineESP()
+end
+
+-- Create the GUI Toggles
+Misc0Section:AddToggle("Highlighter ESP", ESPSettings.Highlighter, function(value)
+toggleHighlighter(value)
+end)
+
+Misc0Section:AddToggle("DisplayName ESP", ESPSettings.DisplayName, function(value)
+toggleDisplayNameESP(value)
+end)
+
+Misc0Section:AddToggle("HealthBar ESP", ESPSettings.HealthBar, function(value)
+toggleHealthBarESP(value)
+end)
+
+Misc0Section:AddToggle("Outline ESP", ESPSettings.OutlineESP, function(value)
+toggleOutlineESP(value)
+end)
+
+-- Update Functions for ESPs
+function updateHighlights()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character then
+        if ESPSettings.Highlighter then
+            addHighlightToCharacter(character)
+        else
+            removeHighlightFromCharacter(character)
+        end
+    end
+end
+end
+
+function updateDisplayNameESP()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        if ESPSettings.DisplayName then
+            addDisplayNameToCharacter(character, player)
+        else
+            removeDisplayNameFromCharacter(character)
+        end
+    end
+end
+end
+
+function updateHealthBarESP()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character and character:FindFirstChild("Humanoid") then
+        if ESPSettings.HealthBar then
+            addHealthBarToCharacter(character)
+        else
+            removeHealthBarFromCharacter(character)
+        end
+    end
+end
+end
+
+function updateOutlineESP()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        if ESPSettings.OutlineESP then
+            addOutlineToCharacter(character)
+        else
+            removeOutlineFromCharacter(character)
+        end
+    end
+end
+end
+
+-- Function implementations for ESP
+function addHighlightToCharacter(character)
 if not character:FindFirstChild("HumanoidRootPart") then return end
 local highlight = character:FindFirstChild("Highlight")
 if not highlight then
@@ -195,62 +290,128 @@ if not highlight then
     highlight.Parent = character
 end
 highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-highlight.FillColor = _G.ESPToggle and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(0, 0, 0) -- Change color based on toggle
-highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+highlight.FillColor = ESPSettings.Highlighter and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(0, 0, 0)  -- Red fill color when active
+highlight.OutlineColor = Color3.fromRGB(255, 255, 255)  -- White outline for Highlighter
 highlight.FillTransparency = 0.5
 end
 
--- Function to remove highlight from a character
-local function removeHighlightFromCharacter(character)
+function removeHighlightFromCharacter(character)
 local highlight = character:FindFirstChild("Highlight")
 if highlight then
     highlight:Destroy()
 end
 end
 
--- Update highlights based on _G.ESPToggle
-local function updateHighlights()
-for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
-    local character = player.Character
-    if character then
-        if _G.ESPToggle then
-            addHighlightToCharacter(character)
-        else
-            removeHighlightFromCharacter(character)
-        end
+function addDisplayNameToCharacter(character, player)
+if character:FindFirstChild("DisplayNameTag") then return end
+local displayNameTag = Instance.new("BillboardGui")
+displayNameTag.Name = "DisplayNameTag"
+displayNameTag.Adornee = character.HumanoidRootPart
+displayNameTag.Size = UDim2.new(0, 100, 0, 50)  -- Smaller size for DisplayName
+displayNameTag.StudsOffset = Vector3.new(0, 2, 0)
+displayNameTag.AlwaysOnTop = true  -- Ensure it is visible through walls
+displayNameTag.Parent = character
+
+local textLabel = Instance.new("TextLabel")
+textLabel.Text = player.DisplayName
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.TextScaled = true
+textLabel.BackgroundTransparency = 1
+textLabel.Size = UDim2.new(1, 0, 1, 0)
+textLabel.Parent = displayNameTag
+end
+
+function removeDisplayNameFromCharacter(character)
+local displayNameTag = character:FindFirstChild("DisplayNameTag")
+if displayNameTag then
+    displayNameTag:Destroy()
+end
+end
+
+function addHealthBarToCharacter(character)
+if character:FindFirstChild("HealthBarTag") then return end
+local healthBarTag = Instance.new("BillboardGui")
+healthBarTag.Name = "HealthBarTag"
+healthBarTag.Adornee = character.HumanoidRootPart
+healthBarTag.Size = UDim2.new(0, 10, 0, 65)  -- Larger HealthBar size
+healthBarTag.StudsOffset = Vector3.new(-2, 1, 0)
+healthBarTag.AlwaysOnTop = true  -- Ensure it is visible through walls
+healthBarTag.Parent = character
+
+local frame = Instance.new("Frame")
+frame.BackgroundColor3 = Color3.fromRGB(0, 255, 0)  -- Green HealthBar
+frame.Size = UDim2.new(1, 0, 1, 0)
+frame.AnchorPoint = Vector2.new(0, 0)
+frame.Parent = healthBarTag
+
+local healthChangedConn
+local function updateHealthBar()
+    if character:FindFirstChild("Humanoid") then
+        frame.Size = UDim2.new(1, 0, character.Humanoid.Health / character.Humanoid.MaxHealth, 0)
     end
 end
+
+healthChangedConn = character.Humanoid.HealthChanged:Connect(updateHealthBar)
+updateHealthBar()
 end
 
--- Listen to RenderStepped to continuously update highlights
-game:GetService("RunService").RenderStepped:Connect(updateHighlights)
+function removeHealthBarFromCharacter(character)
+local healthBarTag = character:FindFirstChild("HealthBarTag")
+if healthBarTag then
+    healthBarTag:Destroy()
+end
+end
 
--- Add highlight to newly joined players
+-- Function to add red outline to character
+function addOutlineToCharacter(character)
+if not character:FindFirstChild("HumanoidRootPart") then return end
+local outline = character:FindFirstChild("OutlineESP")
+if not outline then
+    outline = Instance.new("Highlight")
+    outline.Name = "OutlineESP"
+    outline.Adornee = character
+    outline.Parent = character
+end
+outline.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+outline.FillColor = Color3.fromRGB(0, 0, 0)  -- No fill color
+outline.OutlineColor = Color3.fromRGB(255, 0, 0)  -- Red outline
+outline.FillTransparency = 1
+end
+
+function removeOutlineFromCharacter(character)
+local outline = character:FindFirstChild("OutlineESP")
+if outline then
+    outline:Destroy()
+end
+end
+
+-- Add ESPs to all players on join
 game:GetService("Players").PlayerAdded:Connect(function(player)
 player.CharacterAdded:Connect(function(character)
-    if _G.ESPToggle then
+    if ESPSettings.Highlighter then
         addHighlightToCharacter(character)
+    end
+    if ESPSettings.DisplayName then
+        addDisplayNameToCharacter(character, player)
+    end
+    if ESPSettings.HealthBar then
+        addHealthBarToCharacter(character)
+    end
+    if ESPSettings.OutlineESP then
+        addOutlineToCharacter(character)
     end
 end)
 end)
 
--- Remove highlight from players who leave
+-- Remove ESPs from players on leave
 game:GetService("Players").PlayerRemoving:Connect(function(player)
 local character = player.Character
 if character then
     removeHighlightFromCharacter(character)
+    removeDisplayNameFromCharacter(character)
+    removeHealthBarFromCharacter(character)
+    removeOutlineFromCharacter(character)
 end
-end)
-
--- Example toggle button callback function
-local function toggleHighlighter(v)
-_G.ESPToggle = v
-updateHighlights() -- Update highlights immediately when toggled
-end
-
--- GUI toggle button setup (assuming this is part of a larger UI setup)
-Misc0Section:AddToggle("Player Highlighter", false, function(v)
-toggleHighlighter(v)
 end)
 
 MiscSection:AddButton("Shop To Good Ms", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/server%20hop%20to%20good%20ms",true))()
@@ -284,6 +445,41 @@ end)
 MiscSection:AddButton("No Fog", function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/no%20fog",true))()
     print("script executed")
+end)
+
+MiscSection:AddButton("Right Click", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/DHBCommunity/DHBOfficialScript/main/RightClick"))()
+    print("script executed")
+end)
+
+MiscSection:AddButton("Anti Stomp", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/anti%20stomp",true))()
+print("script executed")
+end)
+
+MiscSection:AddButton("AntiLock Resolver", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/antilock%20resolver",true))()
+print("script executed")
+end)
+
+MiscSection:AddButton("Vins Aim Viewer", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Nosssa/NossLock/main/VinGUI"))()
+print("script executed")
+end)
+
+Misc0Section:AddButton("Endless Esp (Not Universal)", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/endless%20esp",true))()
+print("script executed")
+end)
+
+Misc0Section:AddButton("Cool Esp", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/cool%20esp",true))()
+print("script executed")
+end)
+
+Misc0Section:AddButton("LightTuxs Esp (Gui)", function()
+loadstring(game:HttpGet(('https://raw.githubusercontent.com/cool83birdcarfly02six/UNIVERSALESPLTX/main/README.md'),true))()
+print("script executed")
 end)
 
 PoloTab:CreateConfigSystem("right")
