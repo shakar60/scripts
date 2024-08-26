@@ -155,14 +155,18 @@ function RemoveNotifications()
 end
 
 -- Initialize settings with default values
-local Prediction = 0.13875
+local Prediction = 0.206015
 local XPrediction = 0.176073
 local YPrediction = 0.167092
 local Smoothness = 0.073
 local SelectedPart = "Head"  -- Default to Head
 
+PoloSection:AddDropdown("HitPart", {"Head", "UpperTorso", "LowerTorso"}, "Head", false, function(dropdown)
+    SelectedPart = dropdown
+end)
+
 PoloSection:AddTextbox("Prediction", tostring(Prediction), function(State)
-    Prediction = tonumber(State) or 0.13875
+    Prediction = tonumber(State) or 0.206015
 end)
 
 PoloSection:AddTextbox("X Prediction", tostring(XPrediction), function(State)
@@ -177,8 +181,40 @@ PoloSection:AddTextbox("Smoothness", tostring(Smoothness), function(State)
     Smoothness = tonumber(State) or 0.073
 end)
 
-PoloSection:AddDropdown("HitPart", {"Head", "UpperTorso", "LowerTorso"}, "Head", false, function(dropdown)
-    SelectedPart = dropdown
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+
+local connection
+
+local function onHeartbeat()
+for _, Target in pairs(Players:GetPlayers()) do
+    if Target ~= localPlayer and Target.Character then
+        for _, Part in pairs(Target.Character:GetDescendants()) do
+            if Part:IsA("BasePart") then
+                Part.Velocity = Target.Character.Humanoid.MoveDirection * 16
+                Part.AssemblyLinearVelocity = Target.Character.Humanoid.MoveDirection * 16
+            end
+        end
+    end
+end
+end
+
+local function toggleResolver(enabled)
+if enabled then
+    if not connection then
+        connection = RunService.Heartbeat:Connect(onHeartbeat)
+    end
+else
+    if connection then
+        connection:Disconnect()
+        connection = nil
+    end
+end
+end
+
+PoloSection:AddToggle("Resolver", false, function(value)
+toggleResolver(value)
 end)
 
 local ESPSettings = {
@@ -510,6 +546,10 @@ if character then
 end
 end)
 
+MiscSection:AddButton("Polos Old Camlock", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/polos%20old%20camlock%20protected",true))()
+    print("script executed")
+end)
+
 MiscSection:AddButton("Shop To Good Ms", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/server%20hop%20to%20good%20ms",true))()
     print("script executed")
 end)
@@ -664,8 +704,6 @@ local Frame = Instance.new("Frame")
 local UICornerFrame = Instance.new("UICorner")
 local TextButton = Instance.new("ImageButton")
 local UICornerButton = Instance.new("UICorner")
-local CircleButton = Instance.new("ImageButton")
-local UICornerCircle = Instance.new("UICorner")
 
 PolosGui.Name = "PolosGui"
 PolosGui.Parent = game.CoreGui
@@ -675,11 +713,11 @@ Frame.Parent = PolosGui
 Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Frame.BorderSizePixel = 0
-Frame.Position = UDim2.new(0.5, -82.5, 0.5, -42.5)  -- Center the frame on the screen
-Frame.Size = UDim2.new(0, 165, 0, 85)  -- Reduced height
-Frame.AnchorPoint = Vector2.new(0.5, 0.5)  -- Anchor point set to center
+Frame.Size = UDim2.new(0, 165, 0, 120)  -- Increased height of the frame
+Frame.AnchorPoint = Vector2.new(0.5, 0.5)
+Frame.Position = UDim2.new(0.1, 0, 0.4, 0)  -- Adjusted position higher
 Frame.Active = true
-Frame.Draggable = true
+Frame.Draggable = true  -- Make the frame draggable
 
 UICornerFrame.Parent = Frame
 UICornerFrame.CornerRadius = UDim.new(0, 10)  -- Rounded corners for the Frame
@@ -689,8 +727,8 @@ TextButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 TextButton.BackgroundTransparency = 0.5
 TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 TextButton.BorderSizePixel = 0
-TextButton.Position = UDim2.new(0.5, -70, 0.1, 0)  -- Center the text button within the frame
-TextButton.Size = UDim2.new(0, 140, 0, 67)  -- Adjusted size
+TextButton.Position = UDim2.new(0.5, -70, 0.25, 0)  -- Center the text button within the frame
+TextButton.Size = UDim2.new(0, 140, 0, 67)
 TextButton.Image = "rbxassetid://105713683367381"
 TextButton.ScaleType = Enum.ScaleType.Fit
 TextButton.ImageTransparency = 0.5
@@ -716,10 +754,8 @@ UICornerButton.CornerRadius = UDim.new(0, 10)
 
 local VirtualInputManager = game:GetService("VirtualInputManager")
 local CoreGui = game:GetService("CoreGui")
-local UserInputService = game:GetService("UserInputService")
 
 -- Toggle Gui
-
 local gui = Instance.new("ScreenGui")
 gui.Name = "DraggableCircleGui"
 gui.ResetOnSpawn = false
@@ -727,12 +763,13 @@ gui.Parent = CoreGui
 
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0, 50, 0, 50)
-frame.Position = UDim2.new(0.5, -25, 0.5, -100)  -- Center the frame on the screen
+frame.Position = UDim2.new(0.5, 2, 0.1, 0)
 frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 frame.BackgroundTransparency = 0.7
 frame.BorderSizePixel = 0
-frame.AnchorPoint = Vector2.new(0.5, 0.5)  -- Anchor point set to center
+frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.Parent = gui
+frame.Draggable = true
 
 local UICornerFrame = Instance.new("UICorner")
 UICornerFrame.CornerRadius = UDim.new(1, 0)
@@ -740,7 +777,7 @@ UICornerFrame.Parent = frame
 
 local circleButton = Instance.new("ImageButton")
 circleButton.Size = UDim2.new(1, 0, 1, 0)
-circleButton.Image = "rbxassetid://138192283248709" -- Asset ID for the camlock button
+circleButton.Image = "rbxassetid://138192283248709"
 circleButton.BackgroundTransparency = 1
 circleButton.Parent = frame
 circleButton.Draggable = true
@@ -842,7 +879,7 @@ NotificationLoad:NewNotification({
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
 ["Timeout"] = 60,
-["Audio"] = true
+["Audio"] = false
 })
 
 wait(2)
@@ -853,7 +890,7 @@ NotificationLoad:NewNotification({
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
 ["Timeout"] = 60,
-["Audio"] = true
+["Audio"] = false
 })
 
 wait(2)
@@ -864,5 +901,5 @@ NotificationLoad:NewNotification({
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
 ["Timeout"] = 60,
-["Audio"] = true
+["Audio"] = false
 })
