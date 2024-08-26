@@ -1,0 +1,472 @@
+-- loading screen
+
+-- Services
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+
+-- Settings
+local settings = {
+guiDuration = 3,
+mainText = "Polos Skidded Camlock",
+loadingText = "Polos Skidded Camlock Loading",
+loadedText = "Polos Skidded Camlock Loaded",
+creditsText = "Credits to sh4k4r6o for making the loading GUI.",
+countdownTextEnabled = true,
+countdownTextDuration = 3,
+mainTextDuration = 1,
+loadingTextDuration = 1,
+loadedTextDuration = 1,
+creditsTextDuration = 1,
+font = Enum.Font.Arcade
+}
+
+-- Create ScreenGui and BlurEffect
+local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
+local screenGui = Instance.new("ScreenGui", playerGui)
+screenGui.Name = "BlurGui"
+
+local blurEffect = Instance.new("BlurEffect", game:GetService("Lighting"))
+blurEffect.Name = "BlurEffect"
+blurEffect.Size = 0
+
+-- Create ImageLabels
+local leftImageLabel = Instance.new("ImageLabel", screenGui)
+leftImageLabel.Name = "LeftImageLabel"
+leftImageLabel.BackgroundTransparency = 1
+leftImageLabel.Image = "rbxassetid://138192283248709"
+leftImageLabel.Size = UDim2.new(0, 200, 0, 200)
+leftImageLabel.Position = UDim2.new(0.05, 0, 0.5, -100)  -- Position adjusted to match text
+leftImageLabel.ScaleType = Enum.ScaleType.Fit
+
+local UICornerLeft = Instance.new("UICorner", leftImageLabel)
+UICornerLeft.CornerRadius = UDim.new(0.1, 0)
+
+-- Create Labels
+local function createLabel(name, text, position, size, textSize, visible)
+local label = Instance.new("TextLabel", screenGui)
+label.Name = name
+label.BackgroundTransparency = 1
+label.Position = position
+label.Size = size
+label.Font = settings.font
+label.Text = text
+label.TextColor3 = Color3.fromRGB(255, 255, 255)
+label.TextScaled = true
+label.TextStrokeTransparency = 0.8
+label.TextSize = textSize
+label.Visible = visible
+return label
+end
+
+local textLabel = createLabel("TextLabel", settings.mainText, UDim2.new(0.5, -200, 0.5, -50), UDim2.new(0, 400, 0, 100), 40, true)
+local creditsLabel = createLabel("CreditsLabel", settings.creditsText, UDim2.new(0.5, -200, 0.5, 60), UDim2.new(0, 400, 0, 50), 8, true)
+local countdownLabel = createLabel("CountdownLabel", "", UDim2.new(0.5, -200, 0.5, -100), UDim2.new(0, 400, 0, 50), 20, false)
+
+-- Rainbow Effect
+local function applyRainbowEffect(label)
+local UIStroke = Instance.new("UIStroke", label)
+UIStroke.Thickness = 2
+UIStroke.Transparency = 0.5
+spawn(function()
+    local hue = 0
+    while label and label.Parent do
+        hue = (hue + 1) % 360
+        local color = Color3.fromHSV(hue / 360, 1, 1)
+        UIStroke.Color = color
+        label.TextColor3 = color
+        wait(0.01)
+    end
+end)
+end
+
+applyRainbowEffect(textLabel)
+applyRainbowEffect(creditsLabel)
+applyRainbowEffect(countdownLabel)
+
+-- Tween Blur Effect
+TweenService:Create(blurEffect, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {Size = 20}):Play()
+
+-- Countdown Update
+local function updateCountdown()
+if not settings.countdownTextEnabled then return end
+countdownLabel.Visible = true
+for timeLeft = settings.countdownTextDuration, 0, -1 do
+    countdownLabel.Text = "Please wait " .. timeLeft .. " seconds"
+    wait(1)
+end
+countdownLabel.Text = "Please wait 0 seconds"
+wait(1)
+countdownLabel.Visible = false
+end
+
+-- Show Text
+local function showText(label, text, duration)
+label.Text = text
+wait(duration)
+end
+
+showText(textLabel, settings.mainText, settings.mainTextDuration)
+showText(textLabel, settings.loadingText, settings.loadingTextDuration)
+updateCountdown()
+showText(textLabel, settings.loadedText, settings.loadedTextDuration)
+wait(settings.creditsTextDuration)
+
+-- Cleanup
+screenGui:Destroy()
+blurEffect:Destroy()
+
+-- polos camlock
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local StarterGui = game:GetService("StarterGui")
+
+local NotificationLoad = loadstring(game:HttpGet('https://raw.githubusercontent.com/treeofplant/Notif/main/library.lua', true))()
+
+-- Settings
+
+local LocalPlayer = Players.LocalPlayer
+local Mouse = LocalPlayer:GetMouse()
+local CamlockState = true
+local Prediction = 0.13875
+local XPrediction = 0.176073
+local YPrediction = 0.167092
+local Smoothness = 0.073
+local Locked = true
+getgenv().Key = Enum.KeyCode.Q
+
+function FindNearestEnemy()
+local ClosestDistance, ClosestPlayer = math.huge, nil
+local CenterPosition = Vector2.new(
+    game:GetService("GuiService"):GetScreenResolution().X / 2,
+    game:GetService("GuiService"):GetScreenResolution().Y / 2
+)
+
+for _, Player in ipairs(game:GetService("Players"):GetPlayers()) do
+    if Player ~= LocalPlayer then
+        local Character = Player.Character
+        if Character and Character:FindFirstChild("HumanoidRootPart") and Character.Humanoid.Health > 0 then
+            local Position, IsVisibleOnViewport = 
+                workspace.CurrentCamera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
+
+            if IsVisibleOnViewport then
+                local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
+                if Distance < ClosestDistance then
+                    ClosestPlayer = Character.HumanoidRootPart
+                    ClosestDistance = Distance
+                end
+            end
+        end
+    end
+end
+
+return ClosestPlayer
+end
+
+local enemy = nil
+
+RunService.Heartbeat:Connect(function()
+if CamlockState and enemy then
+    local camera = workspace.CurrentCamera
+    local targetPosition = enemy.Position + enemy.Velocity * Prediction
+    targetPosition = Vector3.new(targetPosition.X + XPrediction, targetPosition.Y + YPrediction, targetPosition.Z)
+
+    local currentPosition = camera.CFrame.Position
+    local newPosition = currentPosition:Lerp(targetPosition, Smoothness)
+
+    camera.CFrame = CFrame.new(newPosition, targetPosition)
+end
+end)
+
+-- Camlock Status (On And Off Notification)
+
+UserInputService.InputBegan:Connect(function(input)
+if input.KeyCode == getgenv().Key then
+    Locked = not Locked
+    if Locked then
+        enemy = FindNearestEnemy()
+        CamlockState = true
+        NotificationLoad:NewNotification({
+            ["Mode"] = "Custom",
+            ["Title"] = "Polos Camlock",
+            ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
+            ["Notification_Image"] = "rbxassetid://78342062013795",
+            ["Notification_Sound"] = "",
+            ["Timeout"] = 2,
+            ["Audio"] = false
+        })
+        TextButton.Image = "rbxassetid://72590084838674"  -- Set image for ON state
+    else
+        if enemy then
+            enemy = nil
+            CamlockState = false
+            NotificationLoad:NewNotification({
+                ["Mode"] = "Custom",
+                ["Title"] = "Polos Camlock",
+                ["Description"] = "Unlocked",
+                ["Notification_Image"] = "rbxassetid://134820707156642",
+                ["Notification_Sound"] = "",
+                ["Timeout"] = 2,
+                ["Audio"] = false
+            })
+        end
+        TextButton.Image = "rbxassetid://105713683367381"  -- Set image for OFF state
+    end
+end
+end)
+
+local PolosGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local TextButton = Instance.new("ImageButton")
+local UICorner_2 = Instance.new("UICorner")
+
+-- Toggle Button Gui
+
+PolosGui.Name = "PolosGui"
+PolosGui.Parent = game.CoreGui
+PolosGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Frame.Parent = PolosGui
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.5, -105, 0.3, 0)
+Frame.Size = UDim2.new(0, 210, 0, 150)
+Frame.Active = true
+Frame.Draggable = true
+
+UICorner.Parent = Frame
+
+-- Camlock Button
+
+TextButton.Parent = Frame
+TextButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BackgroundTransparency = 0.5
+TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BorderSizePixel = 0
+TextButton.Position = UDim2.new(0.5, -85, 0.020, 0)
+TextButton.Size = UDim2.new(0, 170, 0, 50)
+TextButton.Image = "rbxassetid://105713683367381"  -- Initial image for OFF state
+TextButton.ScaleType = Enum.ScaleType.Fit
+TextButton.ImageTransparency = 0.5
+TextButton.MouseButton1Click:Connect(function()
+Locked = not Locked
+if Locked then
+    enemy = FindNearestEnemy()
+    CamlockState = true
+    NotificationLoad:NewNotification({
+        ["Mode"] = "Custom",
+        ["Title"] = "Polos Camlock",
+        ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
+        ["Notification_Image"] = "rbxassetid://78342062013795",
+        ["Notification_Sound"] = "",
+        ["Timeout"] = 2,
+        ["Audio"] = false
+    })
+    TextButton.Image = "rbxassetid://72590084838674"  -- Set image for ON state
+else
+    if enemy then
+        enemy = nil
+        CamlockState = false
+        NotificationLoad:NewNotification({
+            ["Mode"] = "Custom",
+            ["Title"] = "Polos Camlock",
+            ["Description"] = "Unlocked",
+            ["Notification_Image"] = "rbxassetid://134820707156642",
+            ["Notification_Sound"] = "",
+            ["Timeout"] = 2,
+            ["Audio"] = false
+        })
+    end
+    TextButton.Image = "rbxassetid://105713683367381"  -- Set image for OFF state
+end
+end)
+
+UICorner_2.Parent = TextButton
+
+-- Setting Up The TextBox
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local function createTextBox(parent, name, displayName, positionOffset, size, placeholder, text, changeCallback, outlineColor)
+    local textBox = Instance.new("TextBox")
+    textBox.Parent = parent
+    textBox.Name = name
+    textBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    textBox.Position = positionOffset -- Position is fixed relative to Frame
+    textBox.Size = size
+    textBox.PlaceholderText = displayName
+    textBox.Text = placeholder
+    textBox.ClearTextOnFocus = true
+    textBox.BorderSizePixel = 2
+    textBox.BorderColor3 = outlineColor or Color3.fromRGB(0, 0, 0)
+    textBox.TextScaled = true
+    textBox.Font = Enum.Font.Arcade
+    textBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+    textBox.TextStrokeTransparency = 0.8
+    textBox.TextSize = 14
+
+    local UICorner = Instance.new("UICorner")
+    UICorner.Parent = textBox
+    UICorner.CornerRadius = UDim.new(0, 8) -- Adjust the corner radius as needed
+
+    local function updateText()
+        textBox.Text = tostring(text)
+    end
+    updateText()
+
+    textBox.Focused:Connect(function()
+        if textBox.Text == displayName then
+            textBox.Text = ""
+        end
+    end)
+
+    textBox.FocusLost:Connect(function()
+        if textBox.Text == "" then
+            textBox.Text = displayName
+        else
+            changeCallback(textBox.Text)
+        end
+    end)
+
+    return textBox
+end
+
+local function getDefaultText(value)
+    return value or "0"
+end
+
+local baseY = 60
+local spacing = 35
+
+-- Prediction TextBox
+local PredictionTextBox = createTextBox(
+    Frame,
+    "PredictionTextBox",
+    "Enter Prediction",
+    UDim2.new(0, 15, 0, baseY),
+    UDim2.new(0, 180, 0, 30),
+    "Prediction: " .. tostring(Prediction),
+    getDefaultText(Prediction),
+    function(value) Prediction = value end,
+    Color3.fromRGB(0, 0, 0))
+
+-- Smoothness TextBox
+
+local SmoothnessTextBox = createTextBox(
+    Frame,
+    "SmoothnessTextBox",
+    "Enter Smoothness",
+    UDim2.new(0, 15, 0, baseY + spacing),
+    UDim2.new(0, 180, 0, 30),
+    "Smoothness: " .. tostring(Smoothness),
+    getDefaultText(Smoothness),
+    function(value) Smoothness = value end,
+    Color3.fromRGB(0, 0, 0))
+
+-- Variables
+local notificationSent = false
+
+-- Commands
+
+local function onCommand(command)
+if command == "/e hidepolo" then
+    if PolosGui then
+        PolosGui.Enabled = false
+    end
+elseif command == "/e showpolo" then
+    if PolosGui then
+        PolosGui.Enabled = true
+    end
+elseif command == "/e hidesets" then
+    PredictionTextBox.Visible = false
+    SmoothnessTextBox.Visible = false
+    Frame.Size = UDim2.new(0, 165, 0, 85)
+
+    TextButton.Size = UDim2.new(0, 150, 0, 70)
+    TextButton.Position = UDim2.new(0.5, -75, 0.5, -35)
+elseif command == "/e showsets" then
+    PredictionTextBox.Visible = true
+    SmoothnessTextBox.Visible = true
+    Frame.Size = UDim2.new(0, 210, 0, 150)
+
+    TextButton.Size = UDim2.new(0, 170, 0, 50)
+    TextButton.Position = UDim2.new(0.5, -85, 0.020, 0)
+elseif command == "/e cmds" then
+    if not notificationSent then
+        NotificationLoad:NewNotification({
+            ["Mode"] = "Custom",
+            ["Title"] = "Command List 1:",
+            ["Description"] = "Here's The Commands List 1: Type /e hidepolo To Hide Polo Gui /e showpolo To Show Polo Gui.",
+            ["Notification_Image"] = "rbxassetid://18985517155",
+            ["Notification_Sound"] = "rbxassetid://5153734608",
+            ["Timeout"] = 10,
+            ["Audio"] = true
+        })
+
+        NotificationLoad:NewNotification({
+            ["Mode"] = "Custom",
+            ["Title"] = "Command List 2:",
+            ["Description"] = "Here's The Commands List 2: Type /e hidesets To Hide The Settings /e showsets To Show The Settings And /e cmds To See The Cmds.",
+            ["Notification_Image"] = "rbxassetid://18985517155",
+            ["Notification_Sound"] = "rbxassetid://5153734608",
+            ["Timeout"] = 10,
+            ["Audio"] = true
+        })
+
+        notificationSent = true
+    end
+end
+end
+
+game:GetService("Players").LocalPlayer.Chatted:Connect(function(message)
+onCommand(message)
+end)
+
+-- Notifications
+
+NotificationLoad:NewNotification({
+["Mode"] = "Custom",
+["Title"] = "Polos Camlock Loaded!",
+["Description"] = "Welcome User! Polos Camlock Is An Camlock Script That Aims For You In Any Game.",
+["Notification_Image"] = "rbxassetid://18985517155",
+["Notification_Sound"] = "rbxassetid://5153734608",
+["Timeout"] = 10,
+["Audio"] = true
+})
+
+wait(2)
+NotificationLoad:NewNotification({
+["Mode"] = "Custom",
+["Title"] = "Command List 1:",
+["Description"] = "1: Type /e hidepolo To Hide Polo Gui /e showpolo To Show Polo Gui /e cmds To See The Cmds Again.",
+["Notification_Image"] = "rbxassetid://18985517155",
+["Notification_Sound"] = "rbxassetid://5153734608",
+["Timeout"] = 60,
+["Audio"] = true
+})
+
+wait(2)
+NotificationLoad:NewNotification({
+["Mode"] = "Custom",
+["Title"] = "Command List 2:",
+["Description"] = "2: Type /e hidesets To Hide The Settings /e showsets To Show The Settings.",
+["Notification_Image"] = "rbxassetid://18985517155",
+["Notification_Sound"] = "rbxassetid://5153734608",
+["Timeout"] = 60,
+["Audio"] = true
+})
+
+wait(2)
+NotificationLoad:NewNotification({
+["Mode"] = "Custom",
+["Title"] = "Credits:",
+["Description"] = "Credits To sh4k4r6o On Discord Modifying The Free Version To A Better One.",
+["Notification_Image"] = "rbxassetid://18985517155",
+["Notification_Sound"] = "rbxassetid://5153734608",
+["Timeout"] = 60,
+["Audio"] = true
+})
