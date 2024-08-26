@@ -1,0 +1,193 @@
+-- Camlock script
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+local Locked = true
+local CamlockState = true
+
+getgenv().Key = Enum.KeyCode.Q
+
+function FindNearestEnemy()
+    local ClosestDistance, ClosestPart = math.huge, nil
+    local CenterPosition = Vector2.new(
+        game:GetService("GuiService"):GetScreenResolution().X / 2,
+        game:GetService("GuiService"):GetScreenResolution().Y / 2
+    )
+
+    for _, Player in ipairs(Players:GetPlayers()) do
+        if Player ~= LocalPlayer then
+            local Character = Player.Character
+            if Character and Character:FindFirstChild("HumanoidRootPart") and Character.Humanoid.Health > 0 then
+                local part = Character:FindFirstChild(SelectedPart)
+                if part then
+                    local Position, IsVisibleOnViewport = Camera:WorldToViewportPoint(part.Position)
+
+                    if IsVisibleOnViewport then
+                        local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
+                        if Distance < ClosestDistance then
+                            ClosestPart = part
+                            ClosestDistance = Distance
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    return ClosestPart
+end
+
+local enemy = nil
+
+RunService.Heartbeat:Connect(function()
+    if CamlockState and enemy then
+        if enemy.Parent and enemy.Parent:FindFirstChild(SelectedPart) then
+            local targetPosition = enemy.Parent[SelectedPart].Position + enemy.Parent[SelectedPart].Velocity * Prediction
+            targetPosition = Vector3.new(targetPosition.X + XPrediction, targetPosition.Y + YPrediction, targetPosition.Z)
+
+            local currentPosition = Camera.CFrame.Position
+            local newPosition = currentPosition:Lerp(targetPosition, Smoothness)
+
+            Camera.CFrame = CFrame.new(newPosition, targetPosition)
+        end
+    end
+end)
+
+UserInputService.InputBegan:Connect(function(input)
+    if input.KeyCode == getgenv().Key then
+        Locked = not Locked
+        if Locked then
+            enemy = FindNearestEnemy()
+            CamlockState = true
+            SendNotification("Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"))
+            TextButton.Image = "rbxassetid://72590084838674"
+        else
+            if enemy then
+                enemy = nil
+                CamlockState = false
+                SendNotification("Unlocked")
+            end
+            TextButton.Image = "rbxassetid://105713683367381"
+        end
+    end
+end)
+
+local PolosGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local UICornerFrame = Instance.new("UICorner")
+local TextButton = Instance.new("ImageButton")
+local UICornerButton = Instance.new("UICorner")
+local CircleButton = Instance.new("ImageButton")
+local UICornerCircle = Instance.new("UICorner")
+
+PolosGui.Name = "PolosGui"
+PolosGui.Parent = game.CoreGui
+PolosGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Frame.Parent = PolosGui
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.5, -82.5, 0.5, -42.5)  -- Center the frame on the screen
+Frame.Size = UDim2.new(0, 165, 0, 85)  -- Reduced height
+Frame.AnchorPoint = Vector2.new(0.5, 0.5)  -- Anchor point set to center
+Frame.Active = true
+Frame.Draggable = true
+
+UICornerFrame.Parent = Frame
+UICornerFrame.CornerRadius = UDim.new(0, 10)  -- Rounded corners for the Frame
+
+TextButton.Parent = Frame
+TextButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BackgroundTransparency = 0.5
+TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BorderSizePixel = 0
+TextButton.Position = UDim2.new(0.5, -70, 0.1, 0)  -- Center the text button within the frame
+TextButton.Size = UDim2.new(0, 140, 0, 67)  -- Adjusted size
+TextButton.Image = "rbxassetid://105713683367381"
+TextButton.ScaleType = Enum.ScaleType.Fit
+TextButton.ImageTransparency = 0.5
+TextButton.MouseButton1Click:Connect(function()
+    Locked = not Locked
+    if Locked then
+        enemy = FindNearestEnemy()
+        CamlockState = true
+        SendNotification("Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"))
+        TextButton.Image = "rbxassetid://72590084838674"
+    else
+        if enemy then
+            enemy = nil
+            CamlockState = false
+            SendNotification("Unlocked")
+        end
+        TextButton.Image = "rbxassetid://105713683367381"
+    end
+end)
+
+UICornerButton.Parent = TextButton
+UICornerButton.CornerRadius = UDim.new(0, 10)
+
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local CoreGui = game:GetService("CoreGui")
+local UserInputService = game:GetService("UserInputService")
+
+-- Toggle Gui
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "DraggableCircleGui"
+gui.ResetOnSpawn = false
+gui.Parent = CoreGui
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 50, 0, 50)
+frame.Position = UDim2.new(0.5, -25, 0.5, -100)  -- Center the frame on the screen
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.BackgroundTransparency = 0.7
+frame.BorderSizePixel = 0
+frame.AnchorPoint = Vector2.new(0.5, 0.5)  -- Anchor point set to center
+frame.Parent = gui
+
+local UICornerFrame = Instance.new("UICorner")
+UICornerFrame.CornerRadius = UDim.new(1, 0)
+UICornerFrame.Parent = frame
+
+local circleButton = Instance.new("ImageButton")
+circleButton.Size = UDim2.new(1, 0, 1, 0)
+circleButton.Image = "rbxassetid://138192283248709" -- Asset ID for the camlock button
+circleButton.BackgroundTransparency = 1
+circleButton.Parent = frame
+circleButton.Draggable = true
+
+local UICornerButton = Instance.new("UICorner")
+UICornerButton.CornerRadius = UDim.new(1, 0)
+UICornerButton.Parent = circleButton
+
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 16, 0, 16)
+closeButton.Position = UDim2.new(1, -18, 0, 2)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+closeButton.BorderSizePixel = 0
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.TextSize = 14
+closeButton.Font = Enum.Font.SourceSans
+closeButton.BackgroundTransparency = 0.5
+closeButton.Parent = circleButton
+
+local UICornerClose = Instance.new("UICorner")
+UICornerClose.CornerRadius = UDim.new(1, 0)
+UICornerClose.Parent = closeButton
+
+circleButton.MouseButton1Click:Connect(function()
+    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.V, false, game)
+    VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.V, false, game)
+end)
+
+closeButton.MouseButton1Click:Connect(function()
+    gui:Destroy()
+end)
