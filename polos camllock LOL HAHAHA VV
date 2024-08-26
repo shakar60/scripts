@@ -185,7 +185,9 @@ local ESPSettings = {
 Highlighter = false,
 DisplayName = false,
 HealthBar = false,
-OutlineESP = false,  -- Added OutlineESP setting
+OutlineESP = false,
+Username = false,  -- Added Username ESP setting
+UserID = false     -- Added UserID ESP setting
 }
 
 -- Functions to manage ESPs
@@ -209,6 +211,16 @@ ESPSettings.OutlineESP = state
 updateOutlineESP()
 end
 
+local function toggleUsernameESP(state)
+ESPSettings.Username = state
+updateUsernameESP()
+end
+
+local function toggleUserIDESP(state)
+ESPSettings.UserID = state
+updateUserIDESP()
+end
+
 -- Create the GUI Toggles
 Misc0Section:AddToggle("Highlighter ESP", ESPSettings.Highlighter, function(value)
 toggleHighlighter(value)
@@ -224,6 +236,14 @@ end)
 
 Misc0Section:AddToggle("Outline ESP", ESPSettings.OutlineESP, function(value)
 toggleOutlineESP(value)
+end)
+
+Misc0Section:AddToggle("Username ESP", ESPSettings.Username, function(value)
+toggleUsernameESP(value)
+end)
+
+Misc0Section:AddToggle("UserID ESP", ESPSettings.UserID, function(value)
+toggleUserIDESP(value)
 end)
 
 -- Update Functions for ESPs
@@ -274,6 +294,32 @@ for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
             addOutlineToCharacter(character)
         else
             removeOutlineFromCharacter(character)
+        end
+    end
+end
+end
+
+function updateUsernameESP()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        if ESPSettings.Username then
+            addUsernameToCharacter(character, player)
+        else
+            removeUsernameFromCharacter(character)
+        end
+    end
+end
+end
+
+function updateUserIDESP()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        if ESPSettings.UserID then
+            addUserIDToCharacter(character, player)
+        else
+            removeUserIDFromCharacter(character)
         end
     end
 end
@@ -362,7 +408,6 @@ if healthBarTag then
 end
 end
 
--- Function to add red outline to character
 function addOutlineToCharacter(character)
 if not character:FindFirstChild("HumanoidRootPart") then return end
 local outline = character:FindFirstChild("OutlineESP")
@@ -385,25 +430,74 @@ if outline then
 end
 end
 
--- Add ESPs to all players on join
+-- Add Username ESP
+function addUsernameToCharacter(character, player)
+if character:FindFirstChild("UsernameTag") then return end
+local usernameTag = Instance.new("BillboardGui")
+usernameTag.Name = "UsernameTag"
+usernameTag.Adornee = character.HumanoidRootPart
+usernameTag.Size = UDim2.new(0, 100, 0, 50)
+usernameTag.StudsOffset = Vector3.new(0, 3, 0)  -- Positioned above DisplayName
+usernameTag.AlwaysOnTop = true
+
+local textLabel = Instance.new("TextLabel")
+textLabel.Text = player.Name
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.TextScaled = true
+textLabel.BackgroundTransparency = 1
+textLabel.Size = UDim2.new(1, 0, 1, 0)
+textLabel.Parent = usernameTag
+
+usernameTag.Parent = character
+end
+
+function removeUsernameFromCharacter(character)
+local usernameTag = character:FindFirstChild("UsernameTag")
+if usernameTag then
+    usernameTag:Destroy()
+end
+end
+
+-- Add UserID ESP
+function addUserIDToCharacter(character, player)
+if character:FindFirstChild("UserIDTag") then return end
+local userIDTag = Instance.new("BillboardGui")
+userIDTag.Name = "UserIDTag"
+userIDTag.Adornee = character.HumanoidRootPart
+userIDTag.Size = UDim2.new(0, 100, 0, 50)
+userIDTag.StudsOffset = Vector3.new(0, 1, 0)  -- Positioned below DisplayName
+userIDTag.AlwaysOnTop = true
+
+local textLabel = Instance.new("TextLabel")
+textLabel.Text = tostring(player.UserId)
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.TextScaled = true
+textLabel.BackgroundTransparency = 1
+textLabel.Size = UDim2.new(1, 0, 1, 0)
+textLabel.Parent = userIDTag
+
+userIDTag.Parent = character
+end
+
+function removeUserIDFromCharacter(character)
+local userIDTag = character:FindFirstChild("UserIDTag")
+if userIDTag then
+    userIDTag:Destroy()
+end
+end
+
+-- Set up event listeners for players joining/leaving
 game:GetService("Players").PlayerAdded:Connect(function(player)
 player.CharacterAdded:Connect(function(character)
-    if ESPSettings.Highlighter then
-        addHighlightToCharacter(character)
-    end
-    if ESPSettings.DisplayName then
-        addDisplayNameToCharacter(character, player)
-    end
-    if ESPSettings.HealthBar then
-        addHealthBarToCharacter(character)
-    end
-    if ESPSettings.OutlineESP then
-        addOutlineToCharacter(character)
-    end
+    if ESPSettings.Highlighter then addHighlightToCharacter(character) end
+    if ESPSettings.DisplayName then addDisplayNameToCharacter(character, player) end
+    if ESPSettings.HealthBar then addHealthBarToCharacter(character) end
+    if ESPSettings.OutlineESP then addOutlineToCharacter(character) end
+    if ESPSettings.Username then addUsernameToCharacter(character, player) end
+    if ESPSettings.UserID then addUserIDToCharacter(character, player) end
 end)
 end)
 
--- Remove ESPs from players on leave
 game:GetService("Players").PlayerRemoving:Connect(function(player)
 local character = player.Character
 if character then
@@ -411,6 +505,8 @@ if character then
     removeDisplayNameFromCharacter(character)
     removeHealthBarFromCharacter(character)
     removeOutlineFromCharacter(character)
+    removeUsernameFromCharacter(character)
+    removeUserIDFromCharacter(character)
 end
 end)
 
@@ -579,8 +675,9 @@ Frame.Parent = PolosGui
 Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Frame.BorderSizePixel = 0
-Frame.Position = UDim2.new(0.5, -85, 0.3, 0)  -- Adjusted position
+Frame.Position = UDim2.new(0.5, -82.5, 0.5, -42.5)  -- Center the frame on the screen
 Frame.Size = UDim2.new(0, 165, 0, 85)  -- Reduced height
+Frame.AnchorPoint = Vector2.new(0.5, 0.5)  -- Anchor point set to center
 Frame.Active = true
 Frame.Draggable = true
 
@@ -592,7 +689,7 @@ TextButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 TextButton.BackgroundTransparency = 0.5
 TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 TextButton.BorderSizePixel = 0
-TextButton.Position = UDim2.new(0.5, -70, 0.1, 0)  -- Adjusted position
+TextButton.Position = UDim2.new(0.5, -70, 0.1, 0)  -- Center the text button within the frame
 TextButton.Size = UDim2.new(0, 140, 0, 67)  -- Adjusted size
 TextButton.Image = "rbxassetid://105713683367381"
 TextButton.ScaleType = Enum.ScaleType.Fit
@@ -621,7 +718,6 @@ local VirtualInputManager = game:GetService("VirtualInputManager")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
 
-
 -- Toggle Gui
 
 local gui = Instance.new("ScreenGui")
@@ -631,10 +727,11 @@ gui.Parent = CoreGui
 
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0, 50, 0, 50)
-frame.Position = UDim2.new(0.5, -25, 0, 10)
+frame.Position = UDim2.new(0.5, -25, 0.5, -100)  -- Center the frame on the screen
 frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 frame.BackgroundTransparency = 0.7
 frame.BorderSizePixel = 0
+frame.AnchorPoint = Vector2.new(0.5, 0.5)  -- Anchor point set to center
 frame.Parent = gui
 
 local UICornerFrame = Instance.new("UICorner")
@@ -669,12 +766,12 @@ UICornerClose.CornerRadius = UDim.new(1, 0)
 UICornerClose.Parent = closeButton
 
 circleButton.MouseButton1Click:Connect(function()
-    VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.V, false, game)
-    VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.V, false, game)
+VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.V, false, game)
+VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.V, false, game)
 end)
 
 closeButton.MouseButton1Click:Connect(function()
-    gui:Destroy()
+gui:Destroy()
 end)
 
 -- Commands
