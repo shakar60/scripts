@@ -1,0 +1,1186 @@
+--[[ loading screen
+
+-- Services
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+
+-- Settings
+local settings = {
+guiDuration = 3,
+mainText = "Polos Skidded Camlock",
+loadingText = "Polos Skidded Camlock Loading",
+loadedText = "Polos Skidded Camlock Loaded",
+creditsText = "Credits to sh4k4r6o for making the loading GUI.",
+countdownTextEnabled = true,
+countdownTextDuration = 3,
+mainTextDuration = 1,
+loadingTextDuration = 1,
+loadedTextDuration = 1,
+creditsTextDuration = 1,
+font = Enum.Font.Arcade
+}
+
+-- Create ScreenGui and BlurEffect
+local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
+local screenGui = Instance.new("ScreenGui", playerGui)
+screenGui.Name = "BlurGui"
+
+local blurEffect = Instance.new("BlurEffect", game:GetService("Lighting"))
+blurEffect.Name = "BlurEffect"
+blurEffect.Size = 0
+
+-- Create ImageLabels
+local leftImageLabel = Instance.new("ImageLabel", screenGui)
+leftImageLabel.Name = "LeftImageLabel"
+leftImageLabel.BackgroundTransparency = 1
+leftImageLabel.Image = "rbxassetid://138192283248709"
+leftImageLabel.Size = UDim2.new(0, 200, 0, 200)
+leftImageLabel.Position = UDim2.new(0.05, 0, 0.5, -100)  -- Position adjusted to match text
+leftImageLabel.ScaleType = Enum.ScaleType.Fit
+
+local UICornerLeft = Instance.new("UICorner", leftImageLabel)
+UICornerLeft.CornerRadius = UDim.new(0.1, 0)
+
+-- Create Labels
+local function createLabel(name, text, position, size, textSize, visible)
+local label = Instance.new("TextLabel", screenGui)
+label.Name = name
+label.BackgroundTransparency = 1
+label.Position = position
+label.Size = size
+label.Font = settings.font
+label.Text = text
+label.TextColor3 = Color3.fromRGB(255, 255, 255)
+label.TextScaled = true
+label.TextStrokeTransparency = 0.8
+label.TextSize = textSize
+label.Visible = visible
+return label
+end
+
+local textLabel = createLabel("TextLabel", settings.mainText, UDim2.new(0.5, -200, 0.5, -50), UDim2.new(0, 400, 0, 100), 40, true)
+local creditsLabel = createLabel("CreditsLabel", settings.creditsText, UDim2.new(0.5, -200, 0.5, 60), UDim2.new(0, 400, 0, 50), 8, true)
+local countdownLabel = createLabel("CountdownLabel", "", UDim2.new(0.5, -200, 0.5, -100), UDim2.new(0, 400, 0, 50), 20, false)
+
+-- Rainbow Effect
+local function applyRainbowEffect(label)
+local UIStroke = Instance.new("UIStroke", label)
+UIStroke.Thickness = 2
+UIStroke.Transparency = 0.5
+spawn(function()
+    local hue = 0
+    while label and label.Parent do
+        hue = (hue + 1) % 360
+        local color = Color3.fromHSV(hue / 360, 1, 1)
+        UIStroke.Color = color
+        label.TextColor3 = color
+        wait(0.01)
+    end
+end)
+end
+
+applyRainbowEffect(textLabel)
+applyRainbowEffect(creditsLabel)
+applyRainbowEffect(countdownLabel)
+
+-- Tween Blur Effect
+TweenService:Create(blurEffect, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {Size = 20}):Play()
+
+-- Countdown Update
+local function updateCountdown()
+if not settings.countdownTextEnabled then return end
+countdownLabel.Visible = true
+for timeLeft = settings.countdownTextDuration, 0, -1 do
+    countdownLabel.Text = "Please wait " .. timeLeft .. " seconds"
+    wait(1)
+end
+countdownLabel.Text = "Please wait 0 seconds"
+wait(1)
+countdownLabel.Visible = false
+end
+
+-- Show Text
+local function showText(label, text, duration)
+label.Text = text
+wait(duration)
+end
+
+showText(textLabel, settings.mainText, settings.mainTextDuration)
+showText(textLabel, settings.loadingText, settings.loadingTextDuration)
+updateCountdown()
+showText(textLabel, settings.loadedText, settings.loadedTextDuration)
+wait(settings.creditsTextDuration)
+
+-- Cleanup
+screenGui:Destroy()
+blurEffect:Destroy() ]]
+
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/cat"))()
+local Window = Library:CreateWindow("Polos Skidded Camlock | By sh4k4r6o", Vector2.new(440, 400), Enum.KeyCode.V)
+local PoloTab = Window:CreateTab("Polos Camlock")
+local MiscTab = Window:CreateTab("Miscs")
+
+local PoloSection = PoloTab:CreateSector("Settings", "left")
+local Misc0Section = MiscTab:CreateSector("Esps", "left")
+local MiscSection = MiscTab:CreateSector("Miscs", "right")
+
+
+local NotificationLoad = loadstring(game:HttpGet('https://raw.githubusercontent.com/treeofplant/Notif/main/library.lua', true))()
+
+local NotificationsEnabled = true
+
+local NotificationToggle = PoloSection:AddToggle("Notifications", true, function(isEnabled)
+    NotificationsEnabled = isEnabled
+    if not NotificationsEnabled then
+        RemoveNotifications()
+    end
+end)
+
+function SendNotification(message)
+    if NotificationsEnabled then
+        NotificationLoad:NewNotification({
+            ["Mode"] = "Custom",
+            ["Title"] = "Polos Camlock",
+            ["Description"] = message,
+            ["Notification_Image"] = "rbxassetid://78342062013795",
+            ["Notification_Sound"] = "",
+            ["Timeout"] = 2,
+            ["Audio"] = false
+        })
+    end
+end
+
+function RemoveNotifications()
+    -- Implement logic to remove notifications if supported by the library
+end
+
+-- Initialize settings with default values
+local Prediction = 0.206015
+local XPrediction = 0.176073
+local YPrediction = 0.167092
+local Smoothness = 0.073
+local SelectedPart = "Head"  -- Default to Head
+
+PoloSection:AddDropdown("HitPart", {"Head", "UpperTorso", "LowerTorso"}, "Head", false, function(dropdown)
+    SelectedPart = dropdown
+end)
+
+PoloSection:AddTextbox("Prediction", tostring(Prediction), function(State)
+    Prediction = tonumber(State) or 0.206015
+end)
+
+PoloSection:AddTextbox("X Prediction", tostring(XPrediction), function(State)
+    XPrediction = tonumber(State) or 0.176073
+end)
+
+PoloSection:AddTextbox("Y Prediction", tostring(YPrediction), function(State)
+    YPrediction = tonumber(State) or 0.167092
+end)
+
+PoloSection:AddTextbox("Smoothness", tostring(Smoothness), function(State)
+    Smoothness = tonumber(State) or 0.073
+end)
+
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+
+local connection
+
+local function onHeartbeat()
+for _, Target in pairs(Players:GetPlayers()) do
+    if Target ~= localPlayer and Target.Character then
+        for _, Part in pairs(Target.Character:GetDescendants()) do
+            if Part:IsA("BasePart") then
+                Part.Velocity = Target.Character.Humanoid.MoveDirection * 16
+                Part.AssemblyLinearVelocity = Target.Character.Humanoid.MoveDirection * 16
+            end
+        end
+    end
+end
+end
+
+local function toggleResolver(enabled)
+if enabled then
+    if not connection then
+        connection = RunService.Heartbeat:Connect(onHeartbeat)
+    end
+else
+    if connection then
+        connection:Disconnect()
+        connection = nil
+    end
+end
+end
+
+PoloSection:AddToggle("Resolver", false, function(value)
+toggleResolver(value)
+end)
+
+local ESPSettings = {
+Highlighter = false,
+DisplayName = false,
+HealthBar = false,
+OutlineESP = false,
+Username = false,  -- Added Username ESP setting
+UserID = false     -- Added UserID ESP setting
+}
+
+-- Functions to manage ESPs
+local function toggleHighlighter(state)
+ESPSettings.Highlighter = state
+updateHighlights()
+end
+
+local function toggleDisplayNameESP(state)
+ESPSettings.DisplayName = state
+updateDisplayNameESP()
+end
+
+local function toggleHealthBarESP(state)
+ESPSettings.HealthBar = state
+updateHealthBarESP()
+end
+
+local function toggleOutlineESP(state)
+ESPSettings.OutlineESP = state
+updateOutlineESP()
+end
+
+local function toggleUsernameESP(state)
+ESPSettings.Username = state
+updateUsernameESP()
+end
+
+local function toggleUserIDESP(state)
+ESPSettings.UserID = state
+updateUserIDESP()
+end
+
+-- Create the GUI Toggles
+Misc0Section:AddToggle("Highlighter ESP", ESPSettings.Highlighter, function(value)
+toggleHighlighter(value)
+end)
+
+Misc0Section:AddToggle("DisplayName ESP", ESPSettings.DisplayName, function(value)
+toggleDisplayNameESP(value)
+end)
+
+Misc0Section:AddToggle("HealthBar ESP", ESPSettings.HealthBar, function(value)
+toggleHealthBarESP(value)
+end)
+
+Misc0Section:AddToggle("Outline ESP", ESPSettings.OutlineESP, function(value)
+toggleOutlineESP(value)
+end)
+
+Misc0Section:AddToggle("Username ESP", ESPSettings.Username, function(value)
+toggleUsernameESP(value)
+end)
+
+Misc0Section:AddToggle("UserID ESP", ESPSettings.UserID, function(value)
+toggleUserIDESP(value)
+end)
+
+-- Update Functions for ESPs
+function updateHighlights()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character then
+        if ESPSettings.Highlighter then
+            addHighlightToCharacter(character)
+        else
+            removeHighlightFromCharacter(character)
+        end
+    end
+end
+end
+
+function updateDisplayNameESP()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        if ESPSettings.DisplayName then
+            addDisplayNameToCharacter(character, player)
+        else
+            removeDisplayNameFromCharacter(character)
+        end
+    end
+end
+end
+
+function updateHealthBarESP()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character and character:FindFirstChild("Humanoid") then
+        if ESPSettings.HealthBar then
+            addHealthBarToCharacter(character)
+        else
+            removeHealthBarFromCharacter(character)
+        end
+    end
+end
+end
+
+function updateOutlineESP()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        if ESPSettings.OutlineESP then
+            addOutlineToCharacter(character)
+        else
+            removeOutlineFromCharacter(character)
+        end
+    end
+end
+end
+
+function updateUsernameESP()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        if ESPSettings.Username then
+            addUsernameToCharacter(character, player)
+        else
+            removeUsernameFromCharacter(character)
+        end
+    end
+end
+end
+
+function updateUserIDESP()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        if ESPSettings.UserID then
+            addUserIDToCharacter(character, player)
+        else
+            removeUserIDFromCharacter(character)
+        end
+    end
+end
+end
+
+-- Function implementations for ESP
+function addHighlightToCharacter(character)
+if not character:FindFirstChild("HumanoidRootPart") then return end
+local highlight = character:FindFirstChild("Highlight")
+if not highlight then
+    highlight = Instance.new("Highlight")
+    highlight.Name = "Highlight"
+    highlight.Adornee = character
+    highlight.Parent = character
+end
+highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+highlight.FillColor = ESPSettings.Highlighter and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(0, 0, 0)  -- Red fill color when active
+highlight.OutlineColor = Color3.fromRGB(255, 255, 255)  -- White outline for Highlighter
+highlight.FillTransparency = 0.5
+end
+
+function removeHighlightFromCharacter(character)
+local highlight = character:FindFirstChild("Highlight")
+if highlight then
+    highlight:Destroy()
+end
+end
+
+function addDisplayNameToCharacter(character, player)
+if character:FindFirstChild("DisplayNameTag") then return end
+local displayNameTag = Instance.new("BillboardGui")
+displayNameTag.Name = "DisplayNameTag"
+displayNameTag.Adornee = character.HumanoidRootPart
+displayNameTag.Size = UDim2.new(0, 100, 0, 50)  -- Smaller size for DisplayName
+displayNameTag.StudsOffset = Vector3.new(0, 2, 0)
+displayNameTag.AlwaysOnTop = true  -- Ensure it is visible through walls
+displayNameTag.Parent = character
+
+local textLabel = Instance.new("TextLabel")
+textLabel.Text = player.DisplayName
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.TextScaled = true
+textLabel.BackgroundTransparency = 1
+textLabel.Size = UDim2.new(1, 0, 1, 0)
+textLabel.Parent = displayNameTag
+end
+
+function removeDisplayNameFromCharacter(character)
+local displayNameTag = character:FindFirstChild("DisplayNameTag")
+if displayNameTag then
+    displayNameTag:Destroy()
+end
+end
+
+function addHealthBarToCharacter(character)
+if character:FindFirstChild("HealthBarTag") then return end
+local healthBarTag = Instance.new("BillboardGui")
+healthBarTag.Name = "HealthBarTag"
+healthBarTag.Adornee = character.HumanoidRootPart
+healthBarTag.Size = UDim2.new(0, 10, 0, 65)  -- Larger HealthBar size
+healthBarTag.StudsOffset = Vector3.new(-2, 1, 0)
+healthBarTag.AlwaysOnTop = true  -- Ensure it is visible through walls
+healthBarTag.Parent = character
+
+local frame = Instance.new("Frame")
+frame.BackgroundColor3 = Color3.fromRGB(0, 255, 0)  -- Green HealthBar
+frame.Size = UDim2.new(1, 0, 1, 0)
+frame.AnchorPoint = Vector2.new(0, 0)
+frame.Parent = healthBarTag
+
+local healthChangedConn
+local function updateHealthBar()
+    if character:FindFirstChild("Humanoid") then
+        frame.Size = UDim2.new(1, 0, character.Humanoid.Health / character.Humanoid.MaxHealth, 0)
+    end
+end
+
+healthChangedConn = character.Humanoid.HealthChanged:Connect(updateHealthBar)
+updateHealthBar()
+end
+
+function removeHealthBarFromCharacter(character)
+local healthBarTag = character:FindFirstChild("HealthBarTag")
+if healthBarTag then
+    healthBarTag:Destroy()
+end
+end
+
+function addOutlineToCharacter(character)
+if not character:FindFirstChild("HumanoidRootPart") then return end
+local outline = character:FindFirstChild("OutlineESP")
+if not outline then
+    outline = Instance.new("Highlight")
+    outline.Name = "OutlineESP"
+    outline.Adornee = character
+    outline.Parent = character
+end
+outline.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+outline.FillColor = Color3.fromRGB(0, 0, 0)  -- No fill color
+outline.OutlineColor = Color3.fromRGB(255, 0, 0)  -- Red outline
+outline.FillTransparency = 1
+end
+
+function removeOutlineFromCharacter(character)
+local outline = character:FindFirstChild("OutlineESP")
+if outline then
+    outline:Destroy()
+end
+end
+
+-- Add Username ESP
+function addUsernameToCharacter(character, player)
+if character:FindFirstChild("UsernameTag") then return end
+local usernameTag = Instance.new("BillboardGui")
+usernameTag.Name = "UsernameTag"
+usernameTag.Adornee = character.HumanoidRootPart
+usernameTag.Size = UDim2.new(0, 100, 0, 50)
+usernameTag.StudsOffset = Vector3.new(0, 3, 0)  -- Positioned above DisplayName
+usernameTag.AlwaysOnTop = true
+
+local textLabel = Instance.new("TextLabel")
+textLabel.Text = player.Name
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.TextScaled = true
+textLabel.BackgroundTransparency = 1
+textLabel.Size = UDim2.new(1, 0, 1, 0)
+textLabel.Parent = usernameTag
+
+usernameTag.Parent = character
+end
+
+function removeUsernameFromCharacter(character)
+local usernameTag = character:FindFirstChild("UsernameTag")
+if usernameTag then
+    usernameTag:Destroy()
+end
+end
+
+-- Add UserID ESP
+function addUserIDToCharacter(character, player)
+if character:FindFirstChild("UserIDTag") then return end
+local userIDTag = Instance.new("BillboardGui")
+userIDTag.Name = "UserIDTag"
+userIDTag.Adornee = character.HumanoidRootPart
+userIDTag.Size = UDim2.new(0, 100, 0, 50)
+userIDTag.StudsOffset = Vector3.new(0, 1, 0)  -- Positioned below DisplayName
+userIDTag.AlwaysOnTop = true
+
+local textLabel = Instance.new("TextLabel")
+textLabel.Text = tostring(player.UserId)
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.TextScaled = true
+textLabel.BackgroundTransparency = 1
+textLabel.Size = UDim2.new(1, 0, 1, 0)
+textLabel.Parent = userIDTag
+
+userIDTag.Parent = character
+end
+
+function removeUserIDFromCharacter(character)
+local userIDTag = character:FindFirstChild("UserIDTag")
+if userIDTag then
+    userIDTag:Destroy()
+end
+end
+
+-- Set up event listeners for players joining/leaving
+game:GetService("Players").PlayerAdded:Connect(function(player)
+player.CharacterAdded:Connect(function(character)
+    if ESPSettings.Highlighter then addHighlightToCharacter(character) end
+    if ESPSettings.DisplayName then addDisplayNameToCharacter(character, player) end
+    if ESPSettings.HealthBar then addHealthBarToCharacter(character) end
+    if ESPSettings.OutlineESP then addOutlineToCharacter(character) end
+    if ESPSettings.Username then addUsernameToCharacter(character, player) end
+    if ESPSettings.UserID then addUserIDToCharacter(character, player) end
+end)
+end)
+
+game:GetService("Players").PlayerRemoving:Connect(function(player)
+local character = player.Character
+if character then
+    removeHighlightFromCharacter(character)
+    removeDisplayNameFromCharacter(character)
+    removeHealthBarFromCharacter(character)
+    removeOutlineFromCharacter(character)
+    removeUsernameFromCharacter(character)
+    removeUserIDFromCharacter(character)
+end
+end)
+
+MiscSection:AddButton("Polos Old Camlock", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/polos%20old%20camlock%20protected",true))()
+    print("script executed")
+end)
+
+local player = game.Players.LocalPlayer
+local rainbowRunning = false
+local originalMaterials = {}
+local originalColors = {}
+local resolutionConnection
+
+-- Function to apply the Rainbow effect
+local function applyRainbowEffect(character)
+    -- Store original materials and colors
+    for _, v in pairs(character:GetChildren()) do
+        if v:IsA("MeshPart") or v:IsA("Part") then
+            if not originalMaterials[v] then
+                originalMaterials[v] = {Material = v.Material, Color = v.Color}
+            end
+            v.Material = Enum.Material.ForceField
+        end
+    end
+
+    rainbowRunning = true
+    spawn(function()
+        while rainbowRunning do
+            for _, v in pairs(character:GetChildren()) do
+                if v:IsA("MeshPart") or v:IsA("Part") then
+                    v.Color = Color3.fromHSV(tick() % 5 / 5, 1, 1)
+                end
+            end
+            wait(0.1)
+        end
+    end)
+end
+
+-- Function to remove the Rainbow effect
+local function removeRainbowEffect(character)
+    rainbowRunning = false
+    for _, v in pairs(character:GetChildren()) do
+        if v:IsA("MeshPart") or v:IsA("Part") then
+            if originalMaterials[v] then
+                v.Material = originalMaterials[v].Material
+                v.Color = originalMaterials[v].Color
+            end
+        end
+    end
+end
+
+-- Function to handle character resets or death
+local function onCharacterAdded(character)
+    -- Ensure any existing Rainbow effect is removed
+    removeRainbowEffect(character)
+
+    -- Apply Rainbow effect if it is toggled on
+    if rainbowRunning then
+        applyRainbowEffect(character)
+    end
+end
+
+local function onCharacterRemoving(character)
+    -- Clean up Rainbow effect when the character is removed
+    removeRainbowEffect(character)
+end
+
+-- Connect events for character reset and removal (death)
+player.CharacterAdded:Connect(onCharacterAdded)
+player.CharacterRemoving:Connect(onCharacterRemoving)
+
+-- Toggle function for Rainbow Character
+local function toggleRainbowCharacter(value)
+    local character = player.Character or player.CharacterAdded:Wait()
+    
+    if value then
+        applyRainbowEffect(character)
+    else
+        removeRainbowEffect(character)
+    end
+end
+
+-- Toggle function for Resolution Effect
+local function toggleResolutionEffect(enabled)
+    local Camera = workspace.CurrentCamera
+
+    if enabled then
+        -- Apply the resolution adjustment
+        if not getgenv().Resolution then
+            getgenv().Resolution = {
+                [".gg/scripters"] = 0.65
+            }
+        end
+
+        -- Disconnect any previous connection to avoid multiple calls
+        if resolutionConnection then
+            resolutionConnection:Disconnect()
+        end
+
+        getgenv().gg_scripters = true
+        resolutionConnection = game:GetService("RunService").RenderStepped:Connect(
+            function()
+                if getgenv().gg_scripters then
+                    Camera.CFrame = Camera.CFrame * CFrame.new(0, 0, 0, 1, 0, 0, 0, getgenv().Resolution[".gg/scripters"], 0, 0, 0, 1)
+                end
+            end
+        )
+    else
+        -- Reset the camera's CFrame to default
+        getgenv().gg_scripters = nil
+        if resolutionConnection then
+            resolutionConnection:Disconnect()
+        end
+        resolutionConnection = nil
+        Camera.CFrame = CFrame.new(Camera.CFrame.Position) -- Reset to default
+    end
+end
+
+-- Create the toggles in MiscSection
+MiscSection:AddToggle("Rainbow Character", false, function(value)
+    toggleRainbowCharacter(value)
+end)
+
+MiscSection:AddToggle("Mobile Res", false, function(value)
+    toggleResolutionEffect(value)
+end)
+
+MiscSection:AddButton("Q Gui", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/protected%20Q%20Gui",true))()
+    print("script executed")
+end)
+
+MiscSection:AddButton("Server Hop To Good Ms", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/server%20hop%20to%20good%20ms",true))()
+    print("script executed")
+end)
+
+MiscSection:AddButton("Shiftlock Button (For Macro)", function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/Unknownproootest/Permanent-Shift-Lock-Alt/alt/PermShiftlockAlt'))()
+    print("script executed")
+end)
+
+MiscSection:AddButton("Kirbsware Anti Lock", function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/wenny69420/KirbswareScripts/main/MobileV3'))()
+    print("script executed")
+end)
+
+MiscSection:AddButton("No Jump Cooldown", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/no%20jump%20cooldown",true))()
+    print("script executed")
+end)
+
+MiscSection:AddButton("Low Gfx", function()
+for _,v in pairs(workspace:GetDescendants()) do
+if v.ClassName == "Part"
+or v.ClassName == "SpawnLocation"
+or v.ClassName == "WedgePart"
+or v.ClassName == "Terrain"
+or v.ClassName == "MeshPart" then
+v.Material = "Plastic"
+end
+end
+    print("script executed")
+end)
+
+MiscSection:AddButton("FullBright", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/fullbright/main/scripts",true))()
+    print("script executed")
+end)
+
+MiscSection:AddButton("No Fog", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/no%20fog",true))()
+    print("script executed")
+end)
+
+MiscSection:AddButton("Right Click", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/DHBCommunity/DHBOfficialScript/main/RightClick"))()
+    print("script executed")
+end)
+
+MiscSection:AddButton("Anti Stomp", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/anti%20stomp",true))()
+print("script executed")
+end)
+
+MiscSection:AddButton("AntiLock Resolver", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/antilock%20resolver",true))()
+print("script executed")
+end)
+
+MiscSection:AddButton("Vins Aim Viewer", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Nosssa/NossLock/main/VinGUI"))()
+print("script executed")
+end)
+
+Misc0Section:AddButton("Endless Esp (Not Universal)", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/endless%20esp",true))()
+print("script executed")
+end)
+
+Misc0Section:AddButton("Cool Esp", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/cool%20esp",true))()
+print("script executed")
+end)
+
+Misc0Section:AddButton("LightTuxs Esp (Gui)", function()
+loadstring(game:HttpGet(('https://raw.githubusercontent.com/cool83birdcarfly02six/UNIVERSALESPLTX/main/README.md'),true))()
+print("script executed")
+end)
+
+MiscSection:AddButton("Direct Rejoin Script", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/Direct/main/Rejoin",true))()
+print("script executed")
+end)
+
+MiscSection:AddButton("Fly Script", function()
+loadstring(game:HttpGet("https://pastebin.com/raw/gJfKgLra",true))()
+print("script executed")
+end)
+
+MiscSection:AddButton("Tpwalk Script", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/TheRealXORA/Roblox/032418166a40fd7a610fd7a17a2f8ade0da3c734/Tpwalk%20V4%20%5B%20BETA%20%5D.lua",true))()
+print("script executed")
+end)
+
+MiscSection:AddButton("Chat Spy", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/chat-spy/main/s",true))()
+print("script executed")
+end)
+
+MiscSection:AddButton("Anti Aim Viewer", function()
+local China = setmetatable({}, {
+   __index = function(Company, Price)
+       return game:GetService(Price)
+   end})
+   
+local Players = China.Players
+local ReplicatedStorage = China.ReplicatedStorage
+
+--//Variables
+local LocalPlayer = Players.LocalPlayer
+local Mouse =  LocalPlayer:GetMouse()
+
+local MainEvent = ReplicatedStorage:FindFirstChild("MainEvent") or nil
+local Tool = nil
+
+Bypass = function(Entity)
+   Entity.ChildAdded:Connect(function(Child)
+       if Child:IsA("Tool") then
+         Tool = Child.Activated:Connect(function()
+               if MainEvent then
+                  MainEvent:FireServer("UpdateMousePos", Mouse.Hit.Position)
+               end
+           end)
+       end
+   end)
+end
+
+
+
+local Alive = function(Player)
+   return Player and Player.Character and Player.Character:FindFirstChild("Humanoid") and Player.Character:FindFirstChild("Head") or false
+end
+
+LocalPlayer.CharacterAdded:Connect(function(Character)
+   Bypass(Character)
+end)
+
+if Alive(LocalPlayer) then
+   LocalPlayer.Character.Humanoid:UnequipTools()
+   Bypass(LocalPlayer.Character)
+end
+
+local Hook
+Hook = hookmetamethod(game, "__namecall", function(self, ...)
+   local Args = {...}
+   local Method = getnamecallmethod()
+
+   if not checkcaller() and Method == "FireServer" and self.Name == "MainEvent" and Args[1] == "UpdateMousePos" then
+
+      Args[2] = "Scarcin made this" and Mouse.Hit.Position
+       
+       return self.FireServer(self, unpack(Args))
+   end
+   
+   return Hook(self, ...)
+end)
+print("script executed")
+end)
+
+MiscSection:AddButton("Inventory Sorter", function()
+local UserInputService = game:GetService("UserInputService")
+
+local Sorting = {
+    ['Enabled'] = true,
+    ['Keybind'] = Enum.KeyCode.Equals,
+    ['Slot 1'] = "[Double-Barrel SG]",
+    ['Slot 2'] = "[Revolver]",
+    ['Slot 3'] = "[Shotgun]",
+    ['Slot 4'] = "[Tactical Shotgun]",
+    ['Slot 5'] = "[USP]",
+    ['Slot 6'] = "[Pizza]",
+    ['Slot 7'] = "[Pizza]",
+    ['Slot 8'] = "[Chicken]",
+    ['Slot 9'] = "[Chicken]",
+    ['Slot 0'] = "[Katana]",
+}
+
+local function sortInventory()
+    if not Sorting.Enabled then
+        return
+    end
+
+    local player = game.Players.LocalPlayer
+    local backpack = player:FindFirstChildOfClass("Backpack")
+    if not backpack then
+        return
+    end
+
+    local originalItems = {}
+    for _, tool in pairs(backpack:GetChildren()) do
+        table.insert(originalItems, tool)
+    end
+    for _, tool in pairs(backpack:GetChildren()) do
+        tool.Parent = nil
+    end
+
+    for i = 1, 10 do
+        local slot = 'Slot ' .. tostring(i % 10) -- Slot 0 for the 10th slot
+        local desiredItemName = Sorting[slot]
+        if desiredItemName and desiredItemName ~= "" then
+            for index, tool in ipairs(originalItems) do
+                if tool.Name == desiredItemName then
+                    tool.Parent = backpack
+                    table.remove(originalItems, index)
+                    break
+                end
+            end
+        end
+    end
+    for _, tool in pairs(originalItems) do
+        tool.Parent = backpack
+    end
+end
+UserInputService.InputBegan:Connect(function(input, isProcessed)
+    if isProcessed then
+        return
+    end
+    if input.KeyCode == Sorting.Keybind then
+        sortInventory()
+    end
+end)
+print("script executed")
+end)
+
+PoloTab:CreateConfigSystem("right")
+
+-- Camlock script
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+local Locked = true
+local CamlockState = true
+
+getgenv().Key = Enum.KeyCode.Q
+
+function FindNearestEnemy()
+local ClosestDistance, ClosestPart = math.huge, nil
+local CenterPosition = Vector2.new(
+    game:GetService("GuiService"):GetScreenResolution().X / 2,
+    game:GetService("GuiService"):GetScreenResolution().Y / 2
+)
+
+for _, Player in ipairs(Players:GetPlayers()) do
+    if Player ~= LocalPlayer then
+        local Character = Player.Character
+        if Character and Character:FindFirstChild("HumanoidRootPart") and Character.Humanoid.Health > 0 then
+            local part = Character:FindFirstChild(SelectedPart)
+            if part then
+                local Position, IsVisibleOnViewport = Camera:WorldToViewportPoint(part.Position)
+
+                if IsVisibleOnViewport then
+                    local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
+                    if Distance < ClosestDistance then
+                        ClosestPart = part
+                        ClosestDistance = Distance
+                    end
+                end
+            end
+        end
+    end
+end
+
+return ClosestPart
+end
+
+local enemy = nil
+
+RunService.Heartbeat:Connect(function()
+if CamlockState and enemy then
+    if enemy.Parent and enemy.Parent:FindFirstChild(SelectedPart) then
+        local targetPosition = enemy.Parent[SelectedPart].Position + enemy.Parent[SelectedPart].Velocity * Prediction
+        targetPosition = Vector3.new(targetPosition.X + XPrediction, targetPosition.Y + YPrediction, targetPosition.Z)
+
+        local currentPosition = Camera.CFrame.Position
+        local newPosition = currentPosition:Lerp(targetPosition, Smoothness)
+
+        Camera.CFrame = CFrame.new(newPosition, targetPosition)
+    end
+end
+end)
+
+UserInputService.InputBegan:Connect(function(input)
+if input.KeyCode == getgenv().Key then
+    Locked = not Locked
+    if Locked then
+        enemy = FindNearestEnemy()
+        CamlockState = true
+        SendNotification("Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"))
+        TextButton.Image = "rbxassetid://72590084838674"
+    else
+        if enemy then
+            enemy = nil
+            CamlockState = false
+            SendNotification("Unlocked")
+        end
+        TextButton.Image = "rbxassetid://105713683367381"
+    end
+end
+end)
+
+local PolosGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local UICornerFrame = Instance.new("UICorner")
+local TextButton = Instance.new("ImageButton")
+local UICornerButton = Instance.new("UICorner")
+
+PolosGui.Name = "PolosGui"
+PolosGui.Parent = game.CoreGui
+PolosGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Frame.Parent = PolosGui
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Size = UDim2.new(0, 165, 0, 120)  -- Increased height of the frame
+Frame.AnchorPoint = Vector2.new(0.5, 0.5)
+Frame.Position = UDim2.new(0.1, 0, 0.4, 0)  -- Adjusted position higher
+Frame.Active = true
+Frame.Draggable = true  -- Make the frame draggable
+
+UICornerFrame.Parent = Frame
+UICornerFrame.CornerRadius = UDim.new(0, 10)  -- Rounded corners for the Frame
+
+TextButton.Parent = Frame
+TextButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BackgroundTransparency = 0.5
+TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BorderSizePixel = 0
+TextButton.Position = UDim2.new(0.5, -70, 0.25, 0)  -- Center the text button within the frame
+TextButton.Size = UDim2.new(0, 140, 0, 67)
+TextButton.Image = "rbxassetid://105713683367381"
+TextButton.ScaleType = Enum.ScaleType.Fit
+TextButton.ImageTransparency = 0.5
+TextButton.MouseButton1Click:Connect(function()
+Locked = not Locked
+if Locked then
+    enemy = FindNearestEnemy()
+    CamlockState = true
+    SendNotification("Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"))
+    TextButton.Image = "rbxassetid://72590084838674"
+else
+    if enemy then
+        enemy = nil
+        CamlockState = false
+        SendNotification("Unlocked")
+    end
+    TextButton.Image = "rbxassetid://105713683367381"
+end
+end)
+
+UICornerButton.Parent = TextButton
+UICornerButton.CornerRadius = UDim.new(0, 10)
+
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local CoreGui = game:GetService("CoreGui")
+
+-- Toggle Gui
+local gui = Instance.new("ScreenGui")
+gui.Name = "DraggableCircleGui"
+gui.ResetOnSpawn = false
+gui.Parent = CoreGui
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 50, 0, 50)
+frame.Position = UDim2.new(0.5, 2, 0.1, 0)
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.BackgroundTransparency = 0.7
+frame.BorderSizePixel = 0
+frame.AnchorPoint = Vector2.new(0.5, 0.5)
+frame.Parent = gui
+frame.Draggable = true
+
+local UICornerFrame = Instance.new("UICorner")
+UICornerFrame.CornerRadius = UDim.new(1, 0)
+UICornerFrame.Parent = frame
+
+local circleButton = Instance.new("ImageButton")
+circleButton.Size = UDim2.new(1, 0, 1, 0)
+circleButton.Image = "rbxassetid://138192283248709"
+circleButton.BackgroundTransparency = 1
+circleButton.Parent = frame
+circleButton.Draggable = true
+
+local UICornerButton = Instance.new("UICorner")
+UICornerButton.CornerRadius = UDim.new(1, 0)
+UICornerButton.Parent = circleButton
+
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 16, 0, 16)
+closeButton.Position = UDim2.new(1, -18, 0, 2)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+closeButton.BorderSizePixel = 0
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.TextSize = 14
+closeButton.Font = Enum.Font.SourceSans
+closeButton.BackgroundTransparency = 0.5
+closeButton.Parent = circleButton
+
+local UICornerClose = Instance.new("UICorner")
+UICornerClose.CornerRadius = UDim.new(1, 0)
+UICornerClose.Parent = closeButton
+
+circleButton.MouseButton1Click:Connect(function()
+VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.V, false, game)
+VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.V, false, game)
+end)
+
+closeButton.MouseButton1Click:Connect(function()
+gui:Destroy()
+end)
+
+-- Commands
+
+local originalSize = TextButton.Size
+local originalPosition = TextButton.Position
+
+local function onCommand(command)
+if command == "/e hidepolo" then
+    if PolosGui then
+        PolosGui.Enabled = false
+    end
+elseif command == "/e showpolo" then
+    if PolosGui then
+        PolosGui.Enabled = true
+        -- Restore the original size and position
+        TextButton.Size = originalSize
+        TextButton.Position = originalPosition
+    end
+elseif command == "/e info" then
+    if not notificationSent then
+        NotificationLoad:NewNotification({
+            ["Mode"] = "Custom",
+            ["Title"] = "Info 1:",
+            ["Description"] = "1: Type /e hidepolo To Hide The Polo Gui, /e showpolo To Show The Polo Gui.",
+            ["Notification_Image"] = "rbxassetid://18985517155",
+            ["Notification_Sound"] = "rbxassetid://5153734608",
+            ["Timeout"] = 10,
+            ["Audio"] = true
+        })
+
+        NotificationLoad:NewNotification({
+            ["Mode"] = "Custom",
+            ["Title"] = "Info 2:",
+            ["Description"] = "Click The Toggle Button Ontop Of Your Screen To Hide And Show The Settings Gui.",
+            ["Notification_Image"] = "rbxassetid://18985517155",
+            ["Notification_Sound"] = "rbxassetid://5153734608",
+            ["Timeout"] = 10,
+            ["Audio"] = true
+        })
+
+        notificationSent = true
+    end
+end
+end
+
+game:GetService("Players").LocalPlayer.Chatted:Connect(function(message)
+onCommand(message)
+end)
+
+-- Notifications
+
+NotificationLoad:NewNotification({
+["Mode"] = "Custom",
+["Title"] = "Polos Camlock Loaded!",
+["Description"] = "Welcome User! Polos Camlock Is An Camlock Script That Aims For You In Any Game.",
+["Notification_Image"] = "rbxassetid://18985517155",
+["Notification_Sound"] = "rbxassetid://5153734608",
+["Timeout"] = 10,
+["Audio"] = true
+})
+
+wait(2)
+NotificationLoad:NewNotification({
+["Mode"] = "Custom",
+["Title"] = "Info 1:",
+["Description"] = "Type /e hidepolo To Hide The Polo Gui, /e showpolo To Show The Polo Gui, /e Info To See The Infos.",
+["Notification_Image"] = "rbxassetid://18985517155",
+["Notification_Sound"] = "rbxassetid://5153734608",
+["Timeout"] = 60,
+["Audio"] = false
+})
+
+wait(2)
+NotificationLoad:NewNotification({
+["Mode"] = "Custom",
+["Title"] = "Info 2:",
+["Description"] = "Click The Toggle Button Ontop Of Your Screen To Hide And Show The Settings Gui.",
+["Notification_Image"] = "rbxassetid://18985517155",
+["Notification_Sound"] = "rbxassetid://5153734608",
+["Timeout"] = 60,
+["Audio"] = false
+})
+
+wait(2)
+NotificationLoad:NewNotification({
+["Mode"] = "Custom",
+["Title"] = "Credits:",
+["Description"] = "Credits To sh4k4r6o On Discord Modifying The Free Version To A Better One.",
+["Notification_Image"] = "rbxassetid://18985517155",
+["Notification_Sound"] = "rbxassetid://5153734608",
+["Timeout"] = 60,
+["Audio"] = false
+})
