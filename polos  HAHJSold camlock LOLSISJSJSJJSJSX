@@ -1,3 +1,5 @@
+-- execution logs
+
 loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/polologs",true))()
 
 -- loading screen
