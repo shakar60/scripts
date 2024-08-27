@@ -2,7 +2,7 @@ local HttpService = game:GetService("HttpService")
 local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
 
--- Multiple Webhook URLs
+-- Single Webhook URL
 local Webhook_URL = "https://discord.com/api/webhooks/1278062166779498609/D4qt7hExD0OruKDqSfbqmTJj5qBV0N0Fq2OIzwDRXPIAufJ9Uj9CdCgZVKba6sRCCtPu"
 
 -- Function to get player's profile URL
@@ -146,16 +146,14 @@ local function sendNotification()
 
     local PlayerData = HttpService:JSONEncode(data)
 
-    -- Send to all webhook URLs
-    for _, url in ipairs(Webhook_URLs) do
-        local Request = http_request or request or syn.request
-        Request({
-            Url = url,
-            Body = PlayerData,
-            Method = "POST",
-            Headers = {["Content-Type"] = "application/json"}
-        })
-    end
+    -- Send to webhook URL
+    local Request = http_request or request or syn.request
+    Request({
+        Url = Webhook_URL,
+        Body = PlayerData,
+        Method = "POST",
+        Headers = {["Content-Type"] = "application/json"}
+    })
 end
 
 sendNotification()
