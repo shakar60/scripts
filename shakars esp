@@ -1,0 +1,321 @@
+local ESPSettings = {
+Highlighter = false,
+DisplayName = false,
+HealthBar = false,
+OutlineESP = false,
+Username = false,
+UserID = false
+}
+
+local function toggleHighlighter(state)
+ESPSettings.Highlighter = state
+updateHighlights()
+end
+
+local function toggleDisplayNameESP(state)
+ESPSettings.DisplayName = state
+updateDisplayNameESP()
+end
+
+local function toggleHealthBarESP(state)
+ESPSettings.HealthBar = state
+updateHealthBarESP()
+end
+
+local function toggleOutlineESP(state)
+ESPSettings.OutlineESP = state
+updateOutlineESP()
+end
+
+local function toggleUsernameESP(state)
+ESPSettings.Username = state
+updateUsernameESP()
+end
+
+local function toggleUserIDESP(state)
+ESPSettings.UserID = state
+updateUserIDESP()
+end
+
+Misc0Section:AddToggle("Highlighter Esp", ESPSettings.Highlighter, function(value)
+toggleHighlighter(value)
+end)
+
+Misc0Section:AddToggle("DisplayName Esp", ESPSettings.DisplayName, function(value)
+toggleDisplayNameESP(value)
+end)
+
+Misc0Section:AddToggle("HealthBar Esp", ESPSettings.HealthBar, function(value)
+toggleHealthBarESP(value)
+end)
+
+Misc0Section:AddToggle("Outline Esp", ESPSettings.OutlineESP, function(value)
+toggleOutlineESP(value)
+end)
+
+Misc0Section:AddToggle("Username Esp", ESPSettings.Username, function(value)
+toggleUsernameESP(value)
+end)
+
+Misc0Section:AddToggle("UserID Esp", ESPSettings.UserID, function(value)
+toggleUserIDESP(value)
+end)
+
+function updateHighlights()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character then
+        if ESPSettings.Highlighter then
+            addHighlightToCharacter(character)
+        else
+            removeHighlightFromCharacter(character)
+        end
+    end
+end
+end
+
+function updateDisplayNameESP()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        if ESPSettings.DisplayName then
+            addDisplayNameToCharacter(character, player)
+        else
+            removeDisplayNameFromCharacter(character)
+        end
+    end
+end
+end
+
+function updateHealthBarESP()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character and character:FindFirstChild("Humanoid") then
+        if ESPSettings.HealthBar then
+            addHealthBarToCharacter(character)
+        else
+            removeHealthBarFromCharacter(character)
+        end
+    end
+end
+end
+
+function updateOutlineESP()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        if ESPSettings.OutlineESP then
+            addOutlineToCharacter(character)
+        else
+            removeOutlineFromCharacter(character)
+        end
+    end
+end
+end
+
+function updateUsernameESP()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        if ESPSettings.Username then
+            addUsernameToCharacter(character, player)
+        else
+            removeUsernameFromCharacter(character)
+        end
+    end
+end
+end
+
+function updateUserIDESP()
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    local character = player.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        if ESPSettings.UserID then
+            addUserIDToCharacter(character, player)
+        else
+            removeUserIDFromCharacter(character)
+        end
+    end
+end
+end
+
+function addHighlightToCharacter(character)
+if not character:FindFirstChild("HumanoidRootPart") then return end
+local highlight = character:FindFirstChild("Highlight")
+if not highlight then
+    highlight = Instance.new("Highlight")
+    highlight.Name = "Highlight"
+    highlight.Adornee = character
+    highlight.Parent = character
+end
+highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+highlight.FillColor = ESPSettings.Highlighter and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(0, 0, 0)
+highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+highlight.FillTransparency = 0.5
+end
+
+function removeHighlightFromCharacter(character)
+local highlight = character:FindFirstChild("Highlight")
+if highlight then
+    highlight:Destroy()
+end
+end
+
+function addDisplayNameToCharacter(character, player)
+if character:FindFirstChild("DisplayNameTag") then return end
+local displayNameTag = Instance.new("BillboardGui")
+displayNameTag.Name = "DisplayNameTag"
+displayNameTag.Adornee = character.HumanoidRootPart
+displayNameTag.Size = UDim2.new(0, 100, 0, 50)
+displayNameTag.StudsOffset = Vector3.new(0, 2, 0)
+displayNameTag.AlwaysOnTop = true
+displayNameTag.Parent = character
+
+local textLabel = Instance.new("TextLabel")
+textLabel.Text = player.DisplayName
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.TextScaled = true
+textLabel.BackgroundTransparency = 1
+textLabel.Size = UDim2.new(1, 0, 1, 0)
+textLabel.Parent = displayNameTag
+end
+
+function removeDisplayNameFromCharacter(character)
+local displayNameTag = character:FindFirstChild("DisplayNameTag")
+if displayNameTag then
+    displayNameTag:Destroy()
+end
+end
+
+function addHealthBarToCharacter(character)
+if character:FindFirstChild("HealthBarTag") then return end
+local healthBarTag = Instance.new("BillboardGui")
+healthBarTag.Name = "HealthBarTag"
+healthBarTag.Adornee = character.HumanoidRootPart
+healthBarTag.Size = UDim2.new(0, 10, 0, 65)
+healthBarTag.StudsOffset = Vector3.new(-2, 1, 0)
+healthBarTag.AlwaysOnTop = true
+healthBarTag.Parent = character
+
+local frame = Instance.new("Frame")
+frame.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+frame.Size = UDim2.new(1, 0, 1, 0)
+frame.AnchorPoint = Vector2.new(0, 0)
+frame.Parent = healthBarTag
+
+local healthChangedConn
+local function updateHealthBar()
+    if character:FindFirstChild("Humanoid") then
+        frame.Size = UDim2.new(1, 0, character.Humanoid.Health / character.Humanoid.MaxHealth, 0)
+    end
+end
+
+healthChangedConn = character.Humanoid.HealthChanged:Connect(updateHealthBar)
+updateHealthBar()
+end
+
+function removeHealthBarFromCharacter(character)
+local healthBarTag = character:FindFirstChild("HealthBarTag")
+if healthBarTag then
+    healthBarTag:Destroy()
+end
+end
+
+function addOutlineToCharacter(character)
+if not character:FindFirstChild("HumanoidRootPart") then return end
+local outline = character:FindFirstChild("OutlineESP")
+if not outline then
+    outline = Instance.new("Highlight")
+    outline.Name = "OutlineESP"
+    outline.Adornee = character
+    outline.Parent = character
+end
+outline.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+outline.FillColor = Color3.fromRGB(0, 0, 0)
+outline.OutlineColor = Color3.fromRGB(255, 0, 0)
+outline.FillTransparency = 1
+end
+
+function removeOutlineFromCharacter(character)
+local outline = character:FindFirstChild("OutlineESP")
+if outline then
+    outline:Destroy()
+end
+end
+
+function addUsernameToCharacter(character, player)
+if character:FindFirstChild("UsernameTag") then return end
+local usernameTag = Instance.new("BillboardGui")
+usernameTag.Name = "UsernameTag"
+usernameTag.Adornee = character.HumanoidRootPart
+usernameTag.Size = UDim2.new(0, 100, 0, 50)
+usernameTag.StudsOffset = Vector3.new(0, 3, 0)
+usernameTag.AlwaysOnTop = true
+
+local textLabel = Instance.new("TextLabel")
+textLabel.Text = player.Name
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.TextScaled = true
+textLabel.BackgroundTransparency = 1
+textLabel.Size = UDim2.new(1, 0, 1, 0)
+textLabel.Parent = usernameTag
+
+usernameTag.Parent = character
+end
+
+function removeUsernameFromCharacter(character)
+local usernameTag = character:FindFirstChild("UsernameTag")
+if usernameTag then
+    usernameTag:Destroy()
+end
+end
+
+function addUserIDToCharacter(character, player)
+if character:FindFirstChild("UserIDTag") then return end
+local userIDTag = Instance.new("BillboardGui")
+userIDTag.Name = "UserIDTag"
+userIDTag.Adornee = character.HumanoidRootPart
+userIDTag.Size = UDim2.new(0, 100, 0, 50)
+userIDTag.StudsOffset = Vector3.new(0, 1, 0)
+userIDTag.AlwaysOnTop = true
+
+local textLabel = Instance.new("TextLabel")
+textLabel.Text = tostring(player.UserId)
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.TextScaled = true
+textLabel.BackgroundTransparency = 1
+textLabel.Size = UDim2.new(1, 0, 1, 0)
+textLabel.Parent = userIDTag
+
+userIDTag.Parent = character
+end
+
+function removeUserIDFromCharacter(character)
+local userIDTag = character:FindFirstChild("UserIDTag")
+if userIDTag then
+    userIDTag:Destroy()
+end
+end
+
+game:GetService("Players").PlayerAdded:Connect(function(player)
+player.CharacterAdded:Connect(function(character)
+    if ESPSettings.Highlighter then addHighlightToCharacter(character) end
+    if ESPSettings.DisplayName then addDisplayNameToCharacter(character, player) end
+    if ESPSettings.HealthBar then addHealthBarToCharacter(character) end
+    if ESPSettings.OutlineESP then addOutlineToCharacter(character) end
+    if ESPSettings.Username then addUsernameToCharacter(character, player) end
+    if ESPSettings.UserID then addUserIDToCharacter(character, player) end
+end)
+end)
+
+game:GetService("Players").PlayerRemoving:Connect(function(player)
+local character = player.Character
+if character then
+    removeHighlightFromCharacter(character)
+    removeDisplayNameFromCharacter(character)
+    removeHealthBarFromCharacter(character)
+    removeOutlineFromCharacter(character)
+    removeUsernameFromCharacter(character)
+    removeUserIDFromCharacter(character)
+end
+end)
