@@ -1,0 +1,97 @@
+local player = game.Players.LocalPlayer
+local screenGui = Instance.new("ScreenGui")
+local frame = Instance.new("Frame")
+local titleLabel = Instance.new("TextLabel")
+local textLabel = Instance.new("TextLabel")
+local icon = Instance.new("ImageLabel")
+local sound = Instance.new("Sound")
+local countdownLabel = Instance.new("TextLabel")
+local closeButton = Instance.new("TextButton")
+
+screenGui.Parent = player.PlayerGui
+
+frame.Size = UDim2.new(0, 300, 0, 200)
+frame.Position = UDim2.new(0.5, -150, 0.5, -100)
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.BackgroundTransparency = 0.5
+frame.BorderSizePixel = 0
+frame.ClipsDescendants = true
+frame.Parent = screenGui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 12)
+corner.Parent = frame
+
+titleLabel.Size = UDim2.new(1, 0, 0, 40)
+titleLabel.Position = UDim2.new(0, 0, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "WARNING"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.TextStrokeTransparency = 0.5
+titleLabel.TextSize = 24
+titleLabel.Font = Enum.Font.Arcade
+titleLabel.Parent = frame
+
+textLabel.Size = UDim2.new(1, -20, 0, 120)
+textLabel.Position = UDim2.new(0, 10, 0.3, 0)
+textLabel.BackgroundTransparency = 1
+textLabel.Text = "IF YOU ARE NOT IN THE GAME UNTITLED TAG GAME RECODE, PLEASE JOIN IT THEN EXECUTE THE SCRIPT."
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.TextStrokeTransparency = 0.5
+textLabel.TextSize = 16
+textLabel.Font = Enum.Font.Arcade
+textLabel.TextWrapped = true
+textLabel.TextYAlignment = Enum.TextYAlignment.Top
+textLabel.Parent = frame
+
+icon.Size = UDim2.new(0, 50, 0, 50)
+icon.Position = UDim2.new(0, 10, 0, 10)
+icon.BackgroundTransparency = 1
+icon.Image = "rbxassetid://126238954171023"
+icon.Parent = frame
+
+countdownLabel.Size = UDim2.new(1, -20, 0, 30)
+countdownLabel.Position = UDim2.new(0, 10, 1, -40)
+countdownLabel.BackgroundTransparency = 1
+countdownLabel.Text = "Notification Destroying In: 8"
+countdownLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+countdownLabel.TextStrokeTransparency = 0.5
+countdownLabel.TextSize = 16
+countdownLabel.Font = Enum.Font.Arcade
+countdownLabel.TextXAlignment = Enum.TextXAlignment.Center
+countdownLabel.Parent = frame
+
+closeButton.Size = UDim2.new(0, 40, 0, 40)
+closeButton.Position = UDim2.new(1, -15, 0, 10)
+closeButton.AnchorPoint = Vector2.new(1, 0)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+closeButton.BackgroundTransparency = 0.6
+closeButton.BorderSizePixel = 0
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.TextSize = 24
+closeButton.TextStrokeTransparency = 0.5
+closeButton.Font = Enum.Font.Arcade
+closeButton.Parent = frame
+
+local buttonCorner = Instance.new("UICorner")
+buttonCorner.CornerRadius = UDim.new(0, 8)
+buttonCorner.Parent = closeButton
+
+closeButton.MouseButton1Click:Connect(function()
+    sound:Stop()
+    screenGui:Destroy()
+end)
+
+sound.SoundId = "rbxassetid://2018312818"
+sound.Parent = player.PlayerGui
+sound:Play()
+
+local duration = 8
+for i = duration, 1, -1 do
+    countdownLabel.Text = "Notification Destroying In: " .. i
+    wait(1)
+end
+
+sound:Stop()
+screenGui:Destroy()
