@@ -1,167 +1,185 @@
 local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
 local tweenService = game:GetService("TweenService")
-function tween(object, goal, callback)
-	local tween = tweenService:Create(object, tweenInfo, goal)
-	tween.Completed:Connect(callback or function() end)
-	tween:Play()
-end
+local userInputService = game:GetService("UserInputService")
+local runService = game:GetService("RunService")
 local mouse = game.Players.LocalPlayer:GetMouse()
-local ch = game.Players.LocalPlayer.Character
+
+function tween(object, goal, callback)
+    local tween = tweenService:Create(object, tweenInfo, goal)
+    tween.Completed:Connect(callback or function() end)
+    tween:Play()
+end
 
 local library = {}
 
 function library:Create(text, draggable, keybind)
-	keybind = keybind or "p"
-	
-	local newUI = Instance.new("ScreenGui")
-	local Main = Instance.new("Frame")
-	
-	newUI.Name = "newUI"
-	newUI.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-	newUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    keybind = keybind or "p"
+    
+    local newUI = Instance.new("ScreenGui")
+    local Main = Instance.new("Frame")
+    
+    newUI.Name = "newUI"
+    newUI.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    newUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-	Main.Name = "Main"
-	Main.Parent = newUI
-	Main.AnchorPoint = Vector2.new(0.5, 0.5)
-	Main.BackgroundColor3 = Color3.fromRGB(58, 58, 58)
-	Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Main.BorderSizePixel = 0
-	Main.ClipsDescendants = true
-	Main.Position = UDim2.new(0.498771489, 0, 0.526052117, 0)
-	Main.Size = UDim2.new(0, 382, 0, 297)
-	Main.ResetOnSpawn = false
-	
-	
-	local UICorner = Instance.new("UICorner")
-	UICorner.Parent = Main
-	
+    Main.Name = "Main"
+    Main.Parent = newUI
+    Main.AnchorPoint = Vector2.new(0.5, 0.5)
+    Main.BackgroundColor3 = Color3.fromRGB(58, 58, 58)
+    Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Main.BorderSizePixel = 0
+    Main.ClipsDescendants = true
+    Main.Position = UDim2.new(0.498771489, 0, 0.526052117, 0)
+    Main.Size = UDim2.new(0, 382, 0, 297)
+    Main.ResetOnSpawn = false
+    
+    local UICorner = Instance.new("UICorner")
+    UICorner.Parent = Main
+    
+    local DropShadowHolder = Instance.new("Frame")
+    local DropShadow = Instance.new("ImageLabel")
+    DropShadowHolder.Name = "DropShadowHolder"
+    DropShadowHolder.Parent = Main
+    DropShadowHolder.BackgroundTransparency = 1.000
+    DropShadowHolder.BorderSizePixel = 0
+    DropShadowHolder.Size = UDim2.new(1, 0, 1, 0)
+    DropShadowHolder.ZIndex = 0
 
-	local DropShadowHolder = Instance.new("Frame")
-	local DropShadow = Instance.new("ImageLabel")
-	DropShadowHolder.Name = "DropShadowHolder"
-	DropShadowHolder.Parent = Main
-	DropShadowHolder.BackgroundTransparency = 1.000
-	DropShadowHolder.BorderSizePixel = 0
-	DropShadowHolder.Size = UDim2.new(1, 0, 1, 0)
-	DropShadowHolder.ZIndex = 0
+    DropShadow.Name = "DropShadow"
+    DropShadow.Parent = DropShadowHolder
+    DropShadow.AnchorPoint = Vector2.new(0.5, 0.5)
+    DropShadow.BackgroundTransparency = 1.000
+    DropShadow.BorderSizePixel = 0
+    DropShadow.Position = UDim2.new(0.5, 0, 0.5, 0)
+    DropShadow.Size = UDim2.new(1, 47, 1, 47)
+    DropShadow.ZIndex = 0
+    DropShadow.Image = "rbxassetid://6014261993"
+    DropShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+    DropShadow.ImageTransparency = 0.500
+    DropShadow.ScaleType = Enum.ScaleType.Slice
+    DropShadow.SliceCenter = Rect.new(49, 49, 450, 450)
+    
+    local TabsContainer = Instance.new("Frame")
+    local scroll = Instance.new("ScrollingFrame")
+    TabsContainer.Name = "TabsContainer"
+    TabsContainer.Parent = Main
+    TabsContainer.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+    TabsContainer.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    TabsContainer.BorderSizePixel = 0
+    TabsContainer.Position = UDim2.new(0.0287957713, 0, 0.151515156, 0)
+    TabsContainer.Size = UDim2.new(0, 359, 0, 57)
+    
+    local Title = Instance.new("TextLabel")
+    Title.Name = "Title"
+    Title.Parent = Main
+    Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Title.BackgroundTransparency = 1.000
+    Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Title.BorderSizePixel = 0
+    Title.Position = UDim2.new(0.0340314135, 0, 0.0471380465, 0)
+    Title.Size = UDim2.new(0.823999047, -20, 0.0740740746, 0)
+    Title.Font = Enum.Font.Gotham
+    Title.Text = text
+    Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Title.TextSize = 14.000
+    Title.TextXAlignment = Enum.TextXAlignment.Left
 
-	DropShadow.Name = "DropShadow"
-	DropShadow.Parent = DropShadowHolder
-	DropShadow.AnchorPoint = Vector2.new(0.5, 0.5)
-	DropShadow.BackgroundTransparency = 1.000
-	DropShadow.BorderSizePixel = 0
-	DropShadow.Position = UDim2.new(0.5, 0, 0.5, 0)
-	DropShadow.Size = UDim2.new(1, 47, 1, 47)
-	DropShadow.ZIndex = 0
-	DropShadow.Image = "rbxassetid://6014261993"
-	DropShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
-	DropShadow.ImageTransparency = 0.500
-	DropShadow.ScaleType = Enum.ScaleType.Slice
-	DropShadow.SliceCenter = Rect.new(49, 49, 450, 450)
-	
-	local TabsContainer = Instance.new("Frame")
-	local scroll = Instance.new("ScrollingFrame")
-	TabsContainer.Name = "TabsContainer"
-	TabsContainer.Parent = Main
-	TabsContainer.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
-	TabsContainer.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	TabsContainer.BorderSizePixel = 0
-	TabsContainer.Position = UDim2.new(0.0287957713, 0, 0.151515156, 0)
-	TabsContainer.Size = UDim2.new(0, 359, 0, 57)
-	-- Gui to Lua
-	-- Version: 3.2
+    scroll.Name = "scroll"
+    scroll.Parent = TabsContainer
+    scroll.Active = true
+    scroll.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+    scroll.BackgroundTransparency = 1.000
+    scroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    scroll.BorderSizePixel = 0
+    scroll.Position = UDim2.new(-0.00184482581, 0, -0.00637951214, 0)
+    scroll.Size = UDim2.new(0, 359, 0, 57)
+    scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+    scroll.ScrollBarThickness = 3
+    scroll.AutomaticCanvasSize = Enum.AutomaticSize.X
+    scroll.ScrollingDirection = Enum.ScrollingDirection.X
+    
+    local Tabs = Instance.new("Folder")
+    Tabs.Name = "Tabs"
+    Tabs.Parent = scroll
+    
+    local UIListLayout = Instance.new("UIListLayout")
+    UIListLayout.Parent = Tabs
+    UIListLayout.FillDirection = Enum.FillDirection.Horizontal
+    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    UIListLayout.Padding = UDim.new(0, 10)
+    
+    local UIPadding = Instance.new("UIPadding")
+    UIPadding.Parent = scroll
+    UIPadding.PaddingLeft = UDim.new(0, 10)
+    UIPadding.PaddingTop = UDim.new(0, 9)
+    
+    local UICorner_3 = Instance.new("UICorner")
+    UICorner_3.Parent = TabsContainer
+    
+    local TabsFrame = Instance.new("Frame")
+    TabsFrame.Name = "TabsFrame"
+    TabsFrame.Parent = Main
+    TabsFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    TabsFrame.BackgroundTransparency = 1.000
+    TabsFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    TabsFrame.BorderSizePixel = 0
+    TabsFrame.Position = UDim2.new(0.0401511081, 0, 0.370370358, 0)
+    TabsFrame.Size = UDim2.new(0, 354, 0, 180)
+    
+    local Containers = Instance.new("Folder")
+    Containers.Name = "Containers"
+    Containers.Parent = TabsFrame
+    
+    -- Extra Scripts
+    
+    -- Close The Lib
+    function library:Close()
+        Main:Destroy()
+    end
+    
+    -- Draggable
+    if draggable == "Enabled" then
+        local dragging, dragInput, dragStart, startPos
 
-	-- Instances:
+        local function update(input)
+            local delta = input.Position - dragStart
+            Main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
 
-	local Title = Instance.new("TextLabel")
+        Main.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                dragging = true
+                dragStart = input.Position
+                startPos = Main.Position
+                
+                input.Changed:Connect(function()
+                    if input.UserInputState == Enum.UserInputState.End then
+                        dragging = false
+                    end
+                end)
+            end
+        end)
 
-	--Properties:
+        Main.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                dragInput = input
+            end
+        end)
 
-	Title.Name = "Title"
-	Title.Parent = Main
-	Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Title.BackgroundTransparency = 1.000
-	Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Title.BorderSizePixel = 0
-	Title.Position = UDim2.new(0.0340314135, 0, 0.0471380465, 0)
-	Title.Size = UDim2.new(0.823999047, -20, 0.0740740746, 0)
-	Title.Font = Enum.Font.Gotham
-	Title.Text = text
-	Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Title.TextSize = 14.000
-	Title.TextXAlignment = Enum.TextXAlignment.Left
-
-	scroll.Name = "scroll"
-	scroll.Parent = TabsContainer
-	scroll.Active = true
-	scroll.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
-	scroll.BackgroundTransparency = 1.000
-	scroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	scroll.BorderSizePixel = 0
-	scroll.Position = UDim2.new(-0.00184482581, 0, -0.00637951214, 0)
-	scroll.Size = UDim2.new(0, 359, 0, 57)
-	scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-	scroll.ScrollBarThickness = 3
-	scroll["AutomaticCanvasSize"] = Enum.AutomaticSize.X
-	scroll["ScrollingDirection"] = Enum.ScrollingDirection.X
-	
-	local Tabs = Instance.new("Folder")
-	Tabs.Name = "Tabs"
-	Tabs.Parent = scroll
-	
-	local UIListLayout = Instance.new("UIListLayout")
-	UIListLayout.Parent = Tabs
-	UIListLayout.FillDirection = Enum.FillDirection.Horizontal
-	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	UIListLayout.Padding = UDim.new(0, 10)
-	
-	local UIPadding = Instance.new("UIPadding")
-	UIPadding.Parent = scroll
-	UIPadding.PaddingLeft = UDim.new(0, 10)
-	UIPadding.PaddingTop = UDim.new(0, 9)
-	
-	local UICorner_3 = Instance.new("UICorner")
-	UICorner_3.Parent = TabsContainer
-	
-	local TabsFrame = Instance.new("Frame")
-	TabsFrame.Name = "TabsFrame"
-	TabsFrame.Parent = Main
-	TabsFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	TabsFrame.BackgroundTransparency = 1.000
-	TabsFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	TabsFrame.BorderSizePixel = 0
-	TabsFrame.Position = UDim2.new(0.0401511081, 0, 0.370370358, 0)
-	TabsFrame.Size = UDim2.new(0, 354, 0, 180)
-	
-	local Containers = Instance.new("Folder")
-	Containers.Name = "Containers"
-	Containers.Parent = TabsFrame
-	
-	
-	--Extra Scripts
-	
-	--Close The Lib
-	function library:Close()
-		Main:Destroy()
-	end
-	
-	--Draggable
-	if draggable == "Enabled" then
-		Main.Active = true
-		Main.Selectable = true
-		Main.Draggable = true
-	elseif draggable == "Disabled" then
-		Main.Active = false
-		Main.Selectable = false
-		Main.Draggable = false
-	end
-	
-	--Key bind
-	mouse.KeyDown:Connect(function(key)
-		if key == keybind then
-			Main.Visible = not Main.Visible
-		end
-	end)
+        runService.RenderStepped:Connect(function()
+            if dragging and dragInput then
+                update(dragInput)
+            end
+        end)
+    end
+    
+    -- Key bind
+    mouse.KeyDown:Connect(function(key)
+        if key == keybind then
+            Main.Visible = not Main.Visible
+        end
+    end)
+end
 	
 	--update title
 	local function UpdateTitle(t)
