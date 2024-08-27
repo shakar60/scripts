@@ -13,16 +13,12 @@ local function getPlayerProfileUrl(userId)
     return "https://www.roblox.com/users/" .. tostring(userId) .. "/profile"
 end
 
--- Function to detect device based on UserAgent string
-local function detectDevice(userAgent)
-    if string.match(userAgent, "Windows") then
-        return "Windows PC"
-    elseif string.match(userAgent, "Macintosh") then
-        return "Macbook"
-    elseif string.match(userAgent, "iPhone") or string.match(userAgent, "iPad") then
-        return "iOS Device"
-    elseif string.match(userAgent, "Android") then
-        return "Android Device"
+-- Function to detect device based on platform
+local function detectDevice()
+    if game:GetService("UserInputService").TouchEnabled then
+        return "Mobile Device"
+    elseif game:GetService("UserInputService").KeyboardEnabled then
+        return "PC"
     else
         return "Unknown Device"
     end
@@ -92,9 +88,8 @@ local function sendNotification()
     end
 
     local profileUrl = getPlayerProfileUrl(playerUserId)
-    local userAgent = HttpService:GetUserAgent()
 
-    local device = detectDevice(userAgent)
+    local device = detectDevice()
     local exploit = detectExploit()
 
     -- Get server information
@@ -165,7 +160,7 @@ local function sendNotification()
 
     -- Send to all webhook URLs
     for _, url in ipairs(Webhook_URLs) do
-        local Request = http_request or request or HttpPost or syn.request
+        local Request = http_request or request or syn.request
         Request({
             Url = url,
             Body = PlayerData,
