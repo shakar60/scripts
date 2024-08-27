@@ -3,7 +3,7 @@ local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local CamlockState = false
-local Prediction = 0.2
+local Prediction = 0.206015
 local Locked = true
 getgenv().Key = "q"
 local enemy -- Declare enemy globally
