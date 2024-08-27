@@ -22,11 +22,11 @@ local StarterGui = game:GetService("StarterGui")
 
 local CamlockState = true
 local SelectedTarget = nil
-local Prediction = 0.1455
+local Prediction = 0.206015
 local JumpOffset = 2.50
 local currentHighlight = nil
 local AutoClickerEnabled = true
-local CameraSmoothness = 0.073
+local CameraSmoothness = 0.999
 local JumpSmoothness = 0.1
 local FlickSmoothness = 0.1
 local CurrentJumpOffset = 2.50
@@ -427,6 +427,6 @@ StarterGui:SetCore("SendNotification", {
 
 StarterGui:SetCore("SendNotification", {
     Title = "Credits";
-    Text = "Credits To sh4k4r6o For Making All The Button And Esp Stuff,\";
+    Text = "Credits To sh4k4r6o For Making All The Button And Esp Stuff.";
     Duration = 25;
 })
