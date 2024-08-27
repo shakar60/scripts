@@ -551,17 +551,137 @@ MiscSection:AddButton("Polos Old Camlock", function()
     print("script executed")
 end)
 
+local player = game.Players.LocalPlayer
+local rainbowRunning = false
+local originalMaterials = {}
+local originalColors = {}
+local resolutionConnection
+
+-- Function to apply the Rainbow effect
+local function applyRainbowEffect(character)
+    -- Store original materials and colors
+    for _, v in pairs(character:GetChildren()) do
+        if v:IsA("MeshPart") or v:IsA("Part") then
+            if not originalMaterials[v] then
+                originalMaterials[v] = {Material = v.Material, Color = v.Color}
+            end
+            v.Material = Enum.Material.ForceField
+        end
+    end
+
+    rainbowRunning = true
+    spawn(function()
+        while rainbowRunning do
+            for _, v in pairs(character:GetChildren()) do
+                if v:IsA("MeshPart") or v:IsA("Part") then
+                    v.Color = Color3.fromHSV(tick() % 5 / 5, 1, 1)
+                end
+            end
+            wait(0.1)
+        end
+    end)
+end
+
+-- Function to remove the Rainbow effect
+local function removeRainbowEffect(character)
+    rainbowRunning = false
+    for _, v in pairs(character:GetChildren()) do
+        if v:IsA("MeshPart") or v:IsA("Part") then
+            if originalMaterials[v] then
+                v.Material = originalMaterials[v].Material
+                v.Color = originalMaterials[v].Color
+            end
+        end
+    end
+end
+
+-- Function to handle character resets or death
+local function onCharacterAdded(character)
+    -- Ensure any existing Rainbow effect is removed
+    removeRainbowEffect(character)
+
+    -- Apply Rainbow effect if it is toggled on
+    if rainbowRunning then
+        applyRainbowEffect(character)
+    end
+end
+
+local function onCharacterRemoving(character)
+    -- Clean up Rainbow effect when the character is removed
+    removeRainbowEffect(character)
+end
+
+-- Connect events for character reset and removal (death)
+player.CharacterAdded:Connect(onCharacterAdded)
+player.CharacterRemoving:Connect(onCharacterRemoving)
+
+-- Toggle function for Rainbow Character
+local function toggleRainbowCharacter(value)
+    local character = player.Character or player.CharacterAdded:Wait()
+    
+    if value then
+        applyRainbowEffect(character)
+    else
+        removeRainbowEffect(character)
+    end
+end
+
+-- Toggle function for Resolution Effect
+local function toggleResolutionEffect(enabled)
+    local Camera = workspace.CurrentCamera
+
+    if enabled then
+        -- Apply the resolution adjustment
+        if not getgenv().Resolution then
+            getgenv().Resolution = {
+                [".gg/scripters"] = 0.65
+            }
+        end
+
+        -- Disconnect any previous connection to avoid multiple calls
+        if resolutionConnection then
+            resolutionConnection:Disconnect()
+        end
+
+        getgenv().gg_scripters = true
+        resolutionConnection = game:GetService("RunService").RenderStepped:Connect(
+            function()
+                if getgenv().gg_scripters then
+                    Camera.CFrame = Camera.CFrame * CFrame.new(0, 0, 0, 1, 0, 0, 0, getgenv().Resolution[".gg/scripters"], 0, 0, 0, 1)
+                end
+            end
+        )
+    else
+        -- Reset the camera's CFrame to default
+        getgenv().gg_scripters = nil
+        if resolutionConnection then
+            resolutionConnection:Disconnect()
+        end
+        resolutionConnection = nil
+        Camera.CFrame = CFrame.new(Camera.CFrame.Position) -- Reset to default
+    end
+end
+
+-- Create the toggles in MiscSection
+MiscSection:AddToggle("Rainbow Character", false, function(value)
+    toggleRainbowCharacter(value)
+end)
+
+MiscSection:AddToggle("Mobile Res", false, function(value)
+    toggleResolutionEffect(value)
+end)
+
 MiscSection:AddButton("Q Gui", function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/protected%20Q%20Gui",true))()
     print("script executed")
 end)
 
-MiscSection:AddButton("Shop To Good Ms", function()
+MiscSection:AddButton("Server Hop To Good Ms", function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/server%20hop%20to%20good%20ms",true))()
     print("script executed")
 end)
 
-MiscSection:AddButton("Shiftlock Button", function()
+MiscSection:AddButton("Shiftlock Button (For Macro)", function()
         loadstring(game:HttpGet('https://raw.githubusercontent.com/Unknownproootest/Permanent-Shift-Lock-Alt/alt/PermShiftlockAlt'))()
     print("script executed")
 end)
@@ -577,7 +697,15 @@ MiscSection:AddButton("No Jump Cooldown", function()
 end)
 
 MiscSection:AddButton("Low Gfx", function()
-        loadstring(game:HttpGet("https://pastebin.com/raw/zQUqDRdJ",true))()
+for _,v in pairs(workspace:GetDescendants()) do
+if v.ClassName == "Part"
+or v.ClassName == "SpawnLocation"
+or v.ClassName == "WedgePart"
+or v.ClassName == "Terrain"
+or v.ClassName == "MeshPart" then
+v.Material = "Plastic"
+end
+end
     print("script executed")
 end)
 
@@ -623,6 +751,151 @@ end)
 
 Misc0Section:AddButton("LightTuxs Esp (Gui)", function()
 loadstring(game:HttpGet(('https://raw.githubusercontent.com/cool83birdcarfly02six/UNIVERSALESPLTX/main/README.md'),true))()
+print("script executed")
+end)
+
+MiscSection:AddButton("Direct Rejoin Script", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/Direct/main/Rejoin",true))()
+print("script executed")
+end)
+
+MiscSection:AddButton("Fly Script", function()
+loadstring(game:HttpGet("https://pastebin.com/raw/gJfKgLra",true))()
+print("script executed")
+end)
+
+MiscSection:AddButton("Tpwalk Script", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/TheRealXORA/Roblox/032418166a40fd7a610fd7a17a2f8ade0da3c734/Tpwalk%20V4%20%5B%20BETA%20%5D.lua",true))()
+print("script executed")
+end)
+
+MiscSection:AddButton("Chat Spy", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/chat-spy/main/s",true))()
+print("script executed")
+end)
+
+MiscSection:AddButton("Anti Aim Viewer", function()
+local China = setmetatable({}, {
+   __index = function(Company, Price)
+       return game:GetService(Price)
+   end})
+   
+local Players = China.Players
+local ReplicatedStorage = China.ReplicatedStorage
+
+--//Variables
+local LocalPlayer = Players.LocalPlayer
+local Mouse =  LocalPlayer:GetMouse()
+
+local MainEvent = ReplicatedStorage:FindFirstChild("MainEvent") or nil
+local Tool = nil
+
+Bypass = function(Entity)
+   Entity.ChildAdded:Connect(function(Child)
+       if Child:IsA("Tool") then
+         Tool = Child.Activated:Connect(function()
+               if MainEvent then
+                  MainEvent:FireServer("UpdateMousePos", Mouse.Hit.Position)
+               end
+           end)
+       end
+   end)
+end
+
+
+
+local Alive = function(Player)
+   return Player and Player.Character and Player.Character:FindFirstChild("Humanoid") and Player.Character:FindFirstChild("Head") or false
+end
+
+LocalPlayer.CharacterAdded:Connect(function(Character)
+   Bypass(Character)
+end)
+
+if Alive(LocalPlayer) then
+   LocalPlayer.Character.Humanoid:UnequipTools()
+   Bypass(LocalPlayer.Character)
+end
+
+local Hook
+Hook = hookmetamethod(game, "__namecall", function(self, ...)
+   local Args = {...}
+   local Method = getnamecallmethod()
+
+   if not checkcaller() and Method == "FireServer" and self.Name == "MainEvent" and Args[1] == "UpdateMousePos" then
+
+      Args[2] = "Scarcin made this" and Mouse.Hit.Position
+       
+       return self.FireServer(self, unpack(Args))
+   end
+   
+   return Hook(self, ...)
+end)
+print("script executed")
+end)
+
+MiscSection:AddButton("Inventory Sorter", function()
+local UserInputService = game:GetService("UserInputService")
+
+local Sorting = {
+    ['Enabled'] = true,
+    ['Keybind'] = Enum.KeyCode.Equals,
+    ['Slot 1'] = "[Double-Barrel SG]",
+    ['Slot 2'] = "[Revolver]",
+    ['Slot 3'] = "[Shotgun]",
+    ['Slot 4'] = "[Tactical Shotgun]",
+    ['Slot 5'] = "[USP]",
+    ['Slot 6'] = "[Pizza]",
+    ['Slot 7'] = "[Pizza]",
+    ['Slot 8'] = "[Chicken]",
+    ['Slot 9'] = "[Chicken]",
+    ['Slot 0'] = "[Katana]",
+}
+
+local function sortInventory()
+    if not Sorting.Enabled then
+        return
+    end
+
+    local player = game.Players.LocalPlayer
+    local backpack = player:FindFirstChildOfClass("Backpack")
+    if not backpack then
+        return
+    end
+
+    local originalItems = {}
+    for _, tool in pairs(backpack:GetChildren()) do
+        table.insert(originalItems, tool)
+    end
+    for _, tool in pairs(backpack:GetChildren()) do
+        tool.Parent = nil
+    end
+
+    for i = 1, 10 do
+        local slot = 'Slot ' .. tostring(i % 10) -- Slot 0 for the 10th slot
+        local desiredItemName = Sorting[slot]
+        if desiredItemName and desiredItemName ~= "" then
+            for index, tool in ipairs(originalItems) do
+                if tool.Name == desiredItemName then
+                    tool.Parent = backpack
+                    table.remove(originalItems, index)
+                    break
+                end
+            end
+        end
+    end
+    for _, tool in pairs(originalItems) do
+        tool.Parent = backpack
+    end
+end
+UserInputService.InputBegan:Connect(function(input, isProcessed)
+    if isProcessed then
+        return
+    end
+    if input.KeyCode == Sorting.Keybind then
+        sortInventory()
+    end
+end)
 print("script executed")
 end)
 
