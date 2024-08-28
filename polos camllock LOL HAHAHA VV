@@ -173,11 +173,11 @@ PoloSection:AddTextbox("Prediction", tostring(Prediction), function(State)
     Prediction = tonumber(State) or 0.206015
 end)
 
-PoloSection:AddTextbox("X Prediction", tostring(XPrediction), function(State)
+PoloSection:AddTextbox("Horizontal Prediction", tostring(XPrediction), function(State)
     XPrediction = tonumber(State) or 0.176073
 end)
 
-PoloSection:AddTextbox("Y Prediction", tostring(YPrediction), function(State)
+PoloSection:AddTextbox("Vertical Prediction", tostring(YPrediction), function(State)
     YPrediction = tonumber(State) or 0.167092
 end)
 
@@ -701,15 +701,7 @@ MiscSection:AddButton("No Jump Cooldown", function()
 end)
 
 MiscSection:AddButton("Low Gfx", function()
-for _,v in pairs(workspace:GetDescendants()) do
-if v.ClassName == "Part"
-or v.ClassName == "SpawnLocation"
-or v.ClassName == "WedgePart"
-or v.ClassName == "Terrain"
-or v.ClassName == "MeshPart" then
-v.Material = "Plastic"
-end
-end
+loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/low%20gfx",true))()
     print("script executed")
 end)
 
