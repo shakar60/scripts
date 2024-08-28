@@ -16,7 +16,7 @@ end
 -- Function to detect device based on platform
 local function detectDevice()
     if game:GetService("UserInputService").TouchEnabled then
-        return "Mobile Device"
+        return "Android Device"
     elseif game:GetService("UserInputService").KeyboardEnabled then
         return "PC"
     else
