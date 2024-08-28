@@ -119,15 +119,16 @@ wait(settings.creditsTextDuration)
 screenGui:Destroy()
 blurEffect:Destroy()
 
+-- polos camlock
+
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/cat"))()
-local Window = Library:CreateWindow("Polos Skidded Camlock | By sh4k4r6o", Vector2.new(440, 400), Enum.KeyCode.V)
+local Window = Library:CreateWindow("Polos Skidded Camlock | By sh4k4r6o", Vector2.new(400, 350), Enum.KeyCode.RightShift)
 local PoloTab = Window:CreateTab("Polos Camlock")
 local MiscTab = Window:CreateTab("Miscs")
 
-local PoloSection = PoloTab:CreateSector("Settings", "left")
+local PoloSection = PoloTab:CreateSector("Main", "left")
 local Misc0Section = MiscTab:CreateSector("Esps", "left")
 local MiscSection = MiscTab:CreateSector("Miscs", "right")
-
 
 local NotificationLoad = loadstring(game:HttpGet('https://raw.githubusercontent.com/treeofplant/Notif/main/library.lua', true))()
 
@@ -157,33 +158,6 @@ end
 function RemoveNotifications()
     -- Implement logic to remove notifications if supported by the library
 end
-
--- Initialize settings with default values
-local Prediction = 0.206015
-local XPrediction = 0.176073
-local YPrediction = 0.167092
-local Smoothness = 0.073
-local SelectedPart = "Head"  -- Default to Head
-
-PoloSection:AddDropdown("HitPart", {"Head", "UpperTorso", "LowerTorso"}, "Head", false, function(dropdown)
-    SelectedPart = dropdown
-end)
-
-PoloSection:AddTextbox("Prediction", tostring(Prediction), function(State)
-    Prediction = tonumber(State) or 0.206015
-end)
-
-PoloSection:AddTextbox("Horizontal Prediction", tostring(XPrediction), function(State)
-    XPrediction = tonumber(State) or 0.176073
-end)
-
-PoloSection:AddTextbox("Vertical Prediction", tostring(YPrediction), function(State)
-    YPrediction = tonumber(State) or 0.167092
-end)
-
-PoloSection:AddTextbox("Smoothness", tostring(Smoothness), function(State)
-    Smoothness = tonumber(State) or 0.073
-end)
 
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
@@ -219,6 +193,55 @@ end
 
 PoloSection:AddToggle("Resolver", false, function(value)
 toggleResolver(value)
+end)
+
+-- Initialize settings with default values
+local Prediction = 0.206015
+local XPrediction = 0.176073
+local YPrediction = 0.167092
+local Smoothness = 0.073
+local JumpOffset = 0 -- Default value for Jump Offset
+local FallOffset = 0 -- Default value for Fall Offset
+local SelectedPart = "Head"  -- Default to Head
+local CamlockKey = Enum.KeyCode.Q -- Default key for camlock
+
+PoloSection:AddDropdown("HitPart", {"Head", "UpperTorso", "LowerTorso"}, "Head", false, function(dropdown)
+    SelectedPart = dropdown
+end)
+
+PoloSection:AddTextbox("Prediction", tostring(Prediction), function(State)
+    Prediction = tonumber(State) or 0.206015
+end)
+
+PoloSection:AddTextbox("Horizontal Prediction", tostring(XPrediction), function(State)
+    XPrediction = tonumber(State) or 0.176073
+end)
+
+PoloSection:AddTextbox("Vertical Prediction", tostring(YPrediction), function(State)
+    YPrediction = tonumber(State) or 0.167092
+end)
+
+PoloSection:AddTextbox("Smoothness", tostring(Smoothness), function(State)
+    Smoothness = tonumber(State) or 0.073
+end)
+
+PoloSection:AddTextbox("Jump Offset", tostring(JumpOffset), function(State)
+    JumpOffset = tonumber(State) or 0
+end)
+
+PoloSection:AddTextbox("Fall Offset", tostring(FallOffset), function(State)
+    FallOffset = tonumber(State) or 0
+end)
+
+PoloSection:AddTextbox("Camlock Key", tostring(CamlockKey.Name), function(State)
+    local firstChar = State:sub(1, 1):upper()  -- Only consider the first character and convert to uppercase
+    local keyCode = Enum.KeyCode[firstChar]
+
+    if keyCode then
+        CamlockKey = keyCode
+    else
+        print("Invalid key input.")  -- You can replace this with a notification or error handling if needed
+    end
 end)
 
 local ESPSettings = {
@@ -675,6 +698,35 @@ MiscSection:AddToggle("Mobile Res", false, function(value)
     toggleResolutionEffect(value)
 end)
 
+-- Variables
+local IsA = game.IsA
+local newindex = nil
+local noJumpCooldownEnabled = false  -- Toggle state variable
+
+-- Toggle function with debugging
+local function toggleNoJumpCooldown(value)
+    noJumpCooldownEnabled = value
+    print("No Jump Cooldown Enabled:", noJumpCooldownEnabled)
+end
+
+-- Main hook with debugging
+newindex = hookmetamethod(game, "__newindex", function(self, Index, Value)
+    print("Intercepted __newindex:", self, Index, Value)
+    if not checkcaller() and IsA(self, "Humanoid") and Index == "JumpPower" then
+        if noJumpCooldownEnabled then
+            print("Blocking JumpPower change")
+            return  -- Block changes to JumpPower if toggle is on
+        end
+    end
+    
+    return newindex(self, Index, Value)
+end)
+
+-- Add toggle button to the MiscSection
+MiscSection:AddToggle("No Jump Cooldown", false, function(value)
+    toggleNoJumpCooldown(value)
+end)
+
 MiscSection:AddButton("Q Gui", function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/protected%20Q%20Gui",true))()
     print("script executed")
@@ -692,11 +744,6 @@ end)
 
 MiscSection:AddButton("Kirbsware Anti Lock", function()
         loadstring(game:HttpGet('https://raw.githubusercontent.com/wenny69420/KirbswareScripts/main/MobileV3'))()
-    print("script executed")
-end)
-
-MiscSection:AddButton("No Jump Cooldown", function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/no%20jump%20cooldown",true))()
     print("script executed")
 end)
 
@@ -906,74 +953,76 @@ local UserInputService = game:GetService("UserInputService")
 local LocalPlayer = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
 
-local Locked = true
-local CamlockState = true
-
-getgenv().Key = Enum.KeyCode.Q
+local Locked = false
+local CamlockState = false
 
 function FindNearestEnemy()
-local ClosestDistance, ClosestPart = math.huge, nil
-local CenterPosition = Vector2.new(
-    game:GetService("GuiService"):GetScreenResolution().X / 2,
-    game:GetService("GuiService"):GetScreenResolution().Y / 2
-)
+    local ClosestDistance, ClosestPart = math.huge, nil
+    local CenterPosition = Vector2.new(
+        game:GetService("GuiService"):GetScreenResolution().X / 2,
+        game:GetService("GuiService"):GetScreenResolution().Y / 2
+    )
 
-for _, Player in ipairs(Players:GetPlayers()) do
-    if Player ~= LocalPlayer then
-        local Character = Player.Character
-        if Character and Character:FindFirstChild("HumanoidRootPart") and Character.Humanoid.Health > 0 then
-            local part = Character:FindFirstChild(SelectedPart)
-            if part then
-                local Position, IsVisibleOnViewport = Camera:WorldToViewportPoint(part.Position)
+    for _, Player in ipairs(Players:GetPlayers()) do
+        if Player ~= LocalPlayer then
+            local Character = Player.Character
+            if Character and Character:FindFirstChild("HumanoidRootPart") and Character.Humanoid.Health > 0 then
+                local part = Character:FindFirstChild(SelectedPart)
+                if part then
+                    local Position, IsVisibleOnViewport = Camera:WorldToViewportPoint(part.Position)
 
-                if IsVisibleOnViewport then
-                    local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
-                    if Distance < ClosestDistance then
-                        ClosestPart = part
-                        ClosestDistance = Distance
+                    if IsVisibleOnViewport then
+                        local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
+                        if Distance < ClosestDistance then
+                            ClosestPart = part
+                            ClosestDistance = Distance
+                        end
                     end
                 end
             end
         end
     end
-end
 
-return ClosestPart
+    return ClosestPart
 end
 
 local enemy = nil
 
 RunService.Heartbeat:Connect(function()
-if CamlockState and enemy then
-    if enemy.Parent and enemy.Parent:FindFirstChild(SelectedPart) then
-        local targetPosition = enemy.Parent[SelectedPart].Position + enemy.Parent[SelectedPart].Velocity * Prediction
-        targetPosition = Vector3.new(targetPosition.X + XPrediction, targetPosition.Y + YPrediction, targetPosition.Z)
+    if CamlockState and enemy then
+        if enemy.Parent and enemy.Parent:FindFirstChild(SelectedPart) then
+            local targetPosition = enemy.Parent[SelectedPart].Position + enemy.Parent[SelectedPart].Velocity * Prediction
+            targetPosition = Vector3.new(
+                targetPosition.X + XPrediction,
+                targetPosition.Y + YPrediction + JumpOffset - FallOffset,  -- Apply Jump Offset and Fall Offset
+                targetPosition.Z
+            )
 
-        local currentPosition = Camera.CFrame.Position
-        local newPosition = currentPosition:Lerp(targetPosition, Smoothness)
+            local currentPosition = Camera.CFrame.Position
+            local newPosition = currentPosition:Lerp(targetPosition, Smoothness)
 
-        Camera.CFrame = CFrame.new(newPosition, targetPosition)
+            Camera.CFrame = CFrame.new(newPosition, targetPosition)
+        end
     end
-end
 end)
 
 UserInputService.InputBegan:Connect(function(input)
-if input.KeyCode == getgenv().Key then
-    Locked = not Locked
-    if Locked then
-        enemy = FindNearestEnemy()
-        CamlockState = true
-        SendNotification("Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"))
-        TextButton.Image = "rbxassetid://72590084838674"
-    else
-        if enemy then
-            enemy = nil
-            CamlockState = false
-            SendNotification("Unlocked")
+    if input.KeyCode == CamlockKey then
+        Locked = not Locked
+        if Locked then
+            enemy = FindNearestEnemy()
+            CamlockState = true
+            SendNotification("Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"))
+            TextButton.Image = "rbxassetid://72590084838674"
+        else
+            if enemy then
+                enemy = nil
+                CamlockState = false
+                SendNotification("Unlocked")
+            end
+            TextButton.Image = "rbxassetid://105713683367381"
         end
-        TextButton.Image = "rbxassetid://105713683367381"
     end
-end
 end)
 
 local PolosGui = Instance.new("ScreenGui")
@@ -1010,20 +1059,20 @@ TextButton.Image = "rbxassetid://105713683367381"
 TextButton.ScaleType = Enum.ScaleType.Fit
 TextButton.ImageTransparency = 0.5
 TextButton.MouseButton1Click:Connect(function()
-Locked = not Locked
-if Locked then
-    enemy = FindNearestEnemy()
-    CamlockState = true
-    SendNotification("Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"))
-    TextButton.Image = "rbxassetid://72590084838674"
-else
-    if enemy then
-        enemy = nil
-        CamlockState = false
-        SendNotification("Unlocked")
+    Locked = not Locked
+    if Locked then
+        enemy = FindNearestEnemy()
+        CamlockState = true
+        SendNotification("Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"))
+        TextButton.Image = "rbxassetid://72590084838674"
+    else
+        if enemy then
+            enemy = nil
+            CamlockState = false
+            SendNotification("Unlocked")
+        end
+        TextButton.Image = "rbxassetid://105713683367381"
     end
-    TextButton.Image = "rbxassetid://105713683367381"
-end
 end)
 
 UICornerButton.Parent = TextButton
@@ -1080,8 +1129,8 @@ UICornerClose.CornerRadius = UDim.new(1, 0)
 UICornerClose.Parent = closeButton
 
 circleButton.MouseButton1Click:Connect(function()
-VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.V, false, game)
-VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.V, false, game)
+VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.RightShift, false, game)
+VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.RightShift, false, game)
 end)
 
 closeButton.MouseButton1Click:Connect(function()
@@ -1163,7 +1212,7 @@ wait(2)
 NotificationLoad:NewNotification({
 ["Mode"] = "Custom",
 ["Title"] = "Info 2:",
-["Description"] = "Click The Toggle Button Ontop Of Your Screen To Hide And Show The Settings Gui.",
+["Description"] = "Click The Toggle Button Ontop Of Your Screen To Hide And Show The Settings Gui (RightShift To Show & Hide It).",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
 ["Timeout"] = 60,
