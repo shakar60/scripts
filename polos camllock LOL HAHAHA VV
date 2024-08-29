@@ -200,7 +200,7 @@ local Prediction = 0.206015
 local XPrediction = 0.176073
 local YPrediction = 0.167092
 local Smoothness = 0.073
-local JumpOffset = 0 -- Default value for Jump Offset
+local JumpOffset = 0.6 -- Default value for Jump Offset
 local FallOffset = 0 -- Default value for Fall Offset
 local SelectedPart = "Head"  -- Default to Head
 local CamlockKey = Enum.KeyCode.Q -- Default key for camlock
@@ -226,7 +226,7 @@ PoloSection:AddTextbox("Smoothness", tostring(Smoothness), function(State)
 end)
 
 PoloSection:AddTextbox("Jump Offset", tostring(JumpOffset), function(State)
-    JumpOffset = tonumber(State) or 0
+    JumpOffset = tonumber(State) or 0.6
 end)
 
 PoloSection:AddTextbox("Fall Offset", tostring(FallOffset), function(State)
