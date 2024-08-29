@@ -127,10 +127,10 @@ blurEffect:Destroy()
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/cat"))()
 local Window = Library:CreateWindow("Polos Skidded Camlock | By sh4k4r6o", Vector2.new(400, 350), Enum.KeyCode.RightShift)
-local PoloTab = Window:CreateTab("Polos Camlock")
+local PoloTab = Window:CreateTab("Main")
 local MiscTab = Window:CreateTab("Miscs")
 
-local PoloSection = PoloTab:CreateSector("Main", "left")
+local PoloSection = PoloTab:CreateSector("Settings", "left")
 local Misc0Section = MiscTab:CreateSector("Esps", "left")
 local MiscSection = MiscTab:CreateSector("Miscs", "right")
 
