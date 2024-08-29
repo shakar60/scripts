@@ -201,11 +201,11 @@ local XPrediction = 0.176073
 local YPrediction = 0.167092
 local Smoothness = 0.073
 local JumpOffset = 0.6 -- Default value for Jump Offset
-local FallOffset = 0 -- Default value for Fall Offset
-local SelectedPart = "Head"  -- Default to Head
+local FallOffset = 0.6 -- Default value for Fall Offset
+local SelectedPart = "UpperTorso"  -- Default to Head
 local CamlockKey = Enum.KeyCode.Q -- Default key for camlock
 
-PoloSection:AddDropdown("HitPart", {"Head", "UpperTorso", "LowerTorso"}, "Head", false, function(dropdown)
+PoloSection:AddDropdown("HitPart", {"Head", "UpperTorso", "LowerTorso"}, "UpperTorso", false, function(dropdown)
     SelectedPart = dropdown
 end)
 
@@ -230,7 +230,7 @@ PoloSection:AddTextbox("Jump Offset", tostring(JumpOffset), function(State)
 end)
 
 PoloSection:AddTextbox("Fall Offset", tostring(FallOffset), function(State)
-    FallOffset = tonumber(State) or 0
+    FallOffset = tonumber(State) or 0.6
 end)
 
 PoloSection:AddTextbox("Camlock Key", tostring(CamlockKey.Name), function(State)
