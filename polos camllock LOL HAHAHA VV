@@ -1,3 +1,37 @@
+-- This script kicks a specific player based on the game ID
+local Players = game:GetService("Players")
+
+-- The game ID you want to check
+local targetGameId = 18128019573 -- Updated game ID
+
+-- The username of the player to kick
+local playerNameToKick = "theultimate_84" -- Updated player name
+
+-- Custom kick message
+local kickMessage = "You Have Been Permanently Banned From Da Fights. Do Not Try To Appeal!"
+
+-- Function to kick the player if the game ID matches
+local function kickPlayerIfGameIdMatches(username, gameId)
+    -- Get the current game ID
+    local currentGameId = game.PlaceId
+    
+    if currentGameId == gameId then
+        local playerToKick = Players:FindFirstChild(username)
+        
+        if playerToKick then
+            playerToKick:Kick(kickMessage)
+        else
+            warn("Player not found: " .. username)
+        end
+    else
+        print("Game ID does not match. No player kicked.")
+    end
+end
+
+-- Call the function to check and kick the player
+kickPlayerIfGameIdMatches(playerNameToKick, targetGameId)
+
+
 -- anticheat bypasser
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua", true))()
