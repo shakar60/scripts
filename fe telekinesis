@@ -41,7 +41,7 @@ local function a(b, c)
     setfenv(c, e)
     return c
 end
-local power = 100
+local power = 0
 local usrinput = game:GetService("UserInputService")
 local g = {}
 local h = Instance.new("Model", game:GetService("Lighting"))
@@ -360,41 +360,4 @@ for J, H in pairs(g) do
             pcall(H)
         end
     )
-end
-
--- Define tool properties
-local TOOL_NAME = "Telekinesis"
-
--- Function to create or re-add the tool
-local function ensureTool()
-    local player = game.Players.LocalPlayer
-    local backpack = player:FindFirstChildOfClass("Backpack")
-    if backpack then
-        -- Check if the tool already exists in the backpack
-        local existingTool = backpack:FindFirstChild(TOOL_NAME)
-        if not existingTool then
-            -- Create and add the tool if it does not exist
-            local tool = Instance.new("Tool")
-            tool.Name = TOOL_NAME
-            tool.RequiresHandle = true
-            tool.Parent = backpack
-
-            local handle = Instance.new("Part")
-            handle.Name = "Handle"
-            handle.Size = Vector3.new(1, 1, 1)
-            handle.Color = Color3.new(0.0666667, 0.0666667, 0.0666667)
-            handle.Transparency = 1
-            handle.CanCollide = false
-            handle.Anchored = false
-            handle.Parent = tool
-        end
-    end
-end
-
--- Ensure the tool is added when the character respawns
-game.Players.LocalPlayer.CharacterAdded:Connect(ensureTool)
-
--- Create the tool initially if the player is already in the game
-if game.Players.LocalPlayer.Character then
-    ensureTool()
 end
