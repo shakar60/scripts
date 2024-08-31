@@ -1,33 +1,41 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/cat"))() --you can go into the github link and copy all of it and modify it for yourself.
-local Window = Library:CreateWindow("Polos Skidded Camlock | By sh4k4r6o | https://discord.gg/vwXXfnuxUg ", Vector2.new(440, 450), Enum.KeyCode.RightControl) --you can change your UI keybind
-local AimingTab = Window:CreateTab("Polos Camlock") --you can rename this tab to whatever you want --you can also change the tabs code, for example "AimingTab" can be changed to "FunnyCoolTab" etc.
+local Window = Library:CreateWindow("put the name", Vector2.new(440, 450), --[[ you can change the numbers to make the gui smaller/bigger.]] Enum.KeyCode.RightControl) --you can change your UI keybind
+local AimingTab = Window:CreateTab("Tab 1") --you can rename this tab to whatever you want --you can also change the tabs code, for example "AimingTab" can be changed to "FunnyCoolTab" etc.
 
-local PoloSection = PoloTab:CreateSector("First Section", "left")  --you can  change the section code, for example "testsection" can be changed to "FunnyCoolSection" etc.
+local testSection = AimingTab:CreateSector("First Section", "left")  --you can  change the section code, for example "testsection" can be changed to "FunnyCoolSection" etc.
 
-PoloSection:AddToggle("Toggle", false, function(first)
+testSection:AddToggle("Toggle", false, function(first)
     
 end)
 
-Poloection:AddButton("Button", function(Esp Highlighter)
+testSection:AddButton("Button", function(IhateGayPeople)
     print("button")
 end)
 
-PoloSection:AddTextbox("Prediction", nil, function(State)
+testSection:AddSlider("Slider", 0, 120, 2000, 1, function(State)
+    
+end)
+
+testSection:AddTextbox("textbox", nil, function(State)
 
 end)
 
-PoloSection:AddTextbox("Smoothness", nil, function(State)
+testSection:AddDropdown("Dropdown", {"AH", "ytytyt", "rrro", "awhjdajksd"}, "AH", true, function(dropdown)
 
 end)
 
-PoloSection:AddDropdown("Dropdown", {"HitPart", "Head", "UpperTorso", "LowerTorso"}, "HumanoidPart", true, function(dropdown)
+local ColorToggle = testSection:AddToggle("ColorPicker w/Toggle", false, function(e)
+
+end)
+
+ColorToggle:AddColorpicker(Color3.fromRGB(75, 0,130), function(ztx)
    
 end)
 
-local ToggleBind = PoloSection:AddToggle("Keybind w/Toggle", false, function(e)
+local ToggleBind = testSection:AddToggle("Keybind w/Toggle", false, function(e)
 
 end)
 
 ToggleBind:AddKeybind()
 
-PoloTab:CreateConfigSystem("right") --this is the config system
+AimingTab:CreateConfigSystem("right") --this is the config system
