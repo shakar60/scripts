@@ -1,0 +1,28 @@
+getgenv().phul = {
+    ['Main'] = {
+        Enabled = false,
+        TargetBone = "HumanoidRootPart",
+        AccuracyPercentage = 0,
+        Mode = "",
+    },
+    ['Prediction'] = {
+        Active = false,
+        HorizontalOffset = 0,
+        VerticalOffset = 0,
+    },
+    ['AimCircle'] = {
+        Visible = false,
+        Color = Color3.fromRGB(0, 0, 0),
+        Transparency = 0,
+        Thickness = 0,
+        Segments = 0,
+        Radius = 0,
+        Filled = false,
+    },
+    ['Checks'] = {
+        KO_Check = false,
+        Friend_Check = false, 
+    },
+}
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/plah911/whitelister/main/unofficial.txt"))();
