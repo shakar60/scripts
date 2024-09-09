@@ -112,7 +112,7 @@ local Section = Tab:AddSection({
 })
 
 Tab:AddTextbox({
-    Name = "Position X(left/right(Using Negative Number/nonNeg))",
+    Name = "Position X(left/right(Using Negative Number/nonNeg)",
     Default = "0",
     TextDisappear = false,
     Callback = function(Value)
