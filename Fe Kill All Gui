@@ -12,7 +12,7 @@ end
 
 game.Players.LocalPlayer.CharacterAdded:Connect(UpdateChar)
 
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/thanhdat4461/OrionMoblie/main/source')))()
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/thanhdat4461/GUI-Library/main/Orion%20Library.lua",true))()
 local Window = OrionLib:MakeWindow({Name = "FE kill all GUI v5 by Mawin CK, Recoded By sh4k4r6o", HidePremium = false, IntroEnabled = true, IntroText = "Fe kill all GUI v5 by Mawin CK, Recoded By sh4k4r6o", SaveConfig = true, ConfigFolder = "OrionTest"})
 
 ------------------------------
@@ -27,7 +27,7 @@ local Tab = Window:MakeTab({
 
 game.StarterGui:SetCore("SendNotification", {
 Title = "edited by sh4k4r6o on discord"; 
-Text = "reworked on the code aka organized the code + fixed spelling + added tips tab and main tab + fixed spelling & more."; 
+Text = "reworked on the code aka organized the code + fixed spelling + added tips tab and main tab + fixed writing spellings & more."; 
 Duration = 7; 
 })
 
