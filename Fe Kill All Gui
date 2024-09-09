@@ -13,7 +13,7 @@ end
 game.Players.LocalPlayer.CharacterAdded:Connect(UpdateChar)
 
 local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/thanhdat4461/GUI-Library/main/Orion%20Library.lua",true))()
-local Window = OrionLib:MakeWindow({Name = "FE kill all GUI v5 by Mawin CK, Recoded By sh4k4r6o", HidePremium = false, IntroEnabled = true, IntroText = "Fe kill all GUI v5 by Mawin CK, Recoded By sh4k4r6o", SaveConfig = true, ConfigFolder = "OrionTest"})
+local Window = OrionLib:MakeWindow({Name = "Fe kill all Gui v5 by Mawin CK, Recoded By sh4k4r6o", HidePremium = false, IntroEnabled = true, IntroText = "Fe kill all GUI v5 by Mawin CK, Recoded By sh4k4r6o", SaveConfig = true, ConfigFolder = "OrionTest"})
 
 ------------------------------
 
@@ -63,7 +63,7 @@ local Section = Tab1:AddSection({
     Name = "Edited By sh4k4r6o:"
 })
 
-Tab1:AddParagraph("Edited By sh4k4r6o:", "hey this isnt the original version its an open source script but dont worry i made it so much better and organized so its easier if you want to do something or change anything also my discord is sh4k4r6o also add me if you want the source.")
+Tab1:AddParagraph("Edited By sh4k4r6o:", "hey this isnt the original version its an open source script but dont worry i made it so much better and organized so its easier if you want to do something.")
 
 ------------------------------
 
@@ -127,7 +127,7 @@ local Section = Tab:AddSection({
 })
 
 Tab:AddTextbox({
-    Name = "Position Y(Up/Down(Using Negative Number/NonNeg))",
+    Name = "Position Y(Up/Down(Using Negative Number/NonNeg)",
     Default = "0",
     TextDisappear = false,
     Callback = function(Value)
@@ -138,11 +138,11 @@ Tab:AddTextbox({
 ------------------------------
 
 local Section = Tab:AddSection({
-    Name = "Position Z"
+    Name = "Position Z, Recommended -5 to -10"
 })
 
 Tab:AddTextbox({
-    Name = "Position Z(Foward/Backward(Negative/NonNeg) Recommended -5 to -10",
+    Name = "Position Z(Foward/Backward(Negative/NonNeg)",
     Default = "-10",
     TextDisappear = false,
     Callback = function(Value)
@@ -299,7 +299,7 @@ end
 ------------------------------
 
 local Section = Tab:AddSection({
-    Name = "Bring All + Team Check (Laggy)"
+    Name = "Team Check (Laggy)"
 })
 
 Tab:AddToggle({
