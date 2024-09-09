@@ -299,11 +299,11 @@ end
 ------------------------------
 
 local Section = Tab:AddSection({
-    Name = "Team Check (Laggy)"
+    Name = "Team Check (Might Lag Or Crash Your Device)"
 })
 
 Tab:AddToggle({
-    Name = "Bring All Player But With Team Check(WARNING MIGHT LAG OR CRASH)",
+    Name = "Bring All Player But With Team Check",
     Default = false,
     Callback = function(state)
         TogglePlayerOnly = state
