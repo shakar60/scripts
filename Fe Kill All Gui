@@ -53,36 +53,6 @@ local Section = Tab1:AddSection({
 
 ------------------------------
 
--- Add a section in the TabHome
-TabHome:AddSection({
-    Name = "Destroy Fe Kill All Gui"
-})
-
--- Add a button in the TabHome
-TabHome:AddButton({
-    Name = "Destroy Fe Kill All Gui",
-    Callback = function()
-        -- Load the notification library
-        local NotificationLoad = loadstring(game:HttpGet(('https://raw.githubusercontent.com/treeofplant/Notif/main/library.lua'), true))()
-
-        -- Create and display the notification
-        NotificationLoad:NewNotification({
-            ["Mode"] = "Custom", -- Keep this as "Custom"
-            ["Title"] = "USH Destroyed", -- Title of the notification
-            ["Description"] = "You Have Successfully Destroyed Fe Kill All Gui.", -- Notification description
-            ["Notification_Image"] = "rbxassetid://18985517155", -- Side image of the notification
-            ["Notification_Sound"] = "rbxassetid://5153734608", -- Sound played when the notification is displayed
-            ["Timeout"] = 10, -- Duration of the notification
-            ["Audio"] = true -- Play sound when the notification is displayed
-        })
-
-        -- Destroy the USH GUI after showing the notification
-        OrionLib:Destroy()
-    end    
-})
-
-------------------------------
-
 local selectedY = 0
 local selectedX = 0
 local selectedZ = -10
@@ -344,5 +314,35 @@ Tab:AddToggle({
 })
 
 OrionLib:Init()
+
+------------------------------
+
+-- Add a section
+Tab:AddSection({
+    Name = "Destroy Fe Kill All Gui"
+})
+
+-- Add a button
+Tab:AddButton({
+    Name = "Destroy Fe Kill All Gui",
+    Callback = function()
+        -- Load the notification library
+        local NotificationLoad = loadstring(game:HttpGet(('https://raw.githubusercontent.com/treeofplant/Notif/main/library.lua'), true))()
+
+        -- Create and display the notification
+        NotificationLoad:NewNotification({
+            ["Mode"] = "Custom", -- Keep this as "Custom"
+            ["Title"] = "Fe Kill All Gui Destroyed", -- Title of the notification
+            ["Description"] = "You Have Successfully Destroyed Fe Kill All Gui.", -- Notification description
+            ["Notification_Image"] = "rbxassetid://18985517155", -- Side image of the notification
+            ["Notification_Sound"] = "rbxassetid://5153734608", -- Sound played when the notification is displayed
+            ["Timeout"] = 10, -- Duration of the notification
+            ["Audio"] = true -- Play sound when the notification is displayed
+        })
+
+        -- Destroy the Fe Kill All Gui after showing the notification
+        OrionLib:Destroy()
+    end    
+})
 
 ------------------------------
