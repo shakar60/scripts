@@ -741,8 +741,13 @@ MiscSection:AddButton("Server Hop To Good Ms", function()
     print("script executed")
 end)
 
-MiscSection:AddButton("Shiftlock Button (For Macro)", function()
+MiscSection:AddButton("Macro Button", function()
         loadstring(game:HttpGet('https://raw.githubusercontent.com/Unknownproootest/Permanent-Shift-Lock-Alt/alt/PermShiftlockAlt'))()
+    print("script executed")
+end)
+
+MiscSection:AddButton("Macro Button V2", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/macro%20button",true))()
     print("script executed")
 end)
 
