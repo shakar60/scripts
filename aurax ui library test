@@ -35,13 +35,13 @@ library.theme = {
     outlinecolor = Color3.fromRGB(255, 255, 255), -- White color for GUI outline
     outlinecolor2 = Color3.fromRGB(255, 255, 255), -- White color for GUI outline
     innerlinecolor = Color3.fromRGB(255, 255, 255), -- White color for the inner outline line
-    sectorcolor = Color3.fromRGB(255, 255, 255),
+    sectorcolor = Color3.fromRGB(255, 255, 255), -- White color for sector
     toptextcolor = Color3.fromRGB(255, 255, 255), -- White color for title text
     topheight = 48,
     topcolor = Color3.fromRGB(30, 30, 30),
     topcolor2 = Color3.fromRGB(30, 30, 30),
     buttoncolor = Color3.fromRGB(49, 49, 49),
-    buttoncolor2 = Color3.fromRGB(255, 255, 255,
+    buttoncolor2 = Color3.fromRGB(255, 255, 255), -- White color for the secondary button color
     itemscolor = Color3.fromRGB(200, 200, 200),
     itemscolor2 = Color3.fromRGB(210, 210, 210)
 }
