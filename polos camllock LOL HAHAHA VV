@@ -791,7 +791,7 @@ MiscSection:AddButton("Vins Aim Viewer", function()
 print("script executed")
 end)
 
-Misc0Section:AddButton("Endless Esp (Not Universal)", function()
+Misc0Section:AddButton("Endless Esp", function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/endless%20esp",true))()
 print("script executed")
 end)
