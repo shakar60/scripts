@@ -1043,7 +1043,7 @@ Frame.Parent = PolosGui
 Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Frame.BorderSizePixel = 0
-Frame.Size = UDim2.new(0, 165, 0, 120)  -- Increased height of the frame
+Frame.Size = UDim2.new(0, 100, 0, 90)  -- Increased height of the frame
 Frame.AnchorPoint = Vector2.new(0.5, 0.5)
 Frame.Position = UDim2.new(0.1, 0, 0.4, 0)  -- Adjusted position higher
 Frame.Active = true
@@ -1057,8 +1057,8 @@ TextButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 TextButton.BackgroundTransparency = 0.5
 TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 TextButton.BorderSizePixel = 0
-TextButton.Position = UDim2.new(0.5, -70, 0.25, 0)  -- Center the text button within the frame
-TextButton.Size = UDim2.new(0, 140, 0, 67)
+TextButton.Position = UDim2.new(0.5, -40, 0.12, 0)
+TextButton.Size = UDim2.new(0, 80, 0, 67)
 TextButton.Image = "rbxassetid://105713683367381"
 TextButton.ScaleType = Enum.ScaleType.Fit
 TextButton.ImageTransparency = 0.5
@@ -1085,61 +1085,112 @@ UICornerButton.CornerRadius = UDim.new(0, 10)
 local VirtualInputManager = game:GetService("VirtualInputManager")
 local CoreGui = game:GetService("CoreGui")
 
--- Toggle Gui
-local gui = Instance.new("ScreenGui")
-gui.Name = "DraggableCircleGui"
-gui.ResetOnSpawn = false
-gui.Parent = CoreGui
+-- Load the custom notification library
+local NotificationLoad = loadstring(game:HttpGet(('https://raw.githubusercontent.com/treeofplant/Notif/main/library.lua'),true))()
 
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 50, 0, 50)
-frame.Position = UDim2.new(0.5, 2, 0.1, 0)
-frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-frame.BackgroundTransparency = 0.7
-frame.BorderSizePixel = 0
-frame.AnchorPoint = Vector2.new(0.5, 0.5)
-frame.Parent = gui
-frame.Draggable = true
+-- Function to create a new toggle GUI
+local function createToggleGui()
+    local ToggleGui = Instance.new("ScreenGui")
+    local Toggle = Instance.new("TextButton")
+    local UICorner = Instance.new("UICorner")
+    local UIStroke = Instance.new("UIStroke")
+    local TextStroke = Instance.new("UIStroke")
+    
+    -- Properties
+    ToggleGui.Name = "Toggle Gui"
+    ToggleGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    ToggleGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    ToggleGui.ResetOnSpawn = false
 
-local UICornerFrame = Instance.new("UICorner")
-UICornerFrame.CornerRadius = UDim.new(1, 0)
-UICornerFrame.Parent = frame
+    Toggle.Name = "Toggle"
+    Toggle.Parent = ToggleGui
+    Toggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    Toggle.Position = UDim2.new(0.5, -40, 0.05, 0) -- Centered horizontally and near the top
+    Toggle.Size = UDim2.new(0, 50, 0, 50) -- Size of the toggle
+    Toggle.Font = Enum.Font.SourceSans
+    Toggle.Text = "Toggle Gui" -- Toggle Button Text
+    Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Toggle.TextSize = 13
+    Toggle.Draggable = true
 
-local circleButton = Instance.new("ImageButton")
-circleButton.Size = UDim2.new(1, 0, 1, 0)
-circleButton.Image = "rbxassetid://138192283248709"
-circleButton.BackgroundTransparency = 1
-circleButton.Parent = frame
-circleButton.Draggable = true
+    -- Set up UICorner for rounded corners on the Toggle button
+    UICorner.CornerRadius = UDim.new(0, 20) -- Adjust radius to make corners rounded
+    UICorner.Parent = Toggle
 
-local UICornerButton = Instance.new("UICorner")
-UICornerButton.CornerRadius = UDim.new(1, 0)
-UICornerButton.Parent = circleButton
+    -- Set up UIStroke for RGB outline
+    UIStroke.Parent = Toggle
+    UIStroke.Thickness = 3 -- Adjust thickness of the outline
+    UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
-local closeButton = Instance.new("TextButton")
-closeButton.Size = UDim2.new(0, 16, 0, 16)
-closeButton.Position = UDim2.new(1, -18, 0, 2)
-closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-closeButton.BorderSizePixel = 0
-closeButton.Text = "X"
-closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-closeButton.TextSize = 14
-closeButton.Font = Enum.Font.SourceSans
-closeButton.BackgroundTransparency = 0.5
-closeButton.Parent = circleButton
+    -- Set up TextStroke for subtle text outline
+    TextStroke.Parent = Toggle
+    TextStroke.Thickness = 0.3 -- Subtle thickness of the text stroke
+    TextStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+    TextStroke.Color = Color3.fromRGB(0, 0, 0) -- Black text stroke for subtle effect
 
-local UICornerClose = Instance.new("UICorner")
-UICornerClose.CornerRadius = UDim.new(1, 0)
-UICornerClose.Parent = closeButton
+    -- Function to create a rainbow effect for the UIStroke and text color
+    local function RainbowEffect()
+        local hue = 0
+        while ToggleGui and ToggleGui.Parent do
+            hue = (hue + 1) % 360
+            local color = Color3.fromHSV(hue / 360, 1, 1)
+            UIStroke.Color = color
+            wait(0.01)
+        end
+    end
 
-circleButton.MouseButton1Click:Connect(function()
-VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.RightShift, false, game)
-VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.RightShift, false, game)
-end)
+    -- Start the rainbow effect
+    spawn(RainbowEffect)
 
-closeButton.MouseButton1Click:Connect(function()
-gui:Destroy()
-end)
+    Toggle.MouseButton1Click:Connect(function()
+        -- Simulate pressing RightShift
+        local VirtualInputManager = game:GetService("VirtualInputManager")
+        VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.RightShift, false, game)
+        VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.RightShift, false, game)
+    end)
+
+    return ToggleGui
+end
+
+-- Function to show the custom notification
+local function showNotification(title, description)
+    NotificationLoad:NewNotification({
+        ["Mode"] = "Custom", 
+        ["Title"] = title, 
+        ["Description"] = description, 
+        ["Notification_Image"] = "rbxassetid://18985517155", 
+        ["Notification_Sound"] = "rbxassetid://5153734608", 
+        ["Timeout"] = 10, 
+        ["Audio"] = true 
+    })
+end
+
+-- Initialize the toggle GUI
+local ToggleGui = createToggleGui()
+
+-- Show initial notification when the script starts
+showNotification("Info", "Type /e hidetoggle To Hide The Toggle, Type /e showtoggle To Show The Toggle")
+
+-- Function to handle the chat commands
+local function onChatMessage(message)
+    if message == "/e hidetoggle" then
+        -- Kill the toggle and show notification
+        if ToggleGui then
+            ToggleGui:Destroy()
+            ToggleGui = nil
+            showNotification("Info", "Toggle Hided")
+        end
+    elseif message == "/e showtoggle" then
+        -- Recreate the toggle button if it's not already active
+        if not ToggleGui then
+            ToggleGui = createToggleGui()
+            showNotification("Info", "Toggle Restored")
+        end
+    end
+end
+
+-- Connect the chat listener
+game.Players.LocalPlayer.Chatted:Connect(onChatMessage)
 
 -- Commands
 
@@ -1197,7 +1248,7 @@ NotificationLoad:NewNotification({
 ["Description"] = "Welcome User! Polos Camlock Is An Camlock Script That Aims For You In Any Game.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
-["Timeout"] = 10,
+["Timeout"] = 8,
 ["Audio"] = true
 })
 
@@ -1208,7 +1259,7 @@ NotificationLoad:NewNotification({
 ["Description"] = "Type /e hidepolo To Hide The Polo Gui, /e showpolo To Show The Polo Gui, /e Info To See The Infos.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
-["Timeout"] = 60,
+["Timeout"] = 15,
 ["Audio"] = false
 })
 
@@ -1219,7 +1270,18 @@ NotificationLoad:NewNotification({
 ["Description"] = "Click The Toggle Button Ontop Of Your Screen To Hide And Show The Settings Gui (RightShift To Show & Hide It).",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
-["Timeout"] = 60,
+["Timeout"] = 15,
+["Audio"] = false
+})
+
+wait(2)
+NotificationLoad:NewNotification({
+["Mode"] = "Custom",
+["Title"] = "Info 3:",
+["Description"] = "To Hide And Show The Toggle Button Type /e hidetoggle And /e showtoggle.",
+["Notification_Image"] = "rbxassetid://18985517155",
+["Notification_Sound"] = "rbxassetid://5153734608",
+["Timeout"] = 15,
 ["Audio"] = false
 })
 
@@ -1230,6 +1292,6 @@ NotificationLoad:NewNotification({
 ["Description"] = "Credits To sh4k4r6o On Discord Modifying The Free Version To A Better One.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
-["Timeout"] = 60,
+["Timeout"] = 15,
 ["Audio"] = false
 })
