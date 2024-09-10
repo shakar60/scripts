@@ -1090,7 +1090,8 @@ UICornerButton.CornerRadius = UDim.new(0, 10)
 local VirtualInputManager = game:GetService("VirtualInputManager")
 local CoreGui = game:GetService("CoreGui")
 
--- Load the custom notification library
+-- Toggle Button
+
 local NotificationLoad = loadstring(game:HttpGet(('https://raw.githubusercontent.com/treeofplant/Notif/main/library.lua'),true))()
 
 -- Function to create a new toggle GUI
@@ -1126,12 +1127,6 @@ local function createToggleGui()
     UIStroke.Parent = Toggle
     UIStroke.Thickness = 3 -- Adjust thickness of the outline
     UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-
-    -- Set up TextStroke for subtle text outline
-    TextStroke.Parent = Toggle
-    TextStroke.Thickness = 0.3 -- Subtle thickness of the text stroke
-    TextStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
-    TextStroke.Color = Color3.fromRGB(0, 0, 0) -- Black text stroke for subtle effect
 
     -- Function to create a rainbow effect for the UIStroke and text color
     local function RainbowEffect()
