@@ -28,11 +28,13 @@ library.theme = {
     cursorimg = "https://t0.rbxcdn.com/42f66da98c40252ee151326a82aab51f",
     backgroundcolor = Color3.fromRGB(20, 20, 20),
     tabstextcolor = Color3.fromRGB(255, 255, 255), -- White color for tab names
+    tabsectioncolor = Color3.fromRGB(255, 255, 255), -- White color for tab sections
     bordercolor = Color3.fromRGB(255, 255, 255), -- White color for tab outlines
     accentcolor = Color3.fromRGB(28, 56, 139),
     accentcolor2 = Color3.fromRGB(16, 31, 78),
     outlinecolor = Color3.fromRGB(255, 255, 255), -- White color for GUI outline
     outlinecolor2 = Color3.fromRGB(255, 255, 255), -- White color for GUI outline
+    innerlinecolor = Color3.fromRGB(255, 255, 255), -- White color for the inner outline line
     sectorcolor = Color3.fromRGB(30, 30, 30),
     toptextcolor = Color3.fromRGB(255, 255, 255), -- White color for title text
     topheight = 48,
@@ -43,7 +45,6 @@ library.theme = {
     itemscolor = Color3.fromRGB(200, 200, 200),
     itemscolor2 = Color3.fromRGB(210, 210, 210)
 }
-
 
 if library.theme.cursor and Drawing then
     local success = pcall(function() 
