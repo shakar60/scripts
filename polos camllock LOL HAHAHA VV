@@ -207,7 +207,7 @@ local Smoothness = 0.073
 local JumpOffset = 0.6
 local FallOffset = 0.6
 local SelectedPart = "UpperTorso"
-local CamlockKey = Enum.KeyCode.Q -- Default key for camlock
+local CamlockKey = Enum.KeyCode.Q
 
 PoloSection:AddDropdown("HitPart", {"Head", "UpperTorso", "LowerTorso"}, "UpperTorso", false, function(dropdown)
     SelectedPart = dropdown
