@@ -38,8 +38,8 @@ library.theme = {
     topheight = 48,
     topcolor = Color3.fromRGB(30, 30, 30),
     topcolor2 = Color3.fromRGB(30, 30, 30),
-    buttoncolor = Color3.fromRGB(49, 49, 49), -- 49
-    buttoncolor2 = Color3.fromRGB(255, 255, 255), -- 39
+    buttoncolor = Color3.fromRGB(49, 49, 49),
+    buttoncolor2 = Color3.fromRGB(39, 39, 39),
     itemscolor = Color3.fromRGB(200, 200, 200),
     itemscolor2 = Color3.fromRGB(210, 210, 210)
 }
