@@ -1,28 +1,35 @@
+-- Define the key to simulate
 getgenv().keytoclick = "Q"
-tool = Instance.new("Tool")
+
+-- Create the tool
+local tool = Instance.new("Tool")
 tool.RequiresHandle = false
-tool.Name = keytoclick
-tool.Activated:connect(function()
-    local vim = game:service("VirtualInputManager")
-vim:SendKeyEvent(true, keytoclick, false, game)
-end)
+tool.Name = "Camlock Tool"  -- Set the tool name as "Camlock Tool"
 tool.Parent = game.Players.LocalPlayer.Backpack
 
-game.StarterGui:SetCore("SendNotification", {
-    Title = "Notification!";
-    Text = "Made By shakar#6955, Q Tool To Camlock On Someone !DONT CHANGE THE CAMLOCK KEY IF YOURE GONNA USE THE Q TOOL!";
-    Duration = 60;
+-- Define the function to simulate a key press
+tool.Activated:Connect(function()
+    local vim = game:GetService("VirtualInputManager")
+    vim:SendKeyEvent(true, getgenv().keytoclick, false, game)
+end)
 
+-- Show a notification to the player
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Notification",
+    Text = "Made By shakar#6955. Q Tool To Camlock On Someone! DONT CHANGE THE CAMLOCK KEY IF YOU'RE GONNA USE THE Q TOOL!",
+    Duration = 60
 })
 
-local player = game.Players.LocalPlayer
-
-local function connectCharacterAdded()
-    player.CharacterAdded:Connect(onCharacterAdded)
+-- Define function to handle character addition
+local function onCharacterAdded(character)
+    tool.Parent = game.Players.LocalPlayer.Backpack
 end
 
-connectCharacterAdded()
+-- Connect the CharacterAdded event
+local player = game.Players.LocalPlayer
+player.CharacterAdded:Connect(onCharacterAdded)
 
+-- Handle the character removing event
 player.CharacterRemoving:Connect(function()
     tool.Parent = game.Players.LocalPlayer.Backpack
 end)
