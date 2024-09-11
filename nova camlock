@@ -1,0 +1,142 @@
+-- Load the external library
+local Library = loadstring(game:HttpGet("https://pastebin.com/raw/diRvhUDi"))()
+local Window = Library:CreateWindow("Christ Gui", Vector2.new(310, 310), Enum.KeyCode.P)
+
+-- Settings
+local Prediction = 0.2083938772074
+local CamlockState = false
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Camera = workspace.CurrentCamera
+local LocalPlayer = Players.LocalPlayer
+
+-- Function to find the nearest enemy
+local function FindNearestEnemy()
+    local ClosestDistance, ClosestPart = math.huge, nil
+    local CenterPosition = Vector2.new(
+        game:GetService("GuiService"):GetScreenResolution().X / 2,
+        game:GetService("GuiService"):GetScreenResolution().Y / 2
+    )
+
+    for _, Player in ipairs(Players:GetPlayers()) do
+        if Player ~= LocalPlayer then
+            local Character = Player.Character
+            if Character and Character:FindFirstChild("HumanoidRootPart") and Character.Humanoid.Health > 0 then
+                local part = Character:FindFirstChild("UpperTorso") -- Fixed to UpperTorso
+                if part then
+                    local Position, IsVisibleOnViewport = Camera:WorldToViewportPoint(part.Position)
+
+                    if IsVisibleOnViewport then
+                        local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
+                        if Distance < ClosestDistance then
+                            ClosestPart = part
+                            ClosestDistance = Distance
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    return ClosestPart
+end
+
+local enemy = nil
+
+-- Update camera position based on the nearest enemy
+RunService.Heartbeat:Connect(function()
+    if CamlockState and enemy then
+        if enemy.Parent and enemy.Parent:FindFirstChild("UpperTorso") then
+            local targetPosition = enemy.Parent.UpperTorso.Position + enemy.Parent.UpperTorso.Velocity * Prediction
+            Camera.CFrame = CFrame.new(Camera.CFrame.Position, targetPosition)
+        end
+    end
+end)
+
+-- Create Nova GUI
+local Nova = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local Logo = Instance.new("ImageLabel")
+local TextButton = Instance.new("TextButton")
+local UICorner_2 = Instance.new("UICorner")
+
+-- Properties:
+Nova.Name = "Nova"
+Nova.Parent = game.CoreGui
+Nova.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Frame.Parent = Nova
+Frame.BackgroundColor3 = Color3.fromRGB(1, 1, 1)
+Frame.BorderColor3 = Color3.fromRGB(1, 1, 1)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.133798108, 0, 0.20107238, 0)
+Frame.Size = UDim2.new(0, 202, 0, 70)
+Frame.Active = true
+Frame.Draggable = true
+
+local function TopContainer()
+    Frame.Position = UDim2.new(0.5, -Frame.AbsoluteSize.X / 2, 0, -Frame.AbsoluteSize.Y / 2)
+end
+
+TopContainer()
+Frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(TopContainer)
+
+UICorner.Parent = Frame
+
+TextButton.Parent = Frame
+TextButton.BackgroundColor3 = Color3.fromRGB(100, 60, 245)
+TextButton.BackgroundTransparency = 5.000
+TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BorderSizePixel = 0
+TextButton.Position = UDim2.new(0.0792079195, 0, 0.18571429, 0)
+TextButton.Size = UDim2.new(0, 170, 0, 44)
+TextButton.Font = Enum.Font.SourceSansSemibold
+TextButton.Text = "Toggle Nova"
+TextButton.TextColor3 = Color3.fromRGB(25, 255, 255)
+TextButton.TextScaled = true
+TextButton.TextSize = 18.000
+TextButton.TextWrapped = true
+
+-- State variable
+local state = true
+
+-- Toggle Nova functionality
+TextButton.MouseButton1Click:Connect(function()
+    state = not state
+    if not state then
+        TextButton.Text = "Nova ON"
+        CamlockState = true
+        enemy = FindNearestEnemy()
+    else
+        TextButton.Text = "Nova OFF"
+        CamlockState = false
+        enemy = nil
+    end
+end)
+
+-- Create Gui elements for Camlock settings
+local AimingTab = Window:CreateTab("Camlock")
+local testSection = AimingTab:CreateSector("CamLock", "left")
+
+-- CamlockModded Toggle
+testSection:AddToggle("CamlockModded", false, function(State)
+    CamlockState = State
+    if CamlockState then
+        enemy = FindNearestEnemy()
+    else
+        enemy = nil
+    end
+end)
+
+-- Prediction Textbox
+testSection:AddTextbox("Prediction", tostring(Prediction), function(State)
+    Prediction = tonumber(State) or 0.2083938772074
+end)
+
+-- Silent section (currently empty)
+local SilentSection = AimingTab:CreateSector("Silent", "right")
+SilentSection:AddToggle("Silent", false, function(first)
+    -- Functionality for Silent (currently empty)
+end)
