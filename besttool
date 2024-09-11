@@ -1,0 +1,178 @@
+-- Services
+local Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+
+-- Create the tool
+local tool = Instance.new("Tool")
+tool.RequiresHandle = false
+tool.Name = "Tool"
+tool.Parent = Players.LocalPlayer.Backpack
+
+-- Initialize the default CamlockKey
+local CamlockKey = Enum.KeyCode.Q
+
+-- Function to handle tool activation
+local function onToolActivated()
+    VirtualInputManager:SendKeyEvent(true, CamlockKey, false, game)
+end
+
+-- Connect the activation function to the tool
+tool.Activated:Connect(onToolActivated)
+
+--Notify
+
+local NotificationLoad = loadstring(game:HttpGet(('https://raw.githubusercontent.com/treeofplant/Notif/main/library.lua'),true))()
+
+NotificationLoad:NewNotification({
+    ["Mode"] = "Custom", -- Leave like this
+    ["Title"] = "Camlock Tool Loaded", -- Title of notification
+    ["Description"] = "Type Any Letter In The TextBox To Change The Tool KeyBind. Made By sh4k4r6o On Discord", -- Description of notification
+    ["Notification_Image"] = "rbxassetid://18985517155", -- Side image of notification
+    ["Notification_Sound"] = "rbxassetid://5153734608", -- Sound when notification open
+    ["Timeout"] = 25, -- Timer how long notification lasts
+    ["Audio"] = true -- Sound when notifications open
+})
+
+-- Handle the character addition
+local function onCharacterAdded(character)
+    tool.Parent = Players.LocalPlayer.Backpack
+end
+
+-- Connect the CharacterAdded event
+local player = Players.LocalPlayer
+player.CharacterAdded:Connect(onCharacterAdded)
+
+-- Handle the character removal
+player.CharacterRemoving:Connect(function()
+    tool.Parent = Players.LocalPlayer.Backpack
+end)
+
+-- Function to update the CamlockKey based on player input
+local function updateCamlockKey(input)
+    local keyCode = Enum.KeyCode[input:upper()]
+    if keyCode then
+        CamlockKey = keyCode
+        print("Tool Keybind Updated To: " .. CamlockKey.Name)
+    else
+        print("Invalid key input.")
+    end
+end
+
+-- Function to filter out text with more than one letter
+local function filterText(text)
+    local words = string.split(text, " ")
+    for i, word in ipairs(words) do
+        if #word > 1 then
+            words[i] = string.rep("#", #word)
+        end
+    end
+    return table.concat(words, " ")
+end
+
+-- Create the GUI
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player.PlayerGui
+
+-- Create the background frame
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 130, 0, 80)  -- Width and height of the frame
+frame.Position = UDim2.new(0.5, -500, 0.5, -200)  -- Centered with width/2 and height/2 offsets
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
+
+-- Add rounded corners to the frame
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 10)
+uiCorner.Parent = frame
+
+-- Add rainbow effect outline
+local uiStroke = Instance.new("UIStroke")
+uiStroke.Thickness = 4
+uiStroke.Color = Color3.fromRGB(255, 255, 255)
+uiStroke.Parent = frame
+
+-- Function to create a rainbow effect for the UIStroke
+local function RainbowEffect()
+    local hue = 0
+    while frame.Parent do
+        hue = (hue + 1) % 360
+        local color = Color3.fromHSV(hue / 360, 1, 1)
+        uiStroke.Color = color
+        wait(0.01)
+    end
+end
+
+-- Start the rainbow effect
+spawn(RainbowEffect)
+
+-- Create the close button
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 25, 0, 25)
+closeButton.Position = UDim2.new(1, -30, 0, 5)  -- Positioned at top-right
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.TextSize = 14
+closeButton.TextScaled = true
+closeButton.AutoButtonColor = false
+closeButton.Parent = frame
+
+-- Add rounded corners to the close button
+local closeButtonCorner = Instance.new("UICorner")
+closeButtonCorner.CornerRadius = UDim.new(0, 6)
+closeButtonCorner.Parent = closeButton
+
+-- Close button functionality
+closeButton.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
+end)
+
+-- Create the textbox
+local textBox = Instance.new("TextBox")
+textBox.Size = UDim2.new(1, -60, 1, -40)  -- Adjusted size to fit within the frame
+textBox.Position = UDim2.new(0, 15, 0, 25)  -- Positioned with padding
+textBox.BackgroundTransparency = 1  -- Transparent background
+textBox.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text
+textBox.PlaceholderText = "Type Your Keybind Here"
+textBox.TextSize = 18  -- Set text size to 18
+textBox.TextScaled = true
+textBox.Parent = frame
+
+-- Update key when text changes
+textBox.FocusLost:Connect(function(enterPressed)
+    if enterPressed then
+        local cleanText = filterText(textBox.Text)
+        textBox.Text = cleanText
+        updateCamlockKey(cleanText)
+    end
+end)
+
+-- Make the GUI draggable
+local dragging = false
+local dragInput, dragStart, startPos
+
+local function update(input)
+    local delta = input.Position - dragStart
+    frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = frame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+frame.InputChanged:Connect(function(input)
+    if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) and dragging then
+        update(input)
+    end
+end)
