@@ -1,4 +1,4 @@
-getgenv().keytoclick = "Camlock"
+getgenv().keytoclick = "Q"
 tool = Instance.new("Tool")
 tool.RequiresHandle = false
 tool.Name = keytoclick
