@@ -10,7 +10,7 @@ tool.Parent = game.Players.LocalPlayer.Backpack
 
 game.StarterGui:SetCore("SendNotification", {
     Title = "Notification!";
-    Text = "Made By shakar#6955";
+    Text = "Made By shakar#6955, Q Tool To Camlock On Someone";
 
 })
 
