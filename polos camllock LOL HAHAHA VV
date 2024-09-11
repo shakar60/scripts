@@ -134,6 +134,11 @@ local PoloSection = PoloTab:CreateSector("Settings", "left")
 local Misc0Section = MiscTab:CreateSector("Esps", "left")
 local MiscSection = MiscTab:CreateSector("Miscs", "right")
 
+PoloSection:AddButton("Tool Camlock", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/camlock%20tool%20for%20polo",true))()
+    print("script executed")
+end)
+
 local NotificationLoad = loadstring(game:HttpGet('https://raw.githubusercontent.com/treeofplant/Notif/main/library.lua', true))()
 
 local NotificationsEnabled = true
