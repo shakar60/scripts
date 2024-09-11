@@ -1,0 +1,76 @@
+local Players = game:GetService("Players")
+local Lighting = game:GetService("Lighting")
+
+-- Settings
+local settings = {
+    rgb = true,
+    size = 24,
+    intensity = 1,
+    threshold = 0.8,
+    brightness = 20,
+    range = 10,
+    color = Color3.fromRGB(0, 0, 0),
+    camlockState = true
+}
+
+local function updateGlowForAllPlayers()
+    for _, player in ipairs(Players:GetPlayers()) do
+        local character = player.Character
+        if character then
+            for _, part in ipairs(character:GetChildren()) do
+                if part:IsA("BasePart") then
+                    local pointLight = part:FindFirstChildOfClass("PointLight") or Instance.new("PointLight")
+                    if settings.camlockState then
+                        pointLight.Color = settings.color
+                        pointLight.Brightness = settings.brightness
+                        pointLight.Range = settings.range
+                        pointLight.Shadows = true
+                        pointLight.Parent = part
+                    else
+                        if pointLight.Parent then
+                            pointLight:Destroy()
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+local function RainbowGlowEffect()
+    local hue = 0
+    while settings.rgb do
+        hue = (hue + 1) % 360
+        local color = Color3.fromHSV(hue / 360, 1, 1)
+        for _, player in ipairs(Players:GetPlayers()) do
+            local character = player.Character
+            if character then
+                for _, part in ipairs(character:GetChildren()) do
+                    if part:IsA("BasePart") then
+                        local pointLight = part:FindFirstChildOfClass("PointLight")
+                        if pointLight then
+                            pointLight.Color = color
+                        end
+                    end
+                end
+            end
+        end
+        wait(0.01)
+    end
+end
+
+local bloom = Instance.new("BloomEffect")
+bloom.Intensity = settings.intensity
+bloom.Threshold = settings.threshold
+bloom.Size = settings.size
+bloom.Parent = Lighting
+
+updateGlowForAllPlayers()
+
+if settings.rgb then
+    spawn(RainbowGlowEffect)
+end
+
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(updateGlowForAllPlayers)
+end)
