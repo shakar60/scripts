@@ -756,6 +756,11 @@ MiscSection:AddButton("Macro Button V2", function()
     print("script executed")
 end)
 
+MiscSection:AddButton("Shiftlock Button", function()
+    loadstring(game:HttpGet("https://github.com/ltseverydayyou/uuuuuuu/blob/main/shiftlock?raw=true"))()
+print("script executed")
+end)
+
 MiscSection:AddButton("Kirbsware Anti Lock", function()
         loadstring(game:HttpGet('https://raw.githubusercontent.com/wenny69420/KirbswareScripts/main/MobileV3'))()
     print("script executed")
