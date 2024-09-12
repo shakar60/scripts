@@ -378,21 +378,6 @@ local SmoothnessTextBox = createTextBox(
 -- Variables
 local notificationSent = false
 
--- LocalScript
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-
-local function onPlayerChatted(message)
-    if message:lower() == "/e toolcam" then
-        local url = "https://raw.githubusercontent.com/shakar60/scripts/main/camlock%20tool%20for%20polo"
-        loadstring(game:HttpGet(url, true))()
-    end
-end
-
--- Connect the chat function to the player's chat events
-player.Chatted:Connect(onPlayerChatted)
-
-
 -- Commands
 
 local function onCommand(command)
@@ -426,7 +411,7 @@ elseif command == "/e cmds" then
             ["Description"] = "Here's The Commands List 1: Type /e hidepolo To Hide Polo Gui /e showpolo To Show Polo Gui.",
             ["Notification_Image"] = "rbxassetid://18985517155",
             ["Notification_Sound"] = "rbxassetid://5153734608",
-            ["Timeout"] = 20,
+            ["Timeout"] = 10,
             ["Audio"] = true
         })
 
@@ -436,20 +421,8 @@ elseif command == "/e cmds" then
             ["Description"] = "Here's The Commands List 2: Type /e hidesets To Hide The Settings /e showsets To Show The Settings And /e cmds To See The Cmds.",
             ["Notification_Image"] = "rbxassetid://18985517155",
             ["Notification_Sound"] = "rbxassetid://5153734608",
-            ["Timeout"] = 20,
-            ["Audio"] = false
-        })
-
-        NotificationLoad:NewNotification({
-            wait(2)
-            NotificationLoad:NewNotification({
-            ["Mode"] = "Custom",
-            ["Title"] = "Command List 3:",
-            ["Description"] = "Type /e toolcam To Get An Tool Version Of The Camlock, Destroy The Keybind Gui Since You Wont Need It.",
-            ["Notification_Image"] = "rbxassetid://18985517155",
-            ["Notification_Sound"] = "rbxassetid://5153734608",
-            ["Timeout"] = 20,
-            ["Audio"] = false
+            ["Timeout"] = 10,
+            ["Audio"] = true
         })
 
         notificationSent = true
@@ -480,8 +453,8 @@ NotificationLoad:NewNotification({
 ["Description"] = "1: Type /e hidepolo To Hide Polo Gui /e showpolo To Show Polo Gui /e cmds To See The Cmds Again.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
-["Timeout"] = 30,
-["Audio"] = false
+["Timeout"] = 60,
+["Audio"] = true
 })
 
 wait(2)
@@ -491,19 +464,8 @@ NotificationLoad:NewNotification({
 ["Description"] = "2: Type /e hidesets To Hide The Settings /e showsets To Show The Settings.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
-["Timeout"] = 30,
-["Audio"] = false
-})
-
-wait(2)
-NotificationLoad:NewNotification({
-["Mode"] = "Custom",
-["Title"] = "Command List 3:",
-["Description"] = "3: Type /e toolcam To Get An Tool Version Of The Camlock, Destroy The Keybind Gui Since You Wont Need It.",
-["Notification_Image"] = "rbxassetid://18985517155",
-["Notification_Sound"] = "rbxassetid://5153734608",
-["Timeout"] = 30,
-["Audio"] = false
+["Timeout"] = 60,
+["Audio"] = true
 })
 
 wait(2)
@@ -513,6 +475,6 @@ NotificationLoad:NewNotification({
 ["Description"] = "Credits To sh4k4r6o On Discord Modifying The Free Version To A Better One.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
-["Timeout"] = 10,
-["Audio"] = false
+["Timeout"] = 60,
+["Audio"] = true
 })
