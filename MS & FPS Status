@@ -1,0 +1,230 @@
+local StatsService = game:GetService("Stats")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+local UserInputService = game:GetService("UserInputService")
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "StatsDisplay"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = CoreGui
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 220, 0, 50)
+mainFrame.Position = UDim2.new(0.7, 0.5, 0, 0.1)
+mainFrame.BackgroundTransparency = 0.5
+mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = screenGui
+
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 10)
+uiCorner.Parent = mainFrame
+
+local statsLabel = Instance.new("TextLabel")
+statsLabel.Size = UDim2.new(1, -30, 0, 30)
+statsLabel.Position = UDim2.new(0, 5, 0, 5)
+statsLabel.BackgroundTransparency = 1
+statsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+statsLabel.Font = Enum.Font.SourceSansBold
+statsLabel.TextSize = 20
+statsLabel.Text = "MS: 0 | FPS: 0"
+statsLabel.Parent = mainFrame
+
+local creditLabel = Instance.new("TextLabel")
+creditLabel.Size = UDim2.new(1, 0, 0, 15)
+creditLabel.Position = UDim2.new(0, 5, 1, -15)
+creditLabel.BackgroundTransparency = 1
+creditLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+creditLabel.Font = Enum.Font.SourceSans
+creditLabel.TextSize = 12
+creditLabel.Text = "by sh4k4r6o on discord"
+creditLabel.TextXAlignment = Enum.TextXAlignment.Left
+creditLabel.Parent = mainFrame
+
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 20, 0, 20)
+closeButton.Position = UDim2.new(1, -30, 0, 5)
+closeButton.BackgroundColor3 = Color3.fromRGB(105, 105, 105)
+closeButton.BackgroundTransparency = 0.3
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.Font = Enum.Font.SourceSansBold
+closeButton.TextSize = 14
+closeButton.Parent = mainFrame
+
+local closeButtonCorner = Instance.new("UICorner")
+closeButtonCorner.CornerRadius = UDim.new(0, 5)
+closeButtonCorner.Parent = closeButton
+
+local minimizeButton = Instance.new("TextButton")
+minimizeButton.Size = UDim2.new(0, 20, 0, 20)
+minimizeButton.Position = UDim2.new(1, -55, 0, 5)
+minimizeButton.BackgroundColor3 = Color3.fromRGB(105, 105, 105)
+minimizeButton.BackgroundTransparency = 0.3
+minimizeButton.Text = "-"
+minimizeButton.TextSize = 14
+minimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizeButton.Font = Enum.Font.SourceSansBold
+minimizeButton.AutoButtonColor = false
+minimizeButton.Parent = mainFrame
+
+local minimizeButtonCorner = Instance.new("UICorner")
+minimizeButtonCorner.CornerRadius = UDim.new(0, 5)
+minimizeButtonCorner.Parent = minimizeButton
+
+local minimizedFrame = Instance.new("Frame")
+minimizedFrame.Size = UDim2.new(0, 60, 0, 40)
+minimizedFrame.Position = mainFrame.Position
+minimizedFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+minimizedFrame.BackgroundTransparency = 0.5
+minimizedFrame.Visible = false
+minimizedFrame.Parent = screenGui
+
+local minimizedUICorner = Instance.new("UICorner")
+minimizedUICorner.CornerRadius = UDim.new(0, 10)
+minimizedUICorner.Parent = minimizedFrame
+
+local minimizeExpandButton = Instance.new("TextButton")
+minimizeExpandButton.Size = UDim2.new(0, 20, 0, 20)
+minimizeExpandButton.Position = UDim2.new(1, -53, 0, 10)
+minimizeExpandButton.BackgroundColor3 = Color3.fromRGB(105, 105, 105)
+minimizeExpandButton.Text = "+"
+minimizeExpandButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizeExpandButton.Font = Enum.Font.SourceSansBold
+minimizeExpandButton.TextSize = 14
+minimizeExpandButton.AutoButtonColor = false
+minimizeExpandButton.Parent = minimizedFrame
+
+local minimizeExpandButtonCorner = Instance.new("UICorner")
+minimizeExpandButtonCorner.CornerRadius = UDim.new(0, 5)
+minimizeExpandButtonCorner.Parent = minimizeExpandButton
+
+local minimizedCloseButton = Instance.new("TextButton")
+minimizedCloseButton.Size = UDim2.new(0, 20, 0, 20)
+minimizedCloseButton.Position = UDim2.new(1, -27, 0, 10)
+minimizedCloseButton.BackgroundColor3 = Color3.fromRGB(105, 105, 105)
+minimizedCloseButton.BackgroundTransparency = 0.3
+minimizedCloseButton.Text = "X"
+minimizedCloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizedCloseButton.Font = Enum.Font.SourceSansBold
+minimizedCloseButton.TextSize = 14
+minimizedCloseButton.AutoButtonColor = false
+minimizedCloseButton.Parent = minimizedFrame
+
+local minimizedCloseButtonCorner = Instance.new("UICorner")
+minimizedCloseButtonCorner.CornerRadius = UDim.new(0, 5)
+minimizedCloseButtonCorner.Parent = minimizedCloseButton
+
+local isMinimized = false
+
+minimizeButton.MouseButton1Click:Connect(function()
+    if not isMinimized then
+        isMinimized = true
+        mainFrame.Visible = false
+        minimizeButton.Visible = false
+        creditLabel.Visible = false
+        statsLabel.Visible = false
+        minimizedFrame.Visible = true
+    end
+end)
+
+minimizeExpandButton.MouseButton1Click:Connect(function()
+    if isMinimized then
+        isMinimized = false
+        mainFrame.Visible = true
+        minimizeButton.Visible = true
+        creditLabel.Visible = true
+        statsLabel.Visible = true
+        minimizedFrame.Visible = false
+    end
+end)
+
+closeButton.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
+end)
+
+minimizedCloseButton.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
+end)
+
+local fps = 0
+local frames = 0
+local elapsedTime = 0
+
+local function updatePing()
+    local serverStats = StatsService.Network.ServerStatsItem
+    local dataPing = serverStats["Data Ping"]:GetValueString()
+    local pingValue = tonumber(dataPing:match("(%d+)")) or 0
+    return pingValue
+end
+
+local function updateFPS(deltaTime)
+    frames = frames + 1
+    elapsedTime = elapsedTime + deltaTime
+    if elapsedTime >= 1 then
+        fps = frames
+        frames = 0
+        elapsedTime = 0
+    end
+end
+
+RunService.RenderStepped:Connect(function(deltaTime)
+    updateFPS(deltaTime)
+    local pingValue = updatePing()
+    statsLabel.Text = string.format("MS: %s | FPS: %d", pingValue, fps)
+end)
+
+local isDragging = false
+local dragInput, dragStart, startPos
+
+local function onDrag(input, frame)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        isDragging = true
+        dragStart = input.Position
+        startPos = frame.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                isDragging = false
+            end
+        end)
+    end
+end
+
+local function onInputChanged(input, frame)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end
+
+local function onInputChangedUpdate(input, frame, minimizedFrame)
+    if isDragging and input == dragInput then
+        local delta = input.Position - dragStart
+        frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        minimizedFrame.Position = frame.Position
+    end
+end
+
+mainFrame.InputBegan:Connect(function(input)
+    onDrag(input, mainFrame)
+end)
+
+mainFrame.InputChanged:Connect(function(input)
+    onInputChanged(input, mainFrame)
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    onInputChangedUpdate(input, mainFrame, minimizedFrame)
+end)
+
+minimizedFrame.InputBegan:Connect(function(input)
+    onDrag(input, minimizedFrame)
+end)
+
+minimizedFrame.InputChanged:Connect(function(input)
+    onInputChanged(input, minimizedFrame)
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    onInputChangedUpdate(input, minimizedFrame, minimizedFrame)
+end)
