@@ -6,7 +6,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/universal-an
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/polologs",true))()
 
--- loading screen
+--[[ loading screen
 
 -- Services
 local Players = game:GetService("Players")
@@ -121,7 +121,7 @@ wait(settings.creditsTextDuration)
 
 -- Cleanup
 screenGui:Destroy()
-blurEffect:Destroy()
+blurEffect:Destroy() ]]
 
 -- polos camlock
 
@@ -199,7 +199,7 @@ UserInputService.InputBegan:Connect(function(input)
                 ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
                 ["Notification_Image"] = "rbxassetid://78342062013795",
                 ["Notification_Sound"] = "rbxassetid://6518811702",
-                ["Timeout"] = 1,
+                ["Timeout"] = 0.5,
                 ["Audio"] = true
             })
             TextButton.Image = "rbxassetid://72590084838674"  -- Set image for ON state
@@ -212,9 +212,9 @@ UserInputService.InputBegan:Connect(function(input)
                     ["Title"] = "Polos Camlock",
                     ["Description"] = "Unlocked",
                     ["Notification_Image"] = "rbxassetid://134820707156642",
-                    ["Notification_Sound"] = "",
-                    ["Timeout"] = 2,
-                    ["Audio"] = false
+                    ["Notification_Sound"] = "rbxassetid://6518811702",
+                    ["Timeout"] = 0.3,
+                    ["Audio"] = true
                 })
             end
             TextButton.Image = "rbxassetid://105713683367381"  -- Set image for OFF state
@@ -266,7 +266,7 @@ TextButton.MouseButton1Click:Connect(function()
             ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
             ["Notification_Image"] = "rbxassetid://78342062013795",
             ["Notification_Sound"] = "rbxassetid://6518811702",
-            ["Timeout"] = 2,
+            ["Timeout"] = 0.5,
             ["Audio"] = true
         })
         TextButton.Image = "rbxassetid://72590084838674"  -- Set image for ON state
@@ -279,9 +279,9 @@ TextButton.MouseButton1Click:Connect(function()
                 ["Title"] = "Polos Camlock",
                 ["Description"] = "Unlocked",
                 ["Notification_Image"] = "rbxassetid://134820707156642",
-                ["Notification_Sound"] = "",
-                ["Timeout"] = 2,
-                ["Audio"] = false
+                ["Notification_Sound"] = "rbxassetid://651881170",
+                ["Timeout"] = 0.3,
+                ["Audio"] = true
             })
         end
         TextButton.Image = "rbxassetid://105713683367381"  -- Set image for OFF state
