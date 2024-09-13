@@ -79,6 +79,8 @@ local Logo = Instance.new("ImageLabel")
 local LogoUICorner = Instance.new("UICorner")
 local TextButton = Instance.new("TextButton")
 local UICorner_2 = Instance.new("UICorner")
+local FrameStroke = Instance.new("UIStroke")
+local ButtonStroke = Instance.new("UIStroke")
 
 BladLock.Name = "BlackGuy"
 BladLock.Parent = game.CoreGui
@@ -86,8 +88,7 @@ BladLock.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 Frame.Parent = BladLock
 Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Frame.BackgroundTransparency = 1 -- Ensure background is fully transparent
-Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BackgroundTransparency = 1
 Frame.BorderSizePixel = 0
 Frame.Position = UDim2.new(0.133798108, 0, 0.20107238, 0)
 Frame.Size = UDim2.new(0, 80, 0, 70)
@@ -103,17 +104,21 @@ Frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(TopContainer)
 
 UICorner.Parent = Frame
 
+FrameStroke.Parent = Frame
+FrameStroke.Color = Color3.fromRGB(255, 0, 0)
+FrameStroke.Thickness = 4
+FrameStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
 Logo.Name = "Logo"
 Logo.Parent = Frame
-Logo.BackgroundTransparency = 1 -- Ensure logo background is fully transparent
+Logo.BackgroundTransparency = 1
 Logo.BorderSizePixel = 0
-Logo.Position = UDim2.new(0, 0, 0, 0) -- Fill the entire Frame
-Logo.Size = UDim2.new(1, 0, 1, 0) -- Fill the entire Frame
+Logo.Position = UDim2.new(0, 0, 0, 0)
+Logo.Size = UDim2.new(1, 0, 1, 0)
 Logo.Image = "rbxassetid://122819356113101"
 Logo.ImageTransparency = 0
 
--- Add UICorner to Logo for rounded corners
-LogoUICorner.CornerRadius = UDim.new(0, 10) -- Adjust corner radius as needed
+LogoUICorner.CornerRadius = UDim.new(0, 10)
 LogoUICorner.Parent = Logo
 
 TextButton.Parent = Frame
@@ -123,11 +128,11 @@ TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 TextButton.BorderSizePixel = 0
 TextButton.Position = UDim2.new(0.0792079195, 0, 0.18571429, 0)
 TextButton.Size = UDim2.new(0, 70, 0, 50)
-TextButton.Font = Enum.Font.SourceSansSemibold
+TextButton.Font = Enum.Font.Arcade --SourceSansSemibold old font
 TextButton.Text = "serenity.cc"
 TextButton.TextColor3 = Color3.fromRGB(0, 0, 0)
-TextButton.TextScaled = true
-TextButton.TextSize = 24
+TextButton.TextScaled = false
+TextButton.TextSize = 18
 TextButton.TextWrapped = true
 
 local state = true
@@ -139,7 +144,8 @@ TextButton.MouseButton1Click:Connect(function()
         enemy = FindNearestEnemy()
         game.StarterGui:SetCore("SendNotification", {
             Title = "Serenity",
-            Text = "Thanks for using Serenity"
+            Text = "Thanks for using Serenity",
+            Icon = "rbxassetid://122819356113101"
         })
     else
         TextButton.Text = "Serenity OFF"
@@ -156,3 +162,16 @@ end)
 UICorner_2.Parent = TextButton
 Frame.Active = true
 Frame.Draggable = true
+
+local function RainbowEffect()
+    local hue = 0
+    while true do
+        hue = (hue + 1) % 360
+        local color = Color3.fromHSV(hue / 360, 1, 1)
+        FrameStroke.Color = color
+        ButtonStroke.Color = color
+        wait(0.01)
+    end
+end
+
+spawn(RainbowEffect)
