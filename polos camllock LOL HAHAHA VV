@@ -159,7 +159,7 @@ function SendNotification(message)
             ["Notification_Image"] = "rbxassetid://78342062013795",
             ["Notification_Sound"] = "rbxassetid://6518811702",
             ["Timeout"] = 0.5,
-            ["Audio"] = false
+            ["Audio"] = true
         })
     end
 end
