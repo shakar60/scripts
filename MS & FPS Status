@@ -11,7 +11,7 @@ screenGui.Parent = CoreGui
 
 local mainFrame = Instance.new("Frame")
 mainFrame.Size = UDim2.new(0, 220, 0, 50)
-mainFrame.Position = UDim2.new(0.7, 0.5, 0, -60)
+mainFrame.Position = UDim2.new(0.7, 0.5, 0, -100) 
 mainFrame.BackgroundTransparency = 0.5
 mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 mainFrame.BorderSizePixel = 0
@@ -75,7 +75,6 @@ minimizeButtonCorner.Parent = minimizeButton
 
 local minimizedFrame = Instance.new("Frame")
 minimizedFrame.Size = UDim2.new(0, 60, 0, 40)
-minimizedFrame.Position = mainFrame.Position
 minimizedFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 minimizedFrame.BackgroundTransparency = 0.5
 minimizedFrame.Visible = false
@@ -117,38 +116,49 @@ minimizedCloseButtonCorner.CornerRadius = UDim.new(0, 5)
 minimizedCloseButtonCorner.Parent = minimizedCloseButton
 
 local isMinimized = false
+local minimizedPosition = mainFrame.Position
+
+
+local popUpTweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+local popUpGoal = { Position = UDim2.new(0.7, 0.5, 0, 0.1) }
+local popUpTween = TweenService:Create(mainFrame, popUpTweenInfo, popUpGoal)
 
 local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 local goalPosition = UDim2.new(0.7, 0.5, 0, 0.1)
-
-local tween = TweenService:Create(mainFrame, tweenInfo, {Position = goalPosition})
+local tween = TweenService:Create(mainFrame, tweenInfo, { Position = goalPosition })
 
 local function showMainFrame()
     mainFrame.Visible = true
-    tween:Play()
+    popUpTween:Play()
 end
 
-minimizeButton.MouseButton1Click:Connect(function()
+local function minimizeFrame()
     if not isMinimized then
         isMinimized = true
+        minimizedPosition = mainFrame.Position
+        minimizedFrame.Position = minimizedPosition
         mainFrame.Visible = false
         minimizeButton.Visible = false
         creditLabel.Visible = false
         statsLabel.Visible = false
         minimizedFrame.Visible = true
     end
-end)
+end
 
-minimizeExpandButton.MouseButton1Click:Connect(function()
+local function expandFrame()
     if isMinimized then
         isMinimized = false
+        mainFrame.Position = minimizedFrame.Position
         mainFrame.Visible = true
         minimizeButton.Visible = true
         creditLabel.Visible = true
         statsLabel.Visible = true
         minimizedFrame.Visible = false
     end
-end)
+end
+
+minimizeButton.MouseButton1Click:Connect(minimizeFrame)
+minimizeExpandButton.MouseButton1Click:Connect(expandFrame)
 
 closeButton.MouseButton1Click:Connect(function()
     screenGui:Destroy()
@@ -182,11 +192,13 @@ end
 RunService.RenderStepped:Connect(function(deltaTime)
     updateFPS(deltaTime)
     local pingValue = updatePing()
-    statsLabel.Text = string.format("MS: %s | FPS: %d", pingValue, fps)
+    statsLabel.Text = string.format("MS: %d | FPS: %d", pingValue, fps)
 end)
 
 local isDragging = false
-local dragInput, dragStart, startPos
+local dragStart = nil
+local startPos = nil
+local dragInput = nil
 
 local function onDrag(input, frame)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -211,8 +223,10 @@ end
 local function onInputChangedUpdate(input, frame, minimizedFrame)
     if isDragging and input == dragInput then
         local delta = input.Position - dragStart
-        frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        minimizedFrame.Position = frame.Position
+        local newPosition = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        frame.Position = newPosition
+        minimizedFrame.Position = newPosition
+        minimizedPosition = newPosition
     end
 end
 
