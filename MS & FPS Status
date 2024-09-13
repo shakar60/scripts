@@ -1,3 +1,4 @@
+local TweenService = game:GetService("TweenService")
 local StatsService = game:GetService("Stats")
 local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
@@ -10,7 +11,7 @@ screenGui.Parent = CoreGui
 
 local mainFrame = Instance.new("Frame")
 mainFrame.Size = UDim2.new(0, 220, 0, 50)
-mainFrame.Position = UDim2.new(0.7, 0.5, 0, 0.1)
+mainFrame.Position = UDim2.new(0.7, 0.5, 0, -60)
 mainFrame.BackgroundTransparency = 0.5
 mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 mainFrame.BorderSizePixel = 0
@@ -116,6 +117,16 @@ minimizedCloseButtonCorner.CornerRadius = UDim.new(0, 5)
 minimizedCloseButtonCorner.Parent = minimizedCloseButton
 
 local isMinimized = false
+
+local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+local goalPosition = UDim2.new(0.7, 0.5, 0, 0.1)
+
+local tween = TweenService:Create(mainFrame, tweenInfo, {Position = goalPosition})
+
+local function showMainFrame()
+    mainFrame.Visible = true
+    tween:Play()
+end
 
 minimizeButton.MouseButton1Click:Connect(function()
     if not isMinimized then
@@ -228,3 +239,5 @@ end)
 UserInputService.InputChanged:Connect(function(input)
     onInputChangedUpdate(input, minimizedFrame, minimizedFrame)
 end)
+
+showMainFrame()
