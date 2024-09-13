@@ -198,9 +198,9 @@ UserInputService.InputBegan:Connect(function(input)
                 ["Title"] = "Polos Camlock",
                 ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
                 ["Notification_Image"] = "rbxassetid://78342062013795",
-                ["Notification_Sound"] = "",
-                ["Timeout"] = 2,
-                ["Audio"] = false
+                ["Notification_Sound"] = "rbxassetid://6518811702",
+                ["Timeout"] = 1,
+                ["Audio"] = true
             })
             TextButton.Image = "rbxassetid://72590084838674"  -- Set image for ON state
         else
@@ -265,9 +265,9 @@ TextButton.MouseButton1Click:Connect(function()
             ["Title"] = "Polos Camlock",
             ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
             ["Notification_Image"] = "rbxassetid://78342062013795",
-            ["Notification_Sound"] = "",
+            ["Notification_Sound"] = "rbxassetid://6518811702",
             ["Timeout"] = 2,
-            ["Audio"] = false
+            ["Audio"] = true
         })
         TextButton.Image = "rbxassetid://72590084838674"  -- Set image for ON state
     else
