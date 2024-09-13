@@ -133,64 +133,129 @@ local StarterGui = game:GetService("StarterGui")
 local NotificationLoad = loadstring(game:HttpGet('https://raw.githubusercontent.com/treeofplant/Notif/main/library.lua', true))()
 
 -- Settings
-
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local CamlockState = true
 local Prediction = 0.206015
-local XPrediction = 0
-local YPrediction = 0
+local XPrediction = 0.176073
+local YPrediction = 0.167092
 local Smoothness = 0.073
 local Locked = true
 getgenv().Key = Enum.KeyCode.Q
 
 function FindNearestEnemy()
-local ClosestDistance, ClosestPlayer = math.huge, nil
-local CenterPosition = Vector2.new(
-    game:GetService("GuiService"):GetScreenResolution().X / 2,
-    game:GetService("GuiService"):GetScreenResolution().Y / 2
-)
+    local ClosestDistance, ClosestPlayer = math.huge, nil
+    local CenterPosition = Vector2.new(
+        game:GetService("GuiService"):GetScreenResolution().X / 2,
+        game:GetService("GuiService"):GetScreenResolution().Y / 2
+    )
 
-for _, Player in ipairs(game:GetService("Players"):GetPlayers()) do
-    if Player ~= LocalPlayer then
-        local Character = Player.Character
-        if Character and Character:FindFirstChild("HumanoidRootPart") and Character.Humanoid.Health > 0 then
-            local Position, IsVisibleOnViewport = 
-                workspace.CurrentCamera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
+    for _, Player in ipairs(game:GetService("Players"):GetPlayers()) do
+        if Player ~= LocalPlayer then
+            local Character = Player.Character
+            if Character and Character:FindFirstChild("HumanoidRootPart") and Character.Humanoid.Health > 0 then
+                local Position, IsVisibleOnViewport = 
+                    workspace.CurrentCamera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
 
-            if IsVisibleOnViewport then
-                local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
-                if Distance < ClosestDistance then
-                    ClosestPlayer = Character.HumanoidRootPart
-                    ClosestDistance = Distance
+                if IsVisibleOnViewport then
+                    local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
+                    if Distance < ClosestDistance then
+                        ClosestPlayer = Character.HumanoidRootPart
+                        ClosestDistance = Distance
+                    end
                 end
             end
         end
     end
-end
 
-return ClosestPlayer
+    return ClosestPlayer
 end
 
 local enemy = nil
 
 RunService.Heartbeat:Connect(function()
-if CamlockState and enemy then
-    local camera = workspace.CurrentCamera
-    local targetPosition = enemy.Position + enemy.Velocity * Prediction
-    targetPosition = Vector3.new(targetPosition.X + XPrediction, targetPosition.Y + YPrediction, targetPosition.Z)
+    if CamlockState and enemy then
+        local camera = workspace.CurrentCamera
+        local targetPosition = enemy.Position + enemy.Velocity * Prediction
+        targetPosition = Vector3.new(targetPosition.X + XPrediction, targetPosition.Y + YPrediction, targetPosition.Z)
 
-    local currentPosition = camera.CFrame.Position
-    local newPosition = currentPosition:Lerp(targetPosition, Smoothness)
+        local currentPosition = camera.CFrame.Position
+        local newPosition = currentPosition:Lerp(targetPosition, Smoothness)
 
-    camera.CFrame = CFrame.new(newPosition, targetPosition)
-end
+        camera.CFrame = CFrame.new(newPosition, targetPosition)
+    end
 end)
 
 -- Camlock Status (On And Off Notification)
-
 UserInputService.InputBegan:Connect(function(input)
-if input.KeyCode == getgenv().Key then
+    if input.KeyCode == getgenv().Key then
+        Locked = not Locked
+        if Locked then
+            enemy = FindNearestEnemy()
+            CamlockState = true
+            NotificationLoad:NewNotification({
+                ["Mode"] = "Custom",
+                ["Title"] = "Polos Camlock",
+                ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
+                ["Notification_Image"] = "rbxassetid://78342062013795",
+                ["Notification_Sound"] = "",
+                ["Timeout"] = 2,
+                ["Audio"] = false
+            })
+            TextButton.Image = "rbxassetid://72590084838674"  -- Set image for ON state
+        else
+            if enemy then
+                enemy = nil
+                CamlockState = false
+                NotificationLoad:NewNotification({
+                    ["Mode"] = "Custom",
+                    ["Title"] = "Polos Camlock",
+                    ["Description"] = "Unlocked",
+                    ["Notification_Image"] = "rbxassetid://134820707156642",
+                    ["Notification_Sound"] = "",
+                    ["Timeout"] = 2,
+                    ["Audio"] = false
+                })
+            end
+            TextButton.Image = "rbxassetid://105713683367381"  -- Set image for OFF state
+        end
+    end
+end)
+
+local PolosGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local TextButton = Instance.new("ImageButton")
+local UICorner_2 = Instance.new("UICorner")
+
+-- Toggle Button Gui
+PolosGui.Name = "PolosGui"
+PolosGui.Parent = game.CoreGui
+PolosGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Frame.Parent = PolosGui
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.5, -105, 0.3, 0)
+Frame.Size = UDim2.new(0, 210, 0, 225)
+Frame.Active = true
+Frame.Draggable = true
+
+UICorner.Parent = Frame
+
+-- Camlock Button
+TextButton.Parent = Frame
+TextButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BackgroundTransparency = 0.5
+TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BorderSizePixel = 0
+TextButton.Position = UDim2.new(0.5, -85, 0.020, 0)
+TextButton.Size = UDim2.new(0, 170, 0, 50)
+TextButton.Image = "rbxassetid://105713683367381"  -- Initial image for OFF state
+TextButton.ScaleType = Enum.ScaleType.Fit
+TextButton.ImageTransparency = 0.5
+TextButton.MouseButton1Click:Connect(function()
     Locked = not Locked
     if Locked then
         enemy = FindNearestEnemy()
@@ -221,94 +286,95 @@ if input.KeyCode == getgenv().Key then
         end
         TextButton.Image = "rbxassetid://105713683367381"  -- Set image for OFF state
     end
-end
-end)
-
-local PolosGui = Instance.new("ScreenGui")
-local Frame = Instance.new("Frame")
-local UICorner = Instance.new("UICorner")
-local TextButton = Instance.new("ImageButton")
-local UICorner_2 = Instance.new("UICorner")
-
--- Toggle Button Gui
-
-PolosGui.Name = "PolosGui"
-PolosGui.Parent = game.CoreGui
-PolosGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-Frame.Parent = PolosGui
-Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Frame.BorderSizePixel = 0
-Frame.Position = UDim2.new(0.5, -105, 0.3, 0)
-Frame.Size = UDim2.new(0, 210, 0, 150)
-Frame.Active = true
-Frame.Draggable = true
-
-UICorner.Parent = Frame
-
--- Camlock Button
-
-TextButton.Parent = Frame
-TextButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-TextButton.BackgroundTransparency = 0.5
-TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
-TextButton.BorderSizePixel = 0
-TextButton.Position = UDim2.new(0.5, -85, 0.020, 0)
-TextButton.Size = UDim2.new(0, 170, 0, 50)
-TextButton.Image = "rbxassetid://105713683367381"  -- Initial image for OFF state
-TextButton.ScaleType = Enum.ScaleType.Fit
-TextButton.ImageTransparency = 0.5
-TextButton.MouseButton1Click:Connect(function()
-Locked = not Locked
-if Locked then
-    enemy = FindNearestEnemy()
-    CamlockState = true
-    NotificationLoad:NewNotification({
-        ["Mode"] = "Custom",
-        ["Title"] = "Polos Camlock",
-        ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
-        ["Notification_Image"] = "rbxassetid://78342062013795",
-        ["Notification_Sound"] = "",
-        ["Timeout"] = 2,
-        ["Audio"] = false
-    })
-    TextButton.Image = "rbxassetid://72590084838674"  -- Set image for ON state
-else
-    if enemy then
-        enemy = nil
-        CamlockState = false
-        NotificationLoad:NewNotification({
-            ["Mode"] = "Custom",
-            ["Title"] = "Polos Camlock",
-            ["Description"] = "Unlocked",
-            ["Notification_Image"] = "rbxassetid://134820707156642",
-            ["Notification_Sound"] = "",
-            ["Timeout"] = 2,
-            ["Audio"] = false
-        })
-    end
-    TextButton.Image = "rbxassetid://105713683367381"  -- Set image for OFF state
-end
 end)
 
 UICorner_2.Parent = TextButton
 
+-- Minimize Button
+local MinimizeButton = Instance.new("TextButton")
+MinimizeButton.Parent = Frame
+MinimizeButton.Size = UDim2.new(0, 20, 0, 20)
+MinimizeButton.Position = UDim2.new(1, -25, 0, 5) -- Top right corner
+MinimizeButton.Text = "-"
+MinimizeButton.TextSize = 14
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinimizeButton.AutoButtonColor = false
+local MinimizeUICorner = Instance.new("UICorner", MinimizeButton)
+MinimizeUICorner.CornerRadius = UDim.new(0, 10)
+
+-- Minimized GUI
+local MinimizedFrame = Instance.new("Frame")
+MinimizedFrame.Parent = PolosGui
+MinimizedFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+MinimizedFrame.Size = UDim2.new(0, 220, 0, 40) -- Adjust width for space
+MinimizedFrame.Position = UDim2.new(0.5, -110, 0.3, 0)
+MinimizedFrame.Visible = false
+MinimizedFrame.Active = true
+MinimizedFrame.Draggable = true
+local MinimizedUICorner = Instance.new("UICorner")
+MinimizedUICorner.Parent = MinimizedFrame
+MinimizedUICorner.CornerRadius = UDim.new(0, 10)
+
+-- Title Label for Minimized Frame
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Parent = MinimizedFrame
+TitleLabel.Text = "Polos Skidded Camlock"
+TitleLabel.Size = UDim2.new(1, -50, 1, 0) -- Adjust size for spacing
+TitleLabel.Position = UDim2.new(0, 10, 0, 0)
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Font = Enum.Font.Arcade
+TitleLabel.TextSize = 14
+
+-- Expand Button
+local ExpandButton = Instance.new("TextButton")
+ExpandButton.Parent = MinimizedFrame
+ExpandButton.Size = UDim2.new(0, 20, 0, 20)
+ExpandButton.Position = UDim2.new(1, -30, 0, 10)
+ExpandButton.Text = "+"
+ExpandButton.TextSize = 14
+ExpandButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+ExpandButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ExpandButton.AutoButtonColor = false
+local ExpandUICorner = Instance.new("UICorner", ExpandButton)
+ExpandUICorner.CornerRadius = UDim.new(0, 10)
+
+-- Toggle Minimize and Expand
+local isMinimized = false
+
+MinimizeButton.MouseButton1Click:Connect(function()
+    isMinimized = true
+    Frame.Visible = false
+    MinimizedFrame.Visible = true
+end)
+
+ExpandButton.MouseButton1Click:Connect(function()
+    isMinimized = false
+    Frame.Visible = true
+    MinimizedFrame.Visible = false
+end)
+
+-- Set Position of the GUI
+local function updateGUIPosition()
+    local screenSize = workspace.CurrentCamera.ViewportSize
+    Frame.Position = UDim2.new(0.5, -Frame.Size.X.Offset / 2, 0.5, -Frame.Size.Y.Offset / 2)
+    MinimizedFrame.Position = UDim2.new(0.5, -MinimizedFrame.Size.X.Offset / 2, 0.5, -MinimizedFrame.Size.Y.Offset / 2)
+end
+
+updateGUIPosition()
+
 -- Setting Up The TextBox
-
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-
 local function createTextBox(parent, name, displayName, positionOffset, size, placeholder, text, changeCallback, outlineColor)
     local textBox = Instance.new("TextBox")
     textBox.Parent = parent
     textBox.Name = name
     textBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    textBox.Position = positionOffset -- Position is fixed relative to Frame
+    textBox.Position = positionOffset
     textBox.Size = size
-    textBox.PlaceholderText = displayName
-    textBox.Text = placeholder
-    textBox.ClearTextOnFocus = true
+    textBox.PlaceholderText = placeholder
+    textBox.Text = text
+    textBox.ClearTextOnFocus = false
     textBox.BorderSizePixel = 2
     textBox.BorderColor3 = outlineColor or Color3.fromRGB(0, 0, 0)
     textBox.TextScaled = true
@@ -319,64 +385,77 @@ local function createTextBox(parent, name, displayName, positionOffset, size, pl
 
     local UICorner = Instance.new("UICorner")
     UICorner.Parent = textBox
-    UICorner.CornerRadius = UDim.new(0, 8) -- Adjust the corner radius as needed
-
-    local function updateText()
-        textBox.Text = tostring(text)
-    end
-    updateText()
+    UICorner.CornerRadius = UDim.new(0, 8)
 
     textBox.Focused:Connect(function()
-        if textBox.Text == displayName then
+        if textBox.Text == placeholder then
             textBox.Text = ""
         end
     end)
 
     textBox.FocusLost:Connect(function()
         if textBox.Text == "" then
-            textBox.Text = displayName
+            textBox.Text = placeholder
         else
-            changeCallback(textBox.Text)
+            local value = tonumber(textBox.Text)
+            if value then
+                changeCallback(value)
+            end
         end
     end)
 
     return textBox
 end
 
-local function getDefaultText(value)
-    return value or "0"
-end
-
-local baseY = 60
-local spacing = 35
-
 -- Prediction TextBox
 local PredictionTextBox = createTextBox(
     Frame,
     "PredictionTextBox",
     "Enter Prediction",
-    UDim2.new(0, 15, 0, baseY),
+    UDim2.new(0, 15, 0, 60),
     UDim2.new(0, 180, 0, 30),
     "Prediction: " .. tostring(Prediction),
-    getDefaultText(Prediction),
+    tostring(Prediction),
     function(value) Prediction = value end,
     Color3.fromRGB(0, 0, 0))
 
 -- Smoothness TextBox
-
 local SmoothnessTextBox = createTextBox(
     Frame,
     "SmoothnessTextBox",
     "Enter Smoothness",
-    UDim2.new(0, 15, 0, baseY + spacing),
+    UDim2.new(0, 15, 0, 100),
     UDim2.new(0, 180, 0, 30),
     "Smoothness: " .. tostring(Smoothness),
-    getDefaultText(Smoothness),
+    tostring(Smoothness),
     function(value) Smoothness = value end,
     Color3.fromRGB(0, 0, 0))
 
--- Variables
-local notificationSent = false
+-- X Prediction TextBox
+local XPredictionTextBox = createTextBox(
+    Frame,
+    "XPredictionTextBox",
+    "Enter Horizontal Prediction",
+    UDim2.new(0, 15, 0, 140),
+    UDim2.new(0, 180, 0, 30),
+    "Horizontal Prediction: " .. tostring(XPrediction),
+    tostring(XPrediction),
+    function(value) XPrediction = value end,
+    Color3.fromRGB(0, 0, 0))
+
+-- Y Prediction TextBox
+local YPredictionTextBox = createTextBox(
+    Frame,
+    "YPredictionTextBox",
+    "Enter Vertical Prediction",
+    UDim2.new(0, 15, 0, 180),
+    UDim2.new(0, 180, 0, 30),
+    "Vertical Prediction: " .. tostring(YPrediction),
+    tostring(YPrediction),
+    function(value) YPrediction = value end,
+    Color3.fromRGB(0, 0, 0))
+
+
 
 -- Commands
 
@@ -392,6 +471,8 @@ elseif command == "/e showpolo" then
 elseif command == "/e hidesets" then
     PredictionTextBox.Visible = false
     SmoothnessTextBox.Visible = false
+    XPredictionTextBox.Visible = false
+    YPredictionTextBox.Visible = false
     Frame.Size = UDim2.new(0, 165, 0, 85)
 
     TextButton.Size = UDim2.new(0, 150, 0, 70)
@@ -399,6 +480,8 @@ elseif command == "/e hidesets" then
 elseif command == "/e showsets" then
     PredictionTextBox.Visible = true
     SmoothnessTextBox.Visible = true
+    XPredictionTextBox.Visible = true
+    YPredictionTextBox.Visible = true
     Frame.Size = UDim2.new(0, 210, 0, 150)
 
     TextButton.Size = UDim2.new(0, 170, 0, 50)
@@ -425,6 +508,59 @@ elseif command == "/e cmds" then
             ["Audio"] = true
         })
 
+        notificationSent = true
+    end
+end
+end
+
+game:GetService("Players").LocalPlayer.Chatted:Connect(function(message)
+onCommand(message)
+end)
+
+-- Notifications
+
+NotificationLoad:NewNotification({
+["Mode"] = "Custom",
+["Title"] = "Polos Camlock Loaded!",
+["Description"] = "Welcome User! Polos Camlock Is An Camlock Script That Aims For You In Any Game.",
+["Notification_Image"] = "rbxassetid://18985517155",
+["Notification_Sound"] = "rbxassetid://5153734608",
+["Timeout"] = 10,
+["Audio"] = true
+})
+
+wait(2)
+NotificationLoad:NewNotification({
+["Mode"] = "Custom",
+["Title"] = "Command List 1:",
+["Description"] = "1: Type /e hidepolo To Hide Polo Gui /e showpolo To Show Polo Gui /e cmds To See The Cmds Again.",
+["Notification_Image"] = "rbxassetid://18985517155",
+["Notification_Sound"] = "rbxassetid://5153734608",
+["Timeout"] = 60,
+["Audio"] = true
+})
+
+wait(2)
+NotificationLoad:NewNotification({
+["Mode"] = "Custom",
+["Title"] = "Command List 2:",
+["Description"] = "2: Type /e hidesets To Hide The Settings /e showsets To Show The Settings.",
+["Notification_Image"] = "rbxassetid://18985517155",
+["Notification_Sound"] = "rbxassetid://5153734608",
+["Timeout"] = 60,
+["Audio"] = true
+})
+
+wait(2)
+NotificationLoad:NewNotification({
+["Mode"] = "Custom",
+["Title"] = "Credits:",
+["Description"] = "Credits To sh4k4r6o On Discord Modifying The Free Version To A Better One.",
+["Notification_Image"] = "rbxassetid://18985517155",
+["Notification_Sound"] = "rbxassetid://5153734608",
+["Timeout"] = 60,
+["Audio"] = true
+})
         notificationSent = true
     end
 end
