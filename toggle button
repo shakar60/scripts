@@ -23,10 +23,10 @@ local function createToggleGui()
     Toggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     Toggle.Position = UDim2.new(0.5, -25, 1, 50) -- Start off-screen at the bottom center
     Toggle.Size = UDim2.new(0, 50, 0, 50)
-    Toggle.Font = Enum.Font.Arcade
+    Toggle.Font = Enum.Font.SourceSansSemibold
     Toggle.Text = "Toggle Stratos"
     Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Toggle.TextSize = 11
+    Toggle.TextSize = 10
     Toggle.Draggable = true
 
     UICorner.CornerRadius = UDim.new(0, 20)
