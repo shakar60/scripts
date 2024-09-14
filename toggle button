@@ -1,6 +1,6 @@
 -- Toggle Gui
 
-local TweenService = game:GetService("TweenService") -- Make sure to get the TweenService
+local TweenService = game:GetService("TweenService")
 
 local function showNotification(title, message)
     -- Assuming you have a notification function to display messages
