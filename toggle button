@@ -37,22 +37,24 @@ local function createToggleGui()
     UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
     UIStroke.Color = Color3.fromRGB(0, 0, 0) -- Start with black
 
-    -- Smooth transition effect for UIStroke color
+    -- Smooth transition effect for UIStroke color with multiple colors (excluding light pink)
     local function SmoothColorEffect()
-        local color1 = Color3.fromRGB(0, 0, 0) -- Black
-        local color2 = Color3.fromRGB(128, 0, 128) -- Purple
+        local colors = {
+            Color3.fromRGB(0, 0, 0), -- Black
+            Color3.fromRGB(128, 0, 128), -- Purple
+            Color3.fromRGB(255, 20, 147) -- Pink
+        }
         local transitionSpeed = 2 -- Time to transition from one color to another
 
         while ToggleGui and ToggleGui.Parent do
-            for t = 0, 1, 0.01 do
-                local interpolatedColor = color1:Lerp(color2, t)
-                UIStroke.Color = interpolatedColor
-                wait(transitionSpeed * 0.01) -- Adjust the speed of the transition
-            end
-            for t = 0, 1, 0.01 do
-                local interpolatedColor = color2:Lerp(color1, t)
-                UIStroke.Color = interpolatedColor
-                wait(transitionSpeed * 0.01) -- Adjust the speed of the transition
+            for i = 1, #colors do
+                local startColor = colors[i]
+                local endColor = colors[(i % #colors) + 1]
+                for t = 0, 1, 0.01 do
+                    local interpolatedColor = startColor:Lerp(endColor, t)
+                    UIStroke.Color = interpolatedColor
+                    wait(transitionSpeed * 0.01) -- Adjust the speed of the transition
+                end
             end
         end
     end
