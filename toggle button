@@ -23,10 +23,10 @@ local function createToggleGui()
     Toggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     Toggle.Position = UDim2.new(0.5, -25, 1, 50) -- Start off-screen at the bottom center
     Toggle.Size = UDim2.new(0, 50, 0, 50)
-    Toggle.Font = Enum.Font.SourceSans
+    Toggle.Font = Enum.Font.Arcade
     Toggle.Text = "Toggle Stratos"
     Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Toggle.TextSize = 13
+    Toggle.TextSize = 11
     Toggle.Draggable = true
 
     UICorner.CornerRadius = UDim.new(0, 20)
@@ -35,19 +35,29 @@ local function createToggleGui()
     UIStroke.Parent = Toggle
     UIStroke.Thickness = 3
     UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    UIStroke.Color = Color3.fromRGB(0, 0, 0) -- Start with black
 
-    -- Rainbow effect for UIStroke color
-    local function RainbowEffect()
-        local hue = 0
+    -- Smooth transition effect for UIStroke color
+    local function SmoothColorEffect()
+        local color1 = Color3.fromRGB(0, 0, 0) -- Black
+        local color2 = Color3.fromRGB(128, 0, 128) -- Purple
+        local transitionSpeed = 2 -- Time to transition from one color to another
+
         while ToggleGui and ToggleGui.Parent do
-            hue = (hue + 1) % 360
-            local color = Color3.fromHSV(hue / 360, 1, 1)
-            UIStroke.Color = color
-            wait(0.01)
+            for t = 0, 1, 0.01 do
+                local interpolatedColor = color1:Lerp(color2, t)
+                UIStroke.Color = interpolatedColor
+                wait(transitionSpeed * 0.01) -- Adjust the speed of the transition
+            end
+            for t = 0, 1, 0.01 do
+                local interpolatedColor = color2:Lerp(color1, t)
+                UIStroke.Color = interpolatedColor
+                wait(transitionSpeed * 0.01) -- Adjust the speed of the transition
+            end
         end
     end
 
-    spawn(RainbowEffect)
+    spawn(SmoothColorEffect)
 
     -- Toggle button functionality to open/close the GUI
     Toggle.MouseButton1Click:Connect(function()
