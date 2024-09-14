@@ -28,7 +28,7 @@ end)]]
 
 --[[ WhiteList Version]]--
 
-local whitelist = {"shakar60", "assj_y2k", "nuba_gar","shakarkarim60","cj_qwpaw","sh4k4k4k4r60"}
+--[[local whitelist = {"shakar60", "assj_y2k", "nuba_gar","shakarkarim60","cj_qwpaw","sh4k4k4k4r60"}
 
 -- Function to check if a player is whitelisted
 local function isWhitelisted(player)
@@ -52,4 +52,4 @@ game.Players.PlayerAdded:Connect(function(player)
     if not isWhitelisted(player) then
         player:Kick("You are not whitelisted from USH Private!")
     end
-end)
+end)]]
