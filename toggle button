@@ -1,0 +1,93 @@
+-- Toggle Gui
+
+local TweenService = game:GetService("TweenService") -- Make sure to get the TweenService
+
+local function showNotification(title, message)
+    -- Assuming you have a notification function to display messages
+    print(title .. ": " .. message)
+end
+
+local function createToggleGui()
+    local ToggleGui = Instance.new("ScreenGui")
+    local Toggle = Instance.new("TextButton")
+    local UICorner = Instance.new("UICorner")
+    local UIStroke = Instance.new("UIStroke")
+
+    ToggleGui.Name = "ToggleGui"
+    ToggleGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    ToggleGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    ToggleGui.ResetOnSpawn = false
+
+    Toggle.Name = "Toggle"
+    Toggle.Parent = ToggleGui
+    Toggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    Toggle.Position = UDim2.new(0.5, -25, 1, 50) -- Start off-screen at the bottom center
+    Toggle.Size = UDim2.new(0, 50, 0, 50)
+    Toggle.Font = Enum.Font.SourceSans
+    Toggle.Text = "Toggle Stratos"
+    Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Toggle.TextSize = 13
+    Toggle.Draggable = true
+
+    UICorner.CornerRadius = UDim.new(0, 20)
+    UICorner.Parent = Toggle
+
+    UIStroke.Parent = Toggle
+    UIStroke.Thickness = 3
+    UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+    -- Rainbow effect for UIStroke color
+    local function RainbowEffect()
+        local hue = 0
+        while ToggleGui and ToggleGui.Parent do
+            hue = (hue + 1) % 360
+            local color = Color3.fromHSV(hue / 360, 1, 1)
+            UIStroke.Color = color
+            wait(0.01)
+        end
+    end
+
+    spawn(RainbowEffect)
+
+    -- Toggle button functionality to open/close the GUI
+    Toggle.MouseButton1Click:Connect(function()
+        local VirtualInputManager = game:GetService("VirtualInputManager")
+        VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.RightShift, false, game)
+        VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.RightShift, false, game)
+    end)
+
+    -- Animate the entrance of the Toggle GUI
+    local TweenInfoToggleGui = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+    local TargetPositionToggleGui = UDim2.new(0.5, -25, 0.05, 0) -- Final position at the top center
+    local TweenToggleGui = TweenService:Create(Toggle, TweenInfoToggleGui, {Position = TargetPositionToggleGui})
+    TweenToggleGui:Play()
+
+    return ToggleGui
+end
+
+-- Initialize the toggle GUI
+local ToggleGui = createToggleGui()
+
+-- Show an initial notification when the script starts
+showNotification("Info", "Type /e hidetoggle to hide the toggle, type /e showtoggle to show the toggle")
+
+-- Function to handle the chat commands
+local function onChatMessage(message)
+    if message:lower() == "/e hidetoggle" then
+        -- Destroy the toggle GUI and show a notification
+        if ToggleGui then
+            ToggleGui:Destroy()
+            ToggleGui = nil
+            showNotification("Info", "Toggle Hidden")
+        end
+    elseif message:lower() == "/e showtoggle" then
+        -- Recreate the toggle button if it's not already active
+        if not ToggleGui then
+            ToggleGui = createToggleGui()
+            showNotification("Info", "Toggle Restored")
+        end
+    end
+end
+
+-- Connect the chat listener
+game.Players.LocalPlayer.Chatted:Connect(onChatMessage)
