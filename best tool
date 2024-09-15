@@ -127,6 +127,10 @@ closeButtonCorner.Parent = closeButton
 -- Close button functionality
 closeButton.MouseButton1Click:Connect(function()
     screenGui:Destroy()
+    -- remove the tool
+    if tool and tool.Parent == Players.LocalPlayer.Backpack then
+        tool:Destroy()
+    end
 end)
 
 -- Create the textbox
