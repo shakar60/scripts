@@ -767,6 +767,35 @@ MiscSection:AddToggle("Auto Reload", false, function(state)
     AutoReload = state
 end)
 
+-- Variables
+local IsA = game.IsA
+local newindex = nil
+local noJumpCooldownEnabled = false  -- Toggle state variable
+
+-- Toggle function with debugging
+local function toggleNoJumpCooldown(value)
+    noJumpCooldownEnabled = value
+    print("No Jump Cooldown Enabled:", noJumpCooldownEnabled)
+end
+
+-- Main hook with debugging
+newindex = hookmetamethod(game, "__newindex", function(self, Index, Value)
+    print("Intercepted __newindex:", self, Index, Value)
+    if not checkcaller() and IsA(self, "Humanoid") and Index == "JumpPower" then
+        if noJumpCooldownEnabled then
+            print("Blocking JumpPower change")
+            return  -- Block changes to JumpPower if toggle is on
+        end
+    end
+    
+    return newindex(self, Index, Value)
+end)
+
+-- Add toggle button to the MiscSection
+MiscSection:AddToggle("No Jump Cooldown", false, function(value)
+    toggleNoJumpCooldown(value)
+end)
+
 MiscSection:AddToggle("Rainbow Character", false, function(value)
     toggleRainbowCharacter(value)
 end)
