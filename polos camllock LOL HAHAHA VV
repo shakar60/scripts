@@ -587,57 +587,41 @@ MiscSection:AddButton("Polos Old Camlock", function()
     print("script executed")
 end)
 
+-- Services
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-
-local defaultZoomDistance = LocalPlayer.CameraMaxZoomDistance
-
-MiscSection:AddToggle("Inf Zoom", false, function(state)
-    if state then
-        defaultZoomDistance = LocalPlayer.CameraMaxZoomDistance
-        LocalPlayer.CameraMaxZoomDistance = math.huge
-    else
-        LocalPlayer.CameraMaxZoomDistance = defaultZoomDistance
-    end
-    print("Script executed")
-end)
-
 local RunService = game:GetService("RunService")
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local LocalPlayer = Players.LocalPlayer
+local Lighting = game:GetService("Lighting")
 
+-- Configurations
+local defaultZoomDistance = LocalPlayer.CameraMaxZoomDistance
 local AutoReload = false
-
-MiscSection:AddToggle("Auto Reload", false, function(state)
-    AutoReload = state
-    print("Script executed")
-end)
-
-RunService.Stepped:Connect(function()
-    if AutoReload then
-        local character = LocalPlayer.Character
-        if character then
-            local tool = character:FindFirstChildWhichIsA("Tool")
-            if tool and tool:FindFirstChild("Ammo") then
-                local ammo = tool.Ammo
-                if ammo.Value <= 0 then
-                    ReplicatedStorage.MainEvent:FireServer("Reload", tool)
-                end
-            end
-        end
-    end
-end)
-
-local player = game.Players.LocalPlayer
 local rainbowRunning = false
 local originalMaterials = {}
 local originalColors = {}
 local resolutionConnection
+local isFullBright = false
+local isNoFog = false
+local antiStompEnabled = false
+local SpinningCursor = false
+local SpinPower = 10
 
--- Function to apply the Rainbow effect
+-- Store original lighting and fog settings
+local originalLighting = {
+    Ambient = Lighting.Ambient,
+    ColorShift_Bottom = Lighting.ColorShift_Bottom,
+    ColorShift_Top = Lighting.ColorShift_Top
+}
+
+local originalFog = {
+    FogEnd = Lighting.FogEnd,
+    FogStart = Lighting.FogStart,
+    FogColor = Lighting.FogColor
+}
+
+-- Helper Functions
 local function applyRainbowEffect(character)
-    -- Store original materials and colors
     for _, v in pairs(character:GetChildren()) do
         if v:IsA("MeshPart") or v:IsA("Part") then
             if not originalMaterials[v] then
@@ -660,7 +644,6 @@ local function applyRainbowEffect(character)
     end)
 end
 
--- Function to remove the Rainbow effect
 local function removeRainbowEffect(character)
     rainbowRunning = false
     for _, v in pairs(character:GetChildren()) do
@@ -673,30 +656,12 @@ local function removeRainbowEffect(character)
     end
 end
 
--- Function to handle character resets or death
-local function onCharacterAdded(character)
-    -- Ensure any existing Rainbow effect is removed
-    removeRainbowEffect(character)
-
-    -- Apply Rainbow effect if it is toggled on
-    if rainbowRunning then
-        applyRainbowEffect(character)
-    end
+local function toggleNoJumpCooldown(value)
+    noJumpCooldownEnabled = value
 end
 
-local function onCharacterRemoving(character)
-    -- Clean up Rainbow effect when the character is removed
-    removeRainbowEffect(character)
-end
-
--- Connect events for character reset and removal (death)
-player.CharacterAdded:Connect(onCharacterAdded)
-player.CharacterRemoving:Connect(onCharacterRemoving)
-
--- Toggle function for Rainbow Character
 local function toggleRainbowCharacter(value)
-    local character = player.Character or player.CharacterAdded:Wait()
-    
+    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
     if value then
         applyRainbowEffect(character)
     else
@@ -704,25 +669,21 @@ local function toggleRainbowCharacter(value)
     end
 end
 
--- Toggle function for Resolution Effect
 local function toggleResolutionEffect(enabled)
     local Camera = workspace.CurrentCamera
-
     if enabled then
-        -- Apply the resolution adjustment
         if not getgenv().Resolution then
             getgenv().Resolution = {
                 [".gg/scripters"] = 0.65
             }
         end
 
-        -- Disconnect any previous connection to avoid multiple calls
         if resolutionConnection then
             resolutionConnection:Disconnect()
         end
 
         getgenv().gg_scripters = true
-        resolutionConnection = game:GetService("RunService").RenderStepped:Connect(
+        resolutionConnection = RunService.RenderStepped:Connect(
             function()
                 if getgenv().gg_scripters then
                     Camera.CFrame = Camera.CFrame * CFrame.new(0, 0, 0, 1, 0, 0, 0, getgenv().Resolution[".gg/scripters"], 0, 0, 0, 1)
@@ -730,89 +691,14 @@ local function toggleResolutionEffect(enabled)
             end
         )
     else
-        -- Reset the camera's CFrame to default
         getgenv().gg_scripters = nil
         if resolutionConnection then
             resolutionConnection:Disconnect()
         end
         resolutionConnection = nil
-        Camera.CFrame = CFrame.new(Camera.CFrame.Position) -- Reset to default
+        Camera.CFrame = CFrame.new(Camera.CFrame.Position)
     end
 end
-
-MiscSection:AddToggle("Rainbow Character", false, function(value)
-    toggleRainbowCharacter(value)
-end)
-
-MiscSection:AddToggle("Mobile Res", false, function(value)
-    toggleResolutionEffect(value)
-end)
-
-local IsA = game.IsA
-local newindex = nil
-local noJumpCooldownEnabled = false
-
-local function toggleNoJumpCooldown(value)
-    noJumpCooldownEnabled = value
-    print("No Jump Cooldown Enabled:", noJumpCooldownEnabled)
-end
-
-newindex = hookmetamethod(game, "__newindex", function(self, Index, Value)
-    if not checkcaller() and IsA(self, "Humanoid") and Index == "JumpPower" then
-        if noJumpCooldownEnabled then
-            return
-        end
-    end
-    
-    return newindex(self, Index, Value)
-end)
-
-MiscSection:AddToggle("No Jump Cooldown", false, function(value)
-    toggleNoJumpCooldown(value)
-end)
-
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local RunService = game:GetService("RunService")
-
-local chatFrame = LocalPlayer.PlayerGui:WaitForChild("Chat"):WaitForChild("Frame"):WaitForChild("ChatChannelParentFrame")
-local chatBar = LocalPlayer.PlayerGui:WaitForChild("Chat"):WaitForChild("Frame"):WaitForChild("ChatBarParentFrame")
-
-local originalChatBarPosition = chatBar.Position
-
-local function updateChatVisibility(state)
-    if state then
-        chatFrame.Visible = true
-        if chatBar.Position == originalChatBarPosition then
-            chatBar.Position = UDim2.new(0, 0, 1, -chatBar.Size.Y.Offset)
-        end
-    else
-        chatFrame.Visible = false
-        if chatBar.Position ~= originalChatBarPosition then
-            chatBar.Position = originalChatBarPosition
-        end
-    end
-end
-
-MiscSection:AddToggle("Chat Spy", false, function(state)
-    updateChatVisibility(state)
-end)
-
-RunService.RenderStepped:Connect(function()
-    if chatFrame.Visible and chatBar.Position ~= originalChatBarPosition then
-        chatBar.Position = UDim2.new(0, 0, 1, -chatBar.Size.Y.Offset)
-    end
-end)
-
-local Lighting = game:GetService("Lighting")
-
-local originalLighting = {
-    Ambient = Lighting.Ambient,
-    ColorShift_Bottom = Lighting.ColorShift_Bottom,
-    ColorShift_Top = Lighting.ColorShift_Top
-}
-
-local isFullBright = false
 
 local function toggleFullBright(state)
     if state then
@@ -827,20 +713,6 @@ local function toggleFullBright(state)
     isFullBright = state
 end
 
-MiscSection:AddToggle("FullBright", false, function(state)
-    toggleFullBright(state)
-end)
-
-local Lighting = game:GetService("Lighting")
-
-local originalFog = {
-    FogEnd = Lighting.FogEnd,
-    FogStart = Lighting.FogStart,
-    FogColor = Lighting.FogColor
-}
-
-local isNoFog = false
-
 local function toggleNoFog(state)
     if state then
         Lighting.FogEnd = 1e10
@@ -854,20 +726,10 @@ local function toggleNoFog(state)
     isNoFog = state
 end
 
-MiscSection:AddToggle("No Fog", false, function(state)
-    toggleNoFog(state)
-end)
-
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local Mouse = LocalPlayer:GetMouse()
-local antiStompEnabled = false
-
 local function toggleAntiStomp(state)
     antiStompEnabled = state
-    
     if state then
-        Mouse.KeyDown:Connect(function(KeyPressed)
+        LocalPlayer:GetMouse().KeyDown:Connect(function(KeyPressed)
             if KeyPressed == "p" and antiStompEnabled then
                 for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
                     if part:IsA("BasePart") then
@@ -879,19 +741,51 @@ local function toggleAntiStomp(state)
     end
 end
 
+-- Connect Character Events
+LocalPlayer.CharacterAdded:Connect(function(character)
+    removeRainbowEffect(character)
+    if rainbowRunning then
+        applyRainbowEffect(character)
+    end
+end)
+
+LocalPlayer.CharacterRemoving:Connect(function(character)
+    removeRainbowEffect(character)
+end)
+
+-- Connect Toggle Buttons
+MiscSection:AddToggle("Inf Zoom", false, function(state)
+    if state then
+        defaultZoomDistance = LocalPlayer.CameraMaxZoomDistance
+        LocalPlayer.CameraMaxZoomDistance = math.huge
+    else
+        LocalPlayer.CameraMaxZoomDistance = defaultZoomDistance
+    end
+end)
+
+MiscSection:AddToggle("Auto Reload", false, function(state)
+    AutoReload = state
+end)
+
+MiscSection:AddToggle("Rainbow Character", false, function(value)
+    toggleRainbowCharacter(value)
+end)
+
+MiscSection:AddToggle("Mobile Res", false, function(value)
+    toggleResolutionEffect(value)
+end)
+
+MiscSection:AddToggle("FullBright", false, function(state)
+    toggleFullBright(state)
+end)
+
+MiscSection:AddToggle("No Fog", false, function(state)
+    toggleNoFog(state)
+end)
+
 MiscSection:AddToggle("Anti Stomp", false, function(state)
     toggleAntiStomp(state)
 end)
-
-local RunService = game:GetService("RunService")
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
-local MainScreenGui = PlayerGui:WaitForChild("MainScreenGui")
-local Aim = MainScreenGui:WaitForChild("Aim")
-
-local SpinningCursor = false
-local SpinPower = 10
 
 MiscSection:AddToggle("Spinning Crosshair", false, function(state)
     SpinningCursor = state
@@ -902,8 +796,32 @@ MiscSection:AddTextbox("Spinning Speed", tostring(SpinPower), function(state)
 end)
 
 RunService.Stepped:Connect(function()
+    if AutoReload then
+        local character = LocalPlayer.Character
+        if character then
+            local tool = character:FindFirstChildWhichIsA("Tool")
+            if tool and tool:FindFirstChild("Ammo") then
+                local ammo = tool.Ammo
+                if ammo.Value <= 0 then
+                    ReplicatedStorage.MainEvent:FireServer("Reload", tool)
+                end
+            end
+        end
+    end
+
     if SpinningCursor then
+        local Aim = LocalPlayer.PlayerGui:WaitForChild("MainScreenGui"):WaitForChild("Aim")
         Aim.Rotation = Aim.Rotation + SpinPower
+    end
+end)
+
+RunService.RenderStepped:Connect(function()
+    local chatFrame = LocalPlayer.PlayerGui:WaitForChild("Chat"):WaitForChild("Frame"):WaitForChild("ChatChannelParentFrame")
+    local chatBar = LocalPlayer.PlayerGui:WaitForChild("Chat"):WaitForChild("Frame"):WaitForChild("ChatBarParentFrame")
+    local originalChatBarPosition = chatBar.Position
+
+    if chatFrame.Visible and chatBar.Position ~= originalChatBarPosition then
+        chatBar.Position = UDim2.new(0, 0, 1, -chatBar.Size.Y.Offset)
     end
 end)
 
@@ -926,7 +844,7 @@ MiscSection:AddButton("Macro Button V2", function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/macro%20button",true))()
     print("script executed")
 end)
-            
+
 MiscSection:AddButton("Shiftlock Button", function()
     loadstring(game:HttpGet("https://github.com/ltseverydayyou/uuuuuuu/blob/main/shiftlock?raw=true"))()
 print("script executed")
@@ -992,7 +910,7 @@ local China = setmetatable({}, {
    __index = function(Company, Price)
        return game:GetService(Price)
    end})
-   
+
 local Players = China.Players
 local ReplicatedStorage = China.ReplicatedStorage
 
@@ -1038,10 +956,10 @@ Hook = hookmetamethod(game, "__namecall", function(self, ...)
    if not checkcaller() and Method == "FireServer" and self.Name == "MainEvent" and Args[1] == "UpdateMousePos" then
 
       Args[2] = "Scarcin made this" and Mouse.Hit.Position
-       
+
        return self.FireServer(self, unpack(Args))
    end
-   
+
    return Hook(self, ...)
 end)
 print("script executed")
