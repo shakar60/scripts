@@ -1257,7 +1257,7 @@ end
 -- Initialize the toggle GUI
 local ToggleGui = createToggleGui()
 
--- Show initial notification when the script starts
+-- Notification
 showNotification("Info", "Type /e hidetoggle To Hide The Toggle, Type /e showtoggle To Show The Toggle")
 
 -- Function to handle the chat commands
