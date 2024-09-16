@@ -1,0 +1,63 @@
+local UserInputService = game:GetService("UserInputService")
+
+local Sorting = {
+local Sorting = {
+    ['Enabled'] = true,
+    ['Keybind'] = Enum.KeyCode.Equals,
+    ['Slot 1'] = "[Double-Barrel SG]",
+    ['Slot 2'] = "[Revolver]",
+    ['Slot 3'] = "[Shotgun]",
+    ['Slot 4'] = "[Tactical Shotgun]",
+    ['Slot 5'] = "[USP]",
+    ['Slot 6'] = "[Katana]",
+    ['Slot 7'] = "[Cookie]",
+    ['Slot 8'] = "[Pizza]",
+    ['Slot 9'] = "[Pizza]",
+    ['Slot 10'] = "[Chicken]",
+    ['Slot 0'] = "[Chicken]",
+}
+
+local function sortInventory()
+    if not Sorting.Enabled then
+        return
+    end
+
+    local player = game.Players.LocalPlayer
+    local backpack = player:FindFirstChildOfClass("Backpack")
+    if not backpack then
+        return
+    end
+
+    local originalItems = {}
+    for _, tool in pairs(backpack:GetChildren()) do
+        table.insert(originalItems, tool)
+    end
+    for _, tool in pairs(backpack:GetChildren()) do
+        tool.Parent = nil
+    end
+
+    for i = 1, 10 do
+        local slot = 'Slot ' .. tostring(i % 10) -- Slot 0 for the 10th slot
+        local desiredItemName = Sorting[slot]
+        if desiredItemName and desiredItemName ~= "" then
+            for index, tool in ipairs(originalItems) do
+                if tool.Name == desiredItemName then
+                    tool.Parent = backpack
+                    table.remove(originalItems, index)
+                    break
+                end
+            end
+        end
+    end
+    for _, tool in pairs(originalItems) do
+        tool.Parent = backpack
+    end
+end
+UserInputService.InputBegan:Connect(function(input, isProcessed)
+    if isProcessed then
+        return
+    end
+    if input.KeyCode == Sorting.Keybind then
+        sortInventory()
+    end
+end)
