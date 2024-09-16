@@ -198,9 +198,9 @@ UserInputService.InputBegan:Connect(function(input)
                 ["Title"] = "Polos Camlock",
                 ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
                 ["Notification_Image"] = "rbxassetid://78342062013795",
-                ["Notification_Sound"] = "rbxassetid://6518811702",
-                ["Timeout"] = 0.5,
-                ["Audio"] = true
+                ["Notification_Sound"] = "",
+                ["Timeout"] = 2,
+                ["Audio"] = false
             })
             TextButton.Image = "rbxassetid://72590084838674"  -- Set image for ON state
         else
@@ -212,9 +212,9 @@ UserInputService.InputBegan:Connect(function(input)
                     ["Title"] = "Polos Camlock",
                     ["Description"] = "Unlocked",
                     ["Notification_Image"] = "rbxassetid://134820707156642",
-                    ["Notification_Sound"] = "rbxassetid://6518811702",
-                    ["Timeout"] = 0.3,
-                    ["Audio"] = true
+                    ["Notification_Sound"] = "",
+                    ["Timeout"] = 2,
+                    ["Audio"] = false
                 })
             end
             TextButton.Image = "rbxassetid://105713683367381"  -- Set image for OFF state
@@ -265,9 +265,9 @@ TextButton.MouseButton1Click:Connect(function()
             ["Title"] = "Polos Camlock",
             ["Description"] = "Locking On " .. (enemy.Parent and enemy.Parent.Name or "Unknown Player"),
             ["Notification_Image"] = "rbxassetid://78342062013795",
-            ["Notification_Sound"] = "rbxassetid://6518811702",
-            ["Timeout"] = 0.5,
-            ["Audio"] = true
+            ["Notification_Sound"] = "",
+            ["Timeout"] = 2,
+            ["Audio"] = false
         })
         TextButton.Image = "rbxassetid://72590084838674"  -- Set image for ON state
     else
@@ -279,9 +279,9 @@ TextButton.MouseButton1Click:Connect(function()
                 ["Title"] = "Polos Camlock",
                 ["Description"] = "Unlocked",
                 ["Notification_Image"] = "rbxassetid://134820707156642",
-                ["Notification_Sound"] = "rbxassetid://651881170",
-                ["Timeout"] = 0.3,
-                ["Audio"] = true
+                ["Notification_Sound"] = "",
+                ["Timeout"] = 2,
+                ["Audio"] = false
             })
         end
         TextButton.Image = "rbxassetid://105713683367381"  -- Set image for OFF state
@@ -494,7 +494,7 @@ elseif command == "/e cmds" then
             ["Description"] = "Here's The Commands List 1: Type /e hidepolo To Hide Polo Gui /e showpolo To Show Polo Gui.",
             ["Notification_Image"] = "rbxassetid://18985517155",
             ["Notification_Sound"] = "rbxassetid://5153734608",
-            ["Timeout"] = 30,
+            ["Timeout"] = 10,
             ["Audio"] = true
         })
 
@@ -504,8 +504,8 @@ elseif command == "/e cmds" then
             ["Description"] = "Here's The Commands List 2: Type /e hidesets To Hide The Settings /e showsets To Show The Settings And /e cmds To See The Cmds.",
             ["Notification_Image"] = "rbxassetid://18985517155",
             ["Notification_Sound"] = "rbxassetid://5153734608",
-            ["Timeout"] = 30,
-            ["Audio"] = false
+            ["Timeout"] = 10,
+            ["Audio"] = true
         })
 
         notificationSent = true
@@ -525,7 +525,7 @@ NotificationLoad:NewNotification({
 ["Description"] = "Welcome User! Polos Camlock Is An Camlock Script That Aims For You In Any Game.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
-["Timeout"] = 5,
+["Timeout"] = 10,
 ["Audio"] = true
 })
 
@@ -536,8 +536,8 @@ NotificationLoad:NewNotification({
 ["Description"] = "1: Type /e hidepolo To Hide Polo Gui /e showpolo To Show Polo Gui /e cmds To See The Cmds Again.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
-["Timeout"] = 25,
-["Audio"] = false
+["Timeout"] = 60,
+["Audio"] = true
 })
 
 wait(2)
@@ -547,8 +547,8 @@ NotificationLoad:NewNotification({
 ["Description"] = "2: Type /e hidesets To Hide The Settings /e showsets To Show The Settings.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
-["Timeout"] = 25,
-["Audio"] = false
+["Timeout"] = 60,
+["Audio"] = true
 })
 
 wait(2)
@@ -558,6 +558,6 @@ NotificationLoad:NewNotification({
 ["Description"] = "Credits To sh4k4r6o On Discord Modifying The Free Version To A Better One.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
-["Timeout"] = 10,
-["Audio"] = false
+["Timeout"] = 60,
+["Audio"] = true
 })
