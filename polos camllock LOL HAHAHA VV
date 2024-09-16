@@ -587,6 +587,48 @@ MiscSection:AddButton("Polos Old Camlock", function()
     print("script executed")
 end)
 
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local defaultZoomDistance = LocalPlayer.CameraMaxZoomDistance
+
+MiscSection:AddToggle("Inf Zoom", false, function(state)
+    if state then
+        defaultZoomDistance = LocalPlayer.CameraMaxZoomDistance
+        LocalPlayer.CameraMaxZoomDistance = math.huge
+    else
+        LocalPlayer.CameraMaxZoomDistance = defaultZoomDistance
+    end
+    print("Script executed")
+end)
+
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local AutoReload = false
+
+MiscSection:AddToggle("Auto Reload", false, function(state)
+    AutoReload = state
+    print("Script executed")
+end)
+
+RunService.Stepped:Connect(function()
+    if AutoReload then
+        local character = LocalPlayer.Character
+        if character then
+            local tool = character:FindFirstChildWhichIsA("Tool")
+            if tool and tool:FindFirstChild("Ammo") then
+                local ammo = tool.Ammo
+                if ammo.Value <= 0 then
+                    ReplicatedStorage.MainEvent:FireServer("Reload", tool)
+                end
+            end
+        end
+    end
+end)
+
 local player = game.Players.LocalPlayer
 local rainbowRunning = false
 local originalMaterials = {}
@@ -698,7 +740,6 @@ local function toggleResolutionEffect(enabled)
     end
 end
 
--- Create the toggles in MiscSection
 MiscSection:AddToggle("Rainbow Character", false, function(value)
     toggleRainbowCharacter(value)
 end)
@@ -707,33 +748,163 @@ MiscSection:AddToggle("Mobile Res", false, function(value)
     toggleResolutionEffect(value)
 end)
 
--- Variables
 local IsA = game.IsA
 local newindex = nil
-local noJumpCooldownEnabled = false  -- Toggle state variable
+local noJumpCooldownEnabled = false
 
--- Toggle function with debugging
 local function toggleNoJumpCooldown(value)
     noJumpCooldownEnabled = value
     print("No Jump Cooldown Enabled:", noJumpCooldownEnabled)
 end
 
--- Main hook with debugging
 newindex = hookmetamethod(game, "__newindex", function(self, Index, Value)
-    print("Intercepted __newindex:", self, Index, Value)
     if not checkcaller() and IsA(self, "Humanoid") and Index == "JumpPower" then
         if noJumpCooldownEnabled then
-            print("Blocking JumpPower change")
-            return  -- Block changes to JumpPower if toggle is on
+            return
         end
     end
     
     return newindex(self, Index, Value)
 end)
 
--- Add toggle button to the MiscSection
 MiscSection:AddToggle("No Jump Cooldown", false, function(value)
     toggleNoJumpCooldown(value)
+end)
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+
+local chatFrame = LocalPlayer.PlayerGui:WaitForChild("Chat"):WaitForChild("Frame"):WaitForChild("ChatChannelParentFrame")
+local chatBar = LocalPlayer.PlayerGui:WaitForChild("Chat"):WaitForChild("Frame"):WaitForChild("ChatBarParentFrame")
+
+local originalChatBarPosition = chatBar.Position
+
+local function updateChatVisibility(state)
+    if state then
+        chatFrame.Visible = true
+        if chatBar.Position == originalChatBarPosition then
+            chatBar.Position = UDim2.new(0, 0, 1, -chatBar.Size.Y.Offset)
+        end
+    else
+        chatFrame.Visible = false
+        if chatBar.Position ~= originalChatBarPosition then
+            chatBar.Position = originalChatBarPosition
+        end
+    end
+end
+
+MiscSection:AddToggle("Chat Spy", false, function(state)
+    updateChatVisibility(state)
+end)
+
+RunService.RenderStepped:Connect(function()
+    if chatFrame.Visible and chatBar.Position ~= originalChatBarPosition then
+        chatBar.Position = UDim2.new(0, 0, 1, -chatBar.Size.Y.Offset)
+    end
+end)
+
+local Lighting = game:GetService("Lighting")
+
+local originalLighting = {
+    Ambient = Lighting.Ambient,
+    ColorShift_Bottom = Lighting.ColorShift_Bottom,
+    ColorShift_Top = Lighting.ColorShift_Top
+}
+
+local isFullBright = false
+
+local function toggleFullBright(state)
+    if state then
+        Lighting.Ambient = Color3.new(1, 1, 1)
+        Lighting.ColorShift_Bottom = Color3.new(1, 1, 1)
+        Lighting.ColorShift_Top = Color3.new(1, 1, 1)
+    else
+        Lighting.Ambient = originalLighting.Ambient
+        Lighting.ColorShift_Bottom = originalLighting.ColorShift_Bottom
+        Lighting.ColorShift_Top = originalLighting.ColorShift_Top
+    end
+    isFullBright = state
+end
+
+MiscSection:AddToggle("FullBright", false, function(state)
+    toggleFullBright(state)
+end)
+
+local Lighting = game:GetService("Lighting")
+
+local originalFog = {
+    FogEnd = Lighting.FogEnd,
+    FogStart = Lighting.FogStart,
+    FogColor = Lighting.FogColor
+}
+
+local isNoFog = false
+
+local function toggleNoFog(state)
+    if state then
+        Lighting.FogEnd = 1e10
+        Lighting.FogStart = 1e10
+        Lighting.FogColor = Color3.new(1, 1, 1)
+    else
+        Lighting.FogEnd = originalFog.FogEnd
+        Lighting.FogStart = originalFog.FogStart
+        Lighting.FogColor = originalFog.FogColor
+    end
+    isNoFog = state
+end
+
+MiscSection:AddToggle("No Fog", false, function(state)
+    toggleNoFog(state)
+end)
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Mouse = LocalPlayer:GetMouse()
+local antiStompEnabled = false
+
+local function toggleAntiStomp(state)
+    antiStompEnabled = state
+    
+    if state then
+        Mouse.KeyDown:Connect(function(KeyPressed)
+            if KeyPressed == "p" and antiStompEnabled then
+                for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end
+
+MiscSection:AddToggle("Anti Stomp", false, function(state)
+    toggleAntiStomp(state)
+end)
+
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+local MainScreenGui = PlayerGui:WaitForChild("MainScreenGui")
+local Aim = MainScreenGui:WaitForChild("Aim")
+
+local SpinningCursor = false
+local SpinPower = 10
+
+MiscSection:AddToggle("Spinning Crosshair", false, function(state)
+    SpinningCursor = state
+end)
+
+MiscSection:AddTextbox("Spinning Speed", tostring(SpinPower), function(state)
+    SpinPower = tonumber(state) or 10
+end)
+
+RunService.Stepped:Connect(function()
+    if SpinningCursor then
+        Aim.Rotation = Aim.Rotation + SpinPower
+    end
 end)
 
 MiscSection:AddButton("Q Gui", function()
@@ -755,7 +926,7 @@ MiscSection:AddButton("Macro Button V2", function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/macro%20button",true))()
     print("script executed")
 end)
-
+            
 MiscSection:AddButton("Shiftlock Button", function()
     loadstring(game:HttpGet("https://github.com/ltseverydayyou/uuuuuuu/blob/main/shiftlock?raw=true"))()
 print("script executed")
@@ -771,24 +942,9 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main
     print("script executed")
 end)
 
-MiscSection:AddButton("FullBright", function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/fullbright/main/scripts",true))()
-    print("script executed")
-end)
-
-MiscSection:AddButton("No Fog", function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/no%20fog",true))()
-    print("script executed")
-end)
-
 MiscSection:AddButton("Right Click", function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/DHBCommunity/DHBOfficialScript/main/RightClick"))()
     print("script executed")
-end)
-
-MiscSection:AddButton("Anti Stomp", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/anti%20stomp",true))()
-print("script executed")
 end)
 
 MiscSection:AddButton("AntiLock Resolver", function()
@@ -828,11 +984,6 @@ end)
 
 MiscSection:AddButton("Tpwalk Script", function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/TheRealXORA/Roblox/032418166a40fd7a610fd7a17a2f8ade0da3c734/Tpwalk%20V4%20%5B%20BETA%20%5D.lua",true))()
-print("script executed")
-end)
-
-MiscSection:AddButton("Chat Spy", function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/chat-spy/main/s",true))()
 print("script executed")
 end)
 
@@ -897,67 +1048,7 @@ print("script executed")
 end)
 
 MiscSection:AddButton("Inventory Sorter", function()
-local UserInputService = game:GetService("UserInputService")
-
-local Sorting = {
-    ['Enabled'] = true,
-    ['Keybind'] = Enum.KeyCode.Equals,
-    ['Slot 1'] = "[Double-Barrel SG]",
-    ['Slot 2'] = "[Revolver]",
-    ['Slot 3'] = "[Shotgun]",
-    ['Slot 4'] = "[Tactical Shotgun]",
-    ['Slot 5'] = "[USP]",
-    ['Slot 6'] = "[Pizza]",
-    ['Slot 7'] = "[Pizza]",
-    ['Slot 8'] = "[Chicken]",
-    ['Slot 9'] = "[Chicken]",
-    ['Slot 0'] = "[Katana]",
-}
-
-local function sortInventory()
-    if not Sorting.Enabled then
-        return
-    end
-
-    local player = game.Players.LocalPlayer
-    local backpack = player:FindFirstChildOfClass("Backpack")
-    if not backpack then
-        return
-    end
-
-    local originalItems = {}
-    for _, tool in pairs(backpack:GetChildren()) do
-        table.insert(originalItems, tool)
-    end
-    for _, tool in pairs(backpack:GetChildren()) do
-        tool.Parent = nil
-    end
-
-    for i = 1, 10 do
-        local slot = 'Slot ' .. tostring(i % 10) -- Slot 0 for the 10th slot
-        local desiredItemName = Sorting[slot]
-        if desiredItemName and desiredItemName ~= "" then
-            for index, tool in ipairs(originalItems) do
-                if tool.Name == desiredItemName then
-                    tool.Parent = backpack
-                    table.remove(originalItems, index)
-                    break
-                end
-            end
-        end
-    end
-    for _, tool in pairs(originalItems) do
-        tool.Parent = backpack
-    end
-end
-UserInputService.InputBegan:Connect(function(input, isProcessed)
-    if isProcessed then
-        return
-    end
-    if input.KeyCode == Sorting.Keybind then
-        sortInventory()
-    end
-end)
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/inventory%20sorter",true))()
 print("script executed")
 end)
 
