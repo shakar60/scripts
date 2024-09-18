@@ -205,7 +205,7 @@ toggleResolver(value)
 end)
 
 -- Settings
-local Prediction = 0.206015
+local Prediction = 0.206015 
 local XPrediction = 0.176073
 local YPrediction = 0.167092
 local Smoothness = 0.073
@@ -214,42 +214,120 @@ local FallOffset = 0.6
 local SelectedPart = "UpperTorso"
 local CamlockKey = Enum.KeyCode.Q
 
+-- Auto Prediction Variables
+local AutoPredictionEnabled = false
+local AutoPredictionMath = 0.250  -- Default multiplier for auto-prediction
+local PredictionTextbox
+
+-- Ping-to-prediction mappings
+local pingPredictionMap = {
+    [500] = 0.19284,
+    [400] = 0.18321,
+    [360] = 0.16537,
+    [280] = 0.16780,
+    [270] = 0.195566,
+    [260] = 0.175566,
+    [250] = 0.1651,
+    [240] = 0.16780,
+    [230] = 0.15692,
+    [220] = 0.165566,
+    [210] = 0.165566,
+    [200] = 0.16942,
+    [190] = 0.166547,
+    [180] = 0.19284,
+    [170] = 0.1923111,
+    [160] = 0.16,
+    [150] = 0.15,
+    [140] = 0.1223333,
+    [130] = 0.156692,
+    [120] = 0.14376,
+    [110] = 0.1455,
+    [100] = 0.130340,
+    [90] = 0.136,
+    [80] = 0.1347,
+    [70] = 0.119,
+    [60] = 0.12731,
+    [50] = 0.127668,
+    [40] = 0.125,
+    [30] = 0.11,
+    [20] = 0.12588,
+    [10] = 0.9
+}
+
+-- Function to get the closest prediction based on ping
+local function getPredictionForPing(ping)
+    local closestPing = nil
+    for mappedPing in pairs(pingPredictionMap) do
+        if not closestPing or math.abs(ping - mappedPing) < math.abs(ping - closestPing) then
+            closestPing = mappedPing
+        end
+    end
+    return pingPredictionMap[closestPing]
+end
+
+-- Dropdown for selecting hit part
 PoloSection:AddDropdown("HitPart", {"Head", "UpperTorso", "LowerTorso"}, "UpperTorso", false, function(dropdown)
     SelectedPart = dropdown
 end)
 
-PoloSection:AddTextbox("Prediction", tostring(Prediction), function(State)
-    Prediction = tonumber(State) or 0.206015
+-- Textbox for manual prediction input (initially saved as a variable)
+PredictionTextbox = PoloSection:AddTextbox("Prediction", tostring(Prediction), function(State)
+    if not AutoPredictionEnabled then
+        Prediction = tonumber(State) or 0.206015
+    end
 end)
 
+-- Textbox for manual horizontal prediction input
 PoloSection:AddTextbox("Horizontal Prediction", tostring(XPrediction), function(State)
     XPrediction = tonumber(State) or 0.176073
 end)
 
+-- Textbox for manual vertical prediction input
 PoloSection:AddTextbox("Vertical Prediction", tostring(YPrediction), function(State)
     YPrediction = tonumber(State) or 0.167092
 end)
 
+-- Textbox for smoothness input
 PoloSection:AddTextbox("Smoothness", tostring(Smoothness), function(State)
     Smoothness = tonumber(State) or 0.073
 end)
 
+-- Textbox for jump offset input
 PoloSection:AddTextbox("Jump Offset", tostring(JumpOffset), function(State)
     JumpOffset = tonumber(State) or 0.6
 end)
 
+-- Textbox for fall offset input
 PoloSection:AddTextbox("Fall Offset", tostring(FallOffset), function(State)
     FallOffset = tonumber(State) or 0.6
 end)
 
+-- Textbox for setting the camlock key
 PoloSection:AddTextbox("Camlock Key", tostring(CamlockKey.Name), function(State)
     local firstChar = State:sub(1, 1):upper()  -- Only consider the first character and convert to uppercase
     local keyCode = Enum.KeyCode[firstChar]
-
     if keyCode then
         CamlockKey = keyCode
     else
         print("Invalid key input.")  -- You can replace this with a notification or error handling if needed
+    end
+end)
+
+-- Textbox for custom auto-prediction math
+PoloSection:AddTextbox("Auto Prediction Math", tostring(AutoPredictionMath), function(State)
+    AutoPredictionMath = tonumber(State) or 0.250
+end)
+
+-- Toggle button for auto-prediction based on ping
+PoloSection:AddToggle("Auto Prediction", AutoPredictionEnabled, function(State)
+    AutoPredictionEnabled = State
+    if AutoPredictionEnabled then
+        local playerPing = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue()  -- Example ping retrieval
+        Prediction = getPredictionForPing(playerPing) * AutoPredictionMath  -- Apply custom auto-prediction math
+        
+        -- Update the Prediction textbox to show the auto-prediction value
+        PredictionTextbox:SetText(tostring(Prediction))
+    else
     end
 end)
 
@@ -814,6 +892,32 @@ end)
 
 MiscSection:AddToggle("Anti Stomp", false, function(state)
     toggleAntiStomp(state)
+end)
+
+local chatFrame = LocalPlayer.PlayerGui:WaitForChild("Chat"):WaitForChild("Frame"):WaitForChild("ChatChannelParentFrame")
+local chatBar = LocalPlayer.PlayerGui:WaitForChild("Chat"):WaitForChild("Frame"):WaitForChild("ChatBarParentFrame")
+local originalChatBarPosition = chatBar.Position
+
+local function updateChatVisibility(state)
+    if state then
+        chatFrame.Visible = true
+        if chatBar.Position == originalChatBarPosition then
+            chatBar.Position = UDim2.new(0, 0, 1, -chatBar.Size.Y.Offset)
+        end
+    else
+        chatFrame.Visible = false
+        chatBar.Position = originalChatBarPosition
+    end
+end
+
+MiscSection:AddToggle("Chat Spy", false, function(state)
+    updateChatVisibility(state)
+end)
+
+RunService.RenderStepped:Connect(function()
+    if chatFrame.Visible and chatBar.Position ~= originalChatBarPosition then
+        chatBar.Position = UDim2.new(0, 0, 1, -chatBar.Size.Y.Offset)
+    end
 end)
 
 MiscSection:AddToggle("Spinning Crosshair", false, function(state)
