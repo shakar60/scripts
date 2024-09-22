@@ -262,24 +262,6 @@ PoloSection:AddTextbox("Camlock Key", tostring(CamlockKey.Name), function(State)
     end
 end)
 
--- Textbox for custom auto-prediction math
-PoloSection:AddTextbox("Auto Prediction Math", tostring(AutoPredictionMath), function(State)
-    AutoPredictionMath = tonumber(State) or 0.250
-end)
-
--- Toggle button for auto-prediction based on ping
-PoloSection:AddToggle("Auto Prediction", AutoPredictionEnabled, function(State)
-    AutoPredictionEnabled = State
-    if AutoPredictionEnabled then
-        local playerPing = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue()  -- Example ping retrieval
-        Prediction = getPredictionForPing(playerPing) * AutoPredictionMath  -- Apply custom auto-prediction math
-        
-        -- Update the Prediction textbox to show the auto-prediction value
-        PredictionTextbox:SetText(tostring(Prediction))
-    else
-    end
-end)
-
 local ESPSettings = {
 Highlighter = false,
 DisplayName = false,
