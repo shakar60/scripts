@@ -1094,6 +1094,11 @@ MiscSection:AddButton("Macro Button V2", function()
     print("script executed")
 end)
 
+MiscSection:AddButton("Macro Button V3", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/DHBCommunity/DHBOfficialScript/main/MacroBalli"))()
+    print("script executed")
+end)
+
 MiscSection:AddButton("Shiftlock Button", function()
     loadstring(game:HttpGet("https://github.com/ltseverydayyou/uuuuuuu/blob/main/shiftlock?raw=true"))()
 print("script executed")
