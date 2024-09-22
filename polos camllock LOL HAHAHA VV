@@ -214,57 +214,6 @@ local FallOffset = 0.6
 local SelectedPart = "UpperTorso"
 local CamlockKey = Enum.KeyCode.Q
 
--- Auto Prediction Variables
-local AutoPredictionEnabled = false
-local AutoPredictionMath = 0.250  -- Default multiplier for auto-prediction
-local PredictionTextbox
-
--- Ping-to-prediction mappings
-local pingPredictionMap = {
-    [500] = 0.19284,
-    [400] = 0.18321,
-    [360] = 0.16537,
-    [280] = 0.16780,
-    [270] = 0.195566,
-    [260] = 0.175566,
-    [250] = 0.1651,
-    [240] = 0.16780,
-    [230] = 0.15692,
-    [220] = 0.165566,
-    [210] = 0.165566,
-    [200] = 0.16942,
-    [190] = 0.166547,
-    [180] = 0.19284,
-    [170] = 0.1923111,
-    [160] = 0.16,
-    [150] = 0.15,
-    [140] = 0.1223333,
-    [130] = 0.156692,
-    [120] = 0.14376,
-    [110] = 0.1455,
-    [100] = 0.130340,
-    [90] = 0.136,
-    [80] = 0.1347,
-    [70] = 0.119,
-    [60] = 0.12731,
-    [50] = 0.127668,
-    [40] = 0.125,
-    [30] = 0.11,
-    [20] = 0.12588,
-    [10] = 0.9
-}
-
--- Function to get the closest prediction based on ping
-local function getPredictionForPing(ping)
-    local closestPing = nil
-    for mappedPing in pairs(pingPredictionMap) do
-        if not closestPing or math.abs(ping - mappedPing) < math.abs(ping - closestPing) then
-            closestPing = mappedPing
-        end
-    end
-    return pingPredictionMap[closestPing]
-end
-
 -- Dropdown for selecting hit part
 PoloSection:AddDropdown("HitPart", {"Head", "UpperTorso", "LowerTorso"}, "UpperTorso", false, function(dropdown)
     SelectedPart = dropdown
