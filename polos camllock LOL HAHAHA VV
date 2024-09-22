@@ -137,8 +137,10 @@ local formattedTime = getFormattedTime()
 local Window = Library:CreateWindow("Polos Camlock | By sh4k4r6o | " .. formattedTime, Vector2.new(400, 350), Enum.KeyCode.RightShift)
 local PoloTab = Window:CreateTab("Main")
 local MiscTab = Window:CreateTab("Miscs")
+local CfgTab = Window:CreateTab("Config")
 
 local PoloSection = PoloTab:CreateSector("Settings", "left")
+local GuiSection = PoloTab:CreateSector("Gui Settings", "right")
 local Misc0Section = MiscTab:CreateSector("Esps", "left")
 local MiscSection = MiscTab:CreateSector("Miscs", "right")
 
@@ -151,7 +153,7 @@ local NotificationLoad = loadstring(game:HttpGet('https://raw.githubusercontent.
 
 local NotificationsEnabled = true
 
-local NotificationToggle = PoloSection:AddToggle("Notifications", true, function(isEnabled)
+local NotificationToggle = PoloSection:AddToggle("Notifications", false, function(isEnabled)
     NotificationsEnabled = isEnabled
     if not NotificationsEnabled then
         RemoveNotifications()
@@ -221,6 +223,181 @@ local JumpOffset = 0.6
 local FallOffset = 0.6
 local SelectedPart = "UpperTorso"
 local CamlockKey = Enum.KeyCode.Q
+
+-- Auto Prediction Settings
+local AutoPredictionEnabled = false
+local Prediction = 0.206015  -- Default prediction value
+
+local pingValues = {
+    ["ping20_30"] = 0.12588,
+    ["ping30_40"] = 0.11,
+    ["ping40_50"] = 0.125,
+    ["ping50_60"] = 0.127668,
+    ["ping60_70"] = 0.12731,
+    ["ping70_80"] = 0.119,
+    ["ping80_90"] = 0.1347,
+    ["ping90_100"] = 0.136,
+    ["ping100_110"] = 0.130340,
+    ["ping110_120"] = 0.1455,
+    ["ping120_130"] = 0.14376,
+    ["ping130_140"] = 0.156692,
+    ["ping140_150"] = 0.1223333,
+    ["ping150_160"] = 0.15,
+    ["ping160_170"] = 0.16,
+    ["ping170_180"] = 0.1923111,
+    ["ping180_190"] = 0.19284,
+    ["ping190_200"] = 0.166547,
+    ["ping200_210"] = 0.16942,
+    ["ping210_220"] = 0.165566,
+    ["ping220_230"] = 0.165566,
+    ["ping230_240"] = 0.15692,
+    ["ping240_250"] = 0.16780,
+    ["ping250_260"] = 0.1651,
+    ["ping260_270"] = 0.175566,
+    ["ping270_280"] = 0.195566,
+    ["ping280_290"] = 0.16780,
+    ["ping290_300"] = 0.2784834,
+    ["ping300_310"] = 0.284638,
+    ["ping310_320"] = 0.2907926,
+    ["ping320_330"] = 0.2969472,
+    ["ping330_340"] = 0.3031018,
+    ["ping340_350"] = 0.3092564,
+    ["ping350_360"] = 0.315411,
+    ["ping360_370"] = 0.3215656,
+    ["ping370_380"] = 0.3277202,
+    ["ping380_390"] = 0.3338748,
+    ["ping390_400"] = 0.3400294,
+    ["ping400_410"] = 0.346184,
+    ["ping410_420"] = 0.3523386,
+    ["ping420_430"] = 0.3584932,
+    ["ping430_440"] = 0.3646478,
+    ["ping440_450"] = 0.3708024,
+    ["ping450_460"] = 0.376957,
+    ["ping460_470"] = 0.3831116,
+    ["ping470_480"] = 0.3892662,
+    ["ping480_490"] = 0.3954208,
+    ["ping490_500"] = 0.19284,
+}
+
+local function getCurrentPing()
+    return game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue()
+end
+
+local function updatePrediction()
+    local ping = getCurrentPing()
+    Prediction = pingValues["ping20_30"]  -- Default prediction
+
+    if ping >= 20 and ping < 30 then
+        Prediction = pingValues["ping20_30"]
+    elseif ping >= 30 and ping < 40 then
+        Prediction = pingValues["ping30_40"]
+    elseif ping >= 40 and ping < 50 then
+        Prediction = pingValues["ping40_50"]
+    elseif ping >= 50 and ping < 60 then
+        Prediction = pingValues["ping50_60"]
+    elseif ping >= 60 and ping < 70 then
+        Prediction = pingValues["ping60_70"]
+    elseif ping >= 70 and ping < 80 then
+        Prediction = pingValues["ping70_80"]
+    elseif ping >= 80 and ping < 90 then
+        Prediction = pingValues["ping80_90"]
+    elseif ping >= 90 and ping < 100 then
+        Prediction = pingValues["ping90_100"]
+    elseif ping >= 100 and ping < 110 then
+        Prediction = pingValues["ping100_110"]
+    elseif ping >= 110 and ping < 120 then
+        Prediction = pingValues["ping110_120"]
+    elseif ping >= 120 and ping < 130 then
+        Prediction = pingValues["ping120_130"]
+    elseif ping >= 130 and ping < 140 then
+        Prediction = pingValues["ping130_140"]
+    elseif ping >= 140 and ping < 150 then
+        Prediction = pingValues["ping140_150"]
+    elseif ping >= 150 and ping < 160 then
+        Prediction = pingValues["ping150_160"]
+    elseif ping >= 160 and ping < 170 then
+        Prediction = pingValues["ping160_170"]
+    elseif ping >= 170 and ping < 180 then
+        Prediction = pingValues["ping170_180"]
+    elseif ping >= 180 and ping < 190 then
+        Prediction = pingValues["ping180_190"]
+    elseif ping >= 190 and ping < 200 then
+        Prediction = pingValues["ping190_200"]
+    elseif ping >= 200 and ping < 210 then
+        Prediction = pingValues["ping200_210"]
+    elseif ping >= 210 and ping < 220 then
+        Prediction = pingValues["ping210_220"]
+    elseif ping >= 220 and ping < 230 then
+        Prediction = pingValues["ping220_230"]
+    elseif ping >= 230 and ping < 240 then
+        Prediction = pingValues["ping230_240"]
+    elseif ping >= 240 and ping < 250 then
+        Prediction = pingValues["ping240_250"]
+    elseif ping >= 250 and ping < 260 then
+        Prediction = pingValues["ping250_260"]
+    elseif ping >= 260 and ping < 270 then
+        Prediction = pingValues["ping260_270"]
+    elseif ping >= 270 and ping < 280 then
+        Prediction = pingValues["ping270_280"]
+    elseif ping >= 280 and ping < 290 then
+        Prediction = pingValues["ping280_290"]
+    elseif ping >= 290 and ping < 300 then
+        Prediction = pingValues["ping290_300"]
+    elseif ping >= 300 and ping < 310 then
+        Prediction = pingValues["ping300_310"]
+    elseif ping >= 310 and ping < 320 then
+        Prediction = pingValues["ping310_320"]
+    elseif ping >= 320 and ping < 330 then
+        Prediction = pingValues["ping320_330"]
+    elseif ping >= 330 and ping < 340 then
+        Prediction = pingValues["ping330_340"]
+    elseif ping >= 340 and ping < 350 then
+        Prediction = pingValues["ping340_350"]
+    elseif ping >= 350 and ping < 360 then
+        Prediction = pingValues["ping350_360"]
+    elseif ping >= 360 and ping < 370 then
+        Prediction = pingValues["ping360_370"]
+    elseif ping >= 370 and ping < 380 then
+        Prediction = pingValues["ping370_380"]
+    elseif ping >= 380 and ping < 390 then
+        Prediction = pingValues["ping380_390"]
+    elseif ping >= 390 and ping < 400 then
+        Prediction = pingValues["ping390_400"]
+    elseif ping >= 400 and ping < 410 then
+        Prediction = pingValues["ping400_410"]
+    elseif ping >= 410 and ping < 420 then
+        Prediction = pingValues["ping410_420"]
+    elseif ping >= 420 and ping < 430 then
+        Prediction = pingValues["ping420_430"]
+    elseif ping >= 430 and ping < 440 then
+        Prediction = pingValues["ping430_440"]
+    elseif ping >= 440 and ping < 450 then
+        Prediction = pingValues["ping440_450"]
+    elseif ping >= 450 and ping < 460 then
+        Prediction = pingValues["ping450_460"]
+    elseif ping >= 460 and ping < 470 then
+        Prediction = pingValues["ping460_470"]
+    elseif ping >= 470 and ping < 480 then
+        Prediction = pingValues["ping470_480"]
+    elseif ping >= 480 and ping < 490 then
+        Prediction = pingValues["ping480_490"]
+    elseif ping >= 490 and ping <= 500 then
+        Prediction = pingValues["ping490_500"]
+    end
+end
+
+PoloSection:AddToggle("Auto Prediction", AutoPredictionEnabled, function(state)
+    AutoPredictionEnabled = state
+    if state then
+        updatePrediction()  -- Update prediction when enabled
+    end
+end)
+
+RunService.Heartbeat:Connect(function()
+    if AutoPredictionEnabled then
+        updatePrediction()
+    end
+end)
 
 -- Dropdown for selecting hit part
 PoloSection:AddDropdown("HitPart", {"Head", "UpperTorso", "LowerTorso"}, "UpperTorso", false, function(dropdown)
@@ -1042,7 +1219,7 @@ MiscSection:AddButton("Inventory Sorter", function()
 print("script executed")
 end)
 
-PoloTab:CreateConfigSystem("right")
+CfgTab:CreateConfigSystem("left")
 
 -- Polos Camlock
 
@@ -1186,7 +1363,7 @@ local TargetPositionPolosGui = UDim2.new(0.1, 0, 0.4, 0)
 local TweenPolosGui = TweenService:Create(Frame, TweenInfoPolosGui, {Position = TargetPositionPolosGui})
 TweenPolosGui:Play()
 
--- Toggle Gui
+local TweenService = game:GetService("TweenService")
 
 local function createToggleGui()
     local ToggleGui = Instance.new("ScreenGui")
@@ -1229,17 +1406,19 @@ local function createToggleGui()
 
     spawn(RainbowEffect)
 
-    Toggle.MouseButton1Click:Connect(function()
-        local VirtualInputManager = game:GetService("VirtualInputManager")
-        VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.RightShift, false, game)
-        VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.RightShift, false, game)
-    end)
-
     -- Animate Toggle entrance
     local TweenInfoToggleGui = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
     local TargetPositionToggleGui = UDim2.new(0.5, -25, 0.05, 0)
     local TweenToggleGui = TweenService:Create(Toggle, TweenInfoToggleGui, {Position = TargetPositionToggleGui})
     TweenToggleGui:Play()
+
+    -- Connect the toggle button click event
+    Toggle.MouseButton1Click:Connect(function()
+        -- Send RightShift key events
+        local VirtualInputManager = game:GetService("VirtualInputManager")
+        VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.RightShift, false, game)
+        VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.RightShift, false, game)
+    end)
 
     return ToggleGui
 end
@@ -1247,130 +1426,78 @@ end
 -- Initialize the toggle GUI
 local ToggleGui = createToggleGui()
 
--- Notification
-showNotification("Info", "Type /e hidetoggle To Hide The Toggle, Type /e showtoggle To Show The Toggle")
+-- Function to toggle the visibility of the ToggleGui from the UI library toggle button
+local function toggleGuiVisibility(state)
+    ToggleGui.Enabled = state
+end
 
--- Function to handle the chat commands
-local function onChatMessage(message)
-    if message == "/e hidetoggle" then
-        -- Kill the toggle and show notification
-        if ToggleGui then
-            ToggleGui:Destroy()
-            ToggleGui = nil
-            showNotification("Info", "Toggle Hided")
-        end
-    elseif message == "/e showtoggle" then
-        -- Recreate the toggle button if it's not already active
-        if not ToggleGui then
-            ToggleGui = createToggleGui()
-            showNotification("Info", "Toggle Restored")
+-- UI library toggle button for controlling the ToggleGui
+GuiSection:AddToggle("Toggle Gui", true, function(state)
+    toggleGuiVisibility(state)
+end)
+
+
+local originalSize = TextButton.Size
+local originalPosition = TextButton.Position
+local notificationSent = false
+
+-- Function to show/hide the PolosGui
+local function togglePolosGui(state)
+    if PolosGui then
+        PolosGui.Enabled = state
+        
+        if state then
+            -- Restore the original size and position
+            TextButton.Size = originalSize
+            TextButton.Position = originalPosition
         end
     end
 end
 
--- Connect the chat listener
-game.Players.LocalPlayer.Chatted:Connect(onChatMessage)
+-- UI library toggle button for PolosGui
+GuiSection:AddToggle("Camlock Gui Toggle", true, function(state)
+    togglePolosGui(state)
+end)
 
--- Commands
-
-local originalSize = TextButton.Size
-local originalPosition = TextButton.Position
-
-local function onCommand(command)
-if command == "/e hidepolo" then
-    if PolosGui then
-        PolosGui.Enabled = false
-    end
-elseif command == "/e showpolo" then
-    if PolosGui then
-        PolosGui.Enabled = true
-        -- Restore the original size and position
-        TextButton.Size = originalSize
-        TextButton.Position = originalPosition
-    end
-elseif command == "/e info" then
+-- Info Notification
+local function showInfoNotification()
     if not notificationSent then
         NotificationLoad:NewNotification({
             ["Mode"] = "Custom",
-            ["Title"] = "Info 1:",
-            ["Description"] = "1: Type /e hidepolo To Hide The Polo Gui, /e showpolo To Show The Polo Gui.",
+            ["Title"] = "Info:",
+            ["Description"] = "Use the toggle button to hide/show the Camlock Gui and the toggle button gui.",
             ["Notification_Image"] = "rbxassetid://18985517155",
             ["Notification_Sound"] = "rbxassetid://5153734608",
-            ["Timeout"] = 10,
-            ["Audio"] = true
-        })
-
-        NotificationLoad:NewNotification({
-            ["Mode"] = "Custom",
-            ["Title"] = "Info 2:",
-            ["Description"] = "Click The Toggle Button Ontop Of Your Screen To Hide And Show The Settings Gui.",
-            ["Notification_Image"] = "rbxassetid://18985517155",
-            ["Notification_Sound"] = "rbxassetid://5153734608",
-            ["Timeout"] = 10,
+            ["Timeout"] = 20,
             ["Audio"] = true
         })
 
         notificationSent = true
     end
 end
-end
 
-game:GetService("Players").LocalPlayer.Chatted:Connect(function(message)
-onCommand(message)
-end)
+showInfoNotification()
+
 
 -- Notifications
 
 NotificationLoad:NewNotification({
 ["Mode"] = "Custom",
 ["Title"] = "Polos Camlock Loaded!",
-["Description"] = "Welcome User! Polos Camlock Is An Camlock Script That Aims For You In Any Game.",
+["Description"] = "Welcome User! camlock is an camlock script that aims for you in most Of The Games.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
-["Timeout"] = 8,
+["Timeout"] = 10,
 ["Audio"] = true
 })
 
 wait(2)
 NotificationLoad:NewNotification({
 ["Mode"] = "Custom",
-["Title"] = "Info 1:",
-["Description"] = "Type /e hidepolo To Hide The Polo Gui, /e showpolo To Show The Polo Gui, /e Info To See The Infos.",
-["Notification_Image"] = "rbxassetid://18985517155",
-["Notification_Sound"] = "rbxassetid://5153734608",
-["Timeout"] = 15,
-["Audio"] = false
-})
-
-wait(2)
-NotificationLoad:NewNotification({
-["Mode"] = "Custom",
-["Title"] = "Info 2:",
-["Description"] = "Click The Toggle Button Ontop Of Your Screen To Hide And Show The Settings Gui (RightShift To Show & Hide It).",
-["Notification_Image"] = "rbxassetid://18985517155",
-["Notification_Sound"] = "rbxassetid://5153734608",
-["Timeout"] = 15,
-["Audio"] = false
-})
-
-wait(2)
-NotificationLoad:NewNotification({
-["Mode"] = "Custom",
-["Title"] = "Info 3:",
-["Description"] = "To Hide And Show The Toggle Button Type /e hidetoggle And /e showtoggle.",
-["Notification_Image"] = "rbxassetid://18985517155",
-["Notification_Sound"] = "rbxassetid://5153734608",
-["Timeout"] = 15,
-["Audio"] = false
-})
-
-wait(2)
-NotificationLoad:NewNotification({
-["Mode"] = "Custom",
 ["Title"] = "Credits:",
-["Description"] = "Credits To sh4k4r6o On Discord Modifying The Free Version To A Better One.",
+["Description"] = "Credits To sh4k4r6o/sh4kar60 On Discord Modifying The Free Version To A Better One.",
 ["Notification_Image"] = "rbxassetid://18985517155",
 ["Notification_Sound"] = "rbxassetid://5153734608",
-["Timeout"] = 15,
+["Timeout"] = 10,
 ["Audio"] = false
 })
