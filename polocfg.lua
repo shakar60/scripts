@@ -3409,18 +3409,20 @@ function tab:CreateConfigSystem(side)
     configSystem.sector = tab:CreateSector("Configs", side or "left")
 
     local ConfigName = configSystem.sector:AddTextbox("Config Name", "", ConfigName, function() end, "")
-    local default = tostring(listfiles(configSystem.configFolder)[1] or ""):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", "")
-    local Config = configSystem.sector:AddDropdown("Configs", {}, default, false, function() end, "")
-    for i, v in pairs(listfiles(configSystem.configFolder)) do
-        if v:find(".txt") then
-            Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
+    local Config = configSystem.sector:AddDropdown("Configs", {}, "", false, function() end, "")
+    
+    -- Populate the dropdown with existing configs
+    local function updateConfigDropdown()
+        Config:Clear()
+        for _, v in pairs(listfiles(configSystem.configFolder)) do
+            if v:find(".txt") then
+                Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
+            end
         end
     end
+    updateConfigDropdown()
 
     configSystem.Create = configSystem.sector:AddButton("Create", function()
-        -- Clear existing configs from dropdown
-        Config:Clear()
-        
         if ConfigName:Get() and ConfigName:Get() ~= "" then
             local config = {}
 
@@ -3438,19 +3440,15 @@ function tab:CreateConfigSystem(side)
                 end
             end
 
+            -- Create the config file
             writefile(configSystem.configFolder .. "/" .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
-            -- Re-add configs to dropdown
-            for i, v in pairs(listfiles(configSystem.configFolder)) do
-                if v:find(".txt") then
-                    Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
-                end
-            end
+            updateConfigDropdown()  -- Refresh dropdown
         end
     end)
 
     configSystem.Save = configSystem.sector:AddButton("Save", function()
-        local config = {}
         if Config:Get() and Config:Get() ~= "" then
+            local config = {}
             for i, v in pairs(library.flags) do
                 if v ~= nil and v ~= "" then
                     if typeof(v) == "Color3" then
@@ -3465,15 +3463,16 @@ function tab:CreateConfigSystem(side)
                 end
             end
 
+            -- Save the config file
             writefile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
         end
     end)
 
     configSystem.Load = configSystem.sector:AddButton("Load", function()
-        local Success = pcall(readfile, configSystem.configFolder .. "/" .. Config:Get() .. ".txt")
-        if Success then
-            pcall(function()
-                local ReadConfig = httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
+        if Config:Get() and Config:Get() ~= "" then
+            local success, content = pcall(readfile, configSystem.configFolder .. "/" .. Config:Get() .. ".txt")
+            if success then
+                local ReadConfig = httpservice:JSONDecode(content)
                 local NewConfig = {}
 
                 for i, v in pairs(ReadConfig) do
@@ -3503,26 +3502,23 @@ function tab:CreateConfigSystem(side)
                         end
                     end
                 end
-            end)
+            else
+                print("Error loading config: " .. content)
+            end
         end
     end)
 
     configSystem.Delete = configSystem.sector:AddButton("Delete", function()
         if not Config:Get() or Config:Get() == "" then return end
-        if not isfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt") then return end
-        delfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt")
-
-        Config:Remove(Config:Get())
-
-        for i, v in pairs(listfiles(configSystem.configFolder)) do
-            if v:find(".txt") then
-                Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
-            end
+        if isfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt") then
+            delfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt")
+            updateConfigDropdown()  -- Refresh dropdown
         end
     end)
 
     return configSystem
 end
+
 
 
         --[[ not finished lol
