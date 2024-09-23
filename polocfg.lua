@@ -3476,40 +3476,44 @@ function tab:CreateConfigSystem(side)
     end)
 
     configSystem.Load = configSystem.sector:AddButton("Load", function()
-        local success = pcall(readfile, configSystem.configFolder .. "/" .. Config:Get() .. ".txt")
-        if success then
-            pcall(function() 
-                local readConfig = httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
-                local newConfig = {}
+        local selectedConfig = Config:Get()
+        if not selectedConfig or selectedConfig == "" then return end
 
-                for i, v in pairs(readConfig) do
-                    if typeof(v) == "table" then
-                        if typeof(v[1]) == "number" then
-                            newConfig[i] = Color3.new(v[1], v[2], v[3])
-                        elseif typeof(v[1]) == "table" then
-                            newConfig[i] = v[1]
+        local configFilePath = configSystem.configFolder .. "/" .. selectedConfig .. ".txt"
+        local success, configData = pcall(readfile, configFilePath)
+        if success and configData then
+            local readConfig = httpservice:JSONDecode(configData)
+            local newConfig = {}
+
+            for i, v in pairs(readConfig) do
+                if typeof(v) == "table" then
+                    if typeof(v[1]) == "number" then
+                        newConfig[i] = Color3.new(v[1], v[2], v[3])
+                    elseif typeof(v[1]) == "table" then
+                        newConfig[i] = v[1]
+                    end
+                elseif tostring(v):find("Enum.KeyCode.") then
+                    newConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.KeyCode.", "")]
+                else
+                    newConfig[i] = v
+                end
+            end
+
+            library.flags = newConfig
+
+            for i, v in pairs(library.flags) do
+                for _, v2 in pairs(library.items) do
+                    if i and i ~= "" and i ~= "Configs_Name" and i ~= "Configs" and v2.flag then
+                        if v2.flag == i then
+                            pcall(function() 
+                                v2:Set(v)
+                            end)
                         end
-                    elseif tostring(v):find("Enum.KeyCode.") then
-                        newConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.KeyCode.", "")]
-                    else
-                        newConfig[i] = v
                     end
                 end
-
-                library.flags = newConfig
-
-                for i, v in pairs(library.flags) do
-                    for _, v2 in pairs(library.items) do
-                        if i and i ~= "" and i ~= "Configs_Name" and i ~= "Configs" and v2.flag then
-                            if v2.flag == i then
-                                pcall(function() 
-                                    v2:Set(v)
-                                end)
-                            end
-                        end
-                    end
-                end
-            end)
+            end
+        else
+            warn("Failed to load config: " .. (configData or "unknown error"))
         end
     end)
 
@@ -3531,6 +3535,7 @@ function tab:CreateConfigSystem(side)
 
     return configSystem
 end
+
 
 
         --[[ not finished lol
