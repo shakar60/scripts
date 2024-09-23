@@ -3397,11 +3397,13 @@ function library:CreateWindow(name, size, hidebutton)
             return sector
         end
 
+
+
+		
 function tab:CreateConfigSystem(side)
     local configSystem = {}
 
-    -- Set the config folder to "Polo Config"
-    configSystem.configFolder = "Polo Config"
+    configSystem.configFolder = "Polo Cfg"  -- Use a single folder for all configs
     if not isfolder(configSystem.configFolder) then
         makefolder(configSystem.configFolder)
     end
@@ -3409,23 +3411,24 @@ function tab:CreateConfigSystem(side)
     configSystem.sector = tab:CreateSector("Configs", side or "left")
 
     local ConfigName = configSystem.sector:AddTextbox("Config Name", "", ConfigName, function() end, "")
-    local Config = configSystem.sector:AddDropdown("Configs", {}, "", false, function() end, "")
+    local default = tostring(listfiles(configSystem.configFolder)[1] or ""):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", "")
+    local Config = configSystem.sector:AddDropdown("Configs", {}, default, false, function() end, "")
     
-    -- Populate the dropdown with existing configs
-    local function updateConfigDropdown()
-        Config:Clear()
-        for _, v in pairs(listfiles(configSystem.configFolder)) do
-            if v:find(".txt") then
-                Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
-            end
+    -- Load existing configs
+    for _, v in pairs(listfiles(configSystem.configFolder)) do
+        if v:find(".txt") then
+            Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
         end
     end
-    updateConfigDropdown()
 
     configSystem.Create = configSystem.sector:AddButton("Create", function()
+        -- Clear dropdown for existing configs
+        for _, v in pairs(listfiles(configSystem.configFolder)) do
+            Config:Remove(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
+        end
+
         if ConfigName:Get() and ConfigName:Get() ~= "" then
             local config = {}
-
             for i, v in pairs(library.flags) do
                 if v ~= nil and v ~= "" then
                     if typeof(v) == "Color3" then
@@ -3440,15 +3443,20 @@ function tab:CreateConfigSystem(side)
                 end
             end
 
-            -- Create the config file
             writefile(configSystem.configFolder .. "/" .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
-            updateConfigDropdown()  -- Refresh dropdown
+
+            -- Reload configs into dropdown
+            for _, v in pairs(listfiles(configSystem.configFolder)) do
+                if v:find(".txt") then
+                    Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
+                end
+            end
         end
     end)
 
     configSystem.Save = configSystem.sector:AddButton("Save", function()
+        local config = {}
         if Config:Get() and Config:Get() ~= "" then
-            local config = {}
             for i, v in pairs(library.flags) do
                 if v ~= nil and v ~= "" then
                     if typeof(v) == "Color3" then
@@ -3463,62 +3471,66 @@ function tab:CreateConfigSystem(side)
                 end
             end
 
-            -- Save the config file
             writefile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
         end
     end)
 
     configSystem.Load = configSystem.sector:AddButton("Load", function()
-        if Config:Get() and Config:Get() ~= "" then
-            local success, content = pcall(readfile, configSystem.configFolder .. "/" .. Config:Get() .. ".txt")
-            if success then
-                local ReadConfig = httpservice:JSONDecode(content)
-                local NewConfig = {}
+        local success = pcall(readfile, configSystem.configFolder .. "/" .. Config:Get() .. ".txt")
+        if success then
+            pcall(function() 
+                local readConfig = httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
+                local newConfig = {}
 
-                for i, v in pairs(ReadConfig) do
+                for i, v in pairs(readConfig) do
                     if typeof(v) == "table" then
                         if typeof(v[1]) == "number" then
-                            NewConfig[i] = Color3.new(v[1], v[2], v[3])
+                            newConfig[i] = Color3.new(v[1], v[2], v[3])
                         elseif typeof(v[1]) == "table" then
-                            NewConfig[i] = v[1]
+                            newConfig[i] = v[1]
                         end
                     elseif tostring(v):find("Enum.KeyCode.") then
-                        NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.KeyCode.", "")]
+                        newConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.KeyCode.", "")]
                     else
-                        NewConfig[i] = v
+                        newConfig[i] = v
                     end
                 end
 
-                library.flags = NewConfig
+                library.flags = newConfig
 
                 for i, v in pairs(library.flags) do
-                    for i2, v2 in pairs(library.items) do
+                    for _, v2 in pairs(library.items) do
                         if i and i ~= "" and i ~= "Configs_Name" and i ~= "Configs" and v2.flag then
                             if v2.flag == i then
-                                pcall(function()
+                                pcall(function() 
                                     v2:Set(v)
                                 end)
                             end
                         end
                     end
                 end
-            else
-                print("Error loading config: " .. content)
-            end
+            end)
         end
     end)
 
     configSystem.Delete = configSystem.sector:AddButton("Delete", function()
+        for _, v in pairs(listfiles(configSystem.configFolder)) do
+            Config:Remove(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
+        end
+
         if not Config:Get() or Config:Get() == "" then return end
-        if isfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt") then
-            delfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt")
-            updateConfigDropdown()  -- Refresh dropdown
+        if not isfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt") then return end
+        delfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt")
+
+        for _, v in pairs(listfiles(configSystem.configFolder)) do
+            if v:find(".txt") then
+                Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
+            end
         end
     end)
 
     return configSystem
 end
-
 
 
         --[[ not finished lol
