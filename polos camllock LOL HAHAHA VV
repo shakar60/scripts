@@ -126,7 +126,15 @@ blurEffect:Destroy()
 -- polos camlock
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/main/aurax%20ui%20library%20source%20code",true))()
-local Window = Library:CreateWindow("Polos Camlock | By sh4k4r6o" , Vector2.new(400, 350), Enum.KeyCode.RightShift)
+local function getFormattedTime()
+    local hour = tonumber(os.date("%I"))
+    local minute = os.date("%M")
+    local ampm = os.date("%p")
+    return string.format("%d:%s %s", hour, minute, ampm)
+end
+
+local formattedTime = getFormattedTime()
+local Window = Library:CreateWindow("Polos Camlock | By sh4k4r6o | " .. formattedTime, Vector2.new(400, 350), Enum.KeyCode.RightShift)
 local PoloTab = Window:CreateTab("Main")
 local MiscTab = Window:CreateTab("Miscs")
 local CfgTab = Window:CreateTab("Config")
