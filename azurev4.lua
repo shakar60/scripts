@@ -1477,7 +1477,7 @@ Tab:AddToggle({
 
 Tab:AddDropdown({
 	Name = "Hit Part",
-	Default = "Head",
+	Default = "UpperTorso",
 	Options = {"Head", "HumanoidRootPart", "UpperTorso", "LowerTorso"},
 	Callback = function(Value)
 		Settings.Combat.AimPart = Value
