@@ -1026,7 +1026,7 @@ local function updateChatVisibility(state)
     end
 end
 
-MiscSection:AddToggle("Chat Spy", false, function(state)
+MiscSection:AddToggle("Chat Logs", false, function(state)
     updateChatVisibility(state)
 end)
 
@@ -1151,6 +1151,11 @@ end)
 
 MiscSection:AddButton("Fly Script", function()
 loadstring(game:HttpGet("https://pastebin.com/raw/gJfKgLra",true))()
+print("script executed")
+end)
+
+MiscSection:AddButton("Chat Spy", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/chat-spy/refs/heads/main/s",true))()
 print("script executed")
 end)
 
