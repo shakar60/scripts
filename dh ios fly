@@ -1,9 +1,3 @@
-game:GetService("StarterGui"):SetCore("SendNotification",{
-                Title = "Cold XV Is Him!";
-                Text = "Dahood iOS Fly";
-                Duration = 5;
-            })
--- Gui to Lua
 -- Version: 3.2
 
 -- Instances:
