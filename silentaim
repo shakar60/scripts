@@ -90,7 +90,7 @@ getrenv().Script = {
                 
                 Animation = {
                     Enabled = true,
-                    Speed = 0.5,
+                    Speed = 1.5,
                     Offset = Vector2.new(1, 0), --> DO NOT MAKE THE X NOR THE T AXES OVER 1, I DONT RECOMMEND <--
                 },
             },
@@ -112,7 +112,7 @@ getrenv().Script = {
                     
                     Animation = {
                         Enabled = true,
-                        Speed = 0.5,
+                        Speed = 1.5,
                         Offset = Vector2.new(0, 0), --> DO NOT MAKE THE X NOR THE T AXES OVER 1, I DONT RECOMMEND <--
                     },
                 },
