@@ -1,0 +1,126 @@
+--// Script \\--
+getrenv().Script = {
+    Settings = {
+        SilentAim = {
+            Enabled = true,
+            TargetingMethod = "GetClosestPlayerInCircle", --> GetClosestPlayerInCircle, GetFurthestPlayerInCircle, GetPlayerInCircle <---
+            AimPart = "HumanoidRootPart", --> Main AimParts: (RootPart, HumanoidRootPart), Head, UpperTorso, LowerTorso, Advanced: ClosestPartInCircle <--
+            HitChance = 100, --> HitChance Percentage <--
+            
+            Prediction = {
+                Enabled = true,
+                Method = "Multiplication", --> Multiplication, Division <--
+                
+                Multiplication = {
+                    Horizontal = 0.1457102, --> X and Z | Low Ping: 0.1498127340824, High Ping: 0.24660912453761 <--
+                    Vertical = 0.1457102, --> Y | Low Ping: 0.1249063670412, High Ping: 0.16440608302507 <--
+                },
+                
+                Division = {
+                    Horizontal = 7.15, --> X and Z | Low Ping: 6.6749999999999, High Ping: 4.055 <--
+                    Vertical = 8.15, --> Y | Low Ping: 8.0059970014992, High Ping: 6.0824999999999 <--
+                },
+            },
+            
+            Velocity = {
+                Type = "AssemblyLinearVelocity", --> Velocity, AssemblyLinearVelocity <--
+                
+                Minimum = {
+                    X = -math.huge,
+                    Y = -math.huge, --> Make This Between -1 And -2 For Anti-Ground Shots <---
+                    Z = -math.huge,
+                },
+                
+                Maximum = {
+                    X = math.huge,
+                    Y = math.huge,
+                    Z = math.huge,
+                },
+            },
+            
+            Checks = {
+                Wall = true,
+                Knocked = true,
+                Grabbed = true,
+            },
+        },
+        
+        Resolver = {
+            Enabled = false,
+            Method = "Move Direction", --> Recalculate Velocity, Move Direction <--
+            
+            RecalculateVelocity = {
+                LastTick = tick(),
+                LastPosition = Vector3.new(0, 0, 0),
+                NewVelocity = Vector3.new(0, 0, 0),
+                RefreshRate = 1200,
+                
+                Smoothness = {
+                    Enabled = true,
+                    Value = 0.4,
+                },
+            },
+            
+            MoveDirection = {
+                Multiplier = 19,
+                NewVelocity = Vector3.new(0, 0, 0),
+                
+                Smoothness = {
+                    Enabled = true,
+                    Value = 0.2,
+                },
+            },
+        },
+        
+        Circle = {
+            Visible = true,
+            Transparency = 1,
+            Color = Color3.fromRGB(255, 255, 255),
+            Radius = 250,
+            Position = "Center", --> Center, Finger, Mouse <--
+            
+            Gradient = {
+                Enabled = false,
+                Rotation = 120,
+                
+                Colors = {
+                    One = Color3.fromRGB(0, 0, 0),
+                    Two = Color3.fromRGB(255, 0, 0),
+                },
+                
+                Animation = {
+                    Enabled = true,
+                    Speed = 0.5,
+                    Offset = Vector2.new(1, 0), --> DO NOT MAKE THE X NOR THE T AXES OVER 1, I DONT RECOMMEND <--
+                },
+            },
+            
+            Stroke = {
+                Visible = true,
+                Transparency = 0,
+                Thickness = 5,
+                Color = Color3.fromRGB(255, 255, 255),
+                
+                Gradient = {
+                    Enabled = true,
+                    Rotation = 120,
+                    
+                    Colors = {
+                        One = Color3.fromRGB(0, 0, 0),
+                        Two = Color3.fromRGB(255, 0, 0),
+                    },
+                    
+                    Animation = {
+                        Enabled = true,
+                        Speed = 0.5,
+                        Offset = Vector2.new(0, 0), --> DO NOT MAKE THE X NOR THE T AXES OVER 1, I DONT RECOMMEND <--
+                    },
+                },
+                
+            },
+        },
+    },
+}
+
+-- Advanced Silent-Aim [ NEW! ]
+loadstring(Game:HttpGet("https://raw.githubusercontent.com/TheRealXORA/Roblox/refs/heads/Main/Scripts%20/Dahood%20/Advanced%20Silent%20Aim.lua", true))()
