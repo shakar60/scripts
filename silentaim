@@ -12,7 +12,7 @@ getrenv().Script = {
                 Method = "Multiplication", --> Multiplication, Division <--
                 
                 Multiplication = {
-                    Horizontal = 0.1457102, --> X and Z | Low Ping: 0.1498127340824, High Ping: 0.24660912453761 <--
+                    Horizontal = 0.1457102, --> make sure to change this set its super bad X and Z | Low Ping: 0.1498127340824, High Ping: 0.24660912453761 <--
                     Vertical = 0.1457102, --> Y | Low Ping: 0.1249063670412, High Ping: 0.16440608302507 <--
                 },
                 
