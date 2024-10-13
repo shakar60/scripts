@@ -70,65 +70,105 @@ getgenv().jamkles = {
     }
 }
 
+-- toggle jamkles button
+
 local RS = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
 
 local ScreenGui = Instance.new("ScreenGui")
-    local Frame = Instance.new("Frame")
-    local TextButton = Instance.new("TextButton")
-    local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+local Frame = Instance.new("Frame")
+local TextButton = Instance.new("TextButton")
+local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+local UICorner = Instance.new("UICorner")
 
-    ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-    Frame.Parent = ScreenGui
-    Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    Frame.BackgroundTransparency = 0
-    Frame.Position = UDim2.new(1, -120, 0, 0)
-    Frame.Size = UDim2.new(0, 100, 0, 50)
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BackgroundTransparency = 0
+Frame.Position = UDim2.new(1, -120, 0, 0)
+Frame.Size = UDim2.new(0, 100, 0, 50)
+Frame.Transparency = 0.2
 
-    TextButton.Parent = Frame
+UICorner.Parent = Frame
+UICorner.CornerRadius = UDim.new(0, 12)
 
-    TextButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    TextButton.BackgroundTransparency = 1.000
-    TextButton.Size = UDim2.new(1, 0, 1, 0)
-    TextButton.Font = Enum.Font.SourceSans
-    TextButton.Text = "jamkles toggle"
-    TextButton.TextColor3 = Color3.fromRGB(71, 153, 173)
-    TextButton.TextScaled = true
-    TextButton.TextSize = 30
-    TextButton.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
-    TextButton.TextStrokeTransparency = 0.000
-    TextButton.TextWrapped = true
-    TextButton.MouseButton1Down:Connect(
-        function()
-            Library:Toggle()
-        end
-    )
-
-    UITextSizeConstraint.Parent = TextButton
-    UITextSizeConstraint.MaxTextSize = 30
-
-    local player = game.Players.LocalPlayer
-
-   
-    local function onCharacterAdded(character)
-        ScreenGui.Parent = player.PlayerGui
+TextButton.Parent = Frame
+TextButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.BackgroundTransparency = 1.000
+TextButton.Size = UDim2.new(1, 0, 1, 0)
+TextButton.Font = Enum.Font.SourceSans
+TextButton.Text = "jamkles toggle"
+TextButton.TextColor3 = Color3.fromRGB(71, 153, 173)
+TextButton.TextScaled = true
+TextButton.TextSize = 28
+TextButton.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.TextStrokeTransparency = 0.000
+TextButton.TextWrapped = true
+TextButton.MouseButton1Down:Connect(
+    function()
+        Library:Toggle()
     end
+)
 
-    local function connectCharacterAdded()
-        player.CharacterAdded:Connect(onCharacterAdded)
+UITextSizeConstraint.Parent = TextButton
+UITextSizeConstraint.MaxTextSize = 30
+
+local player = game.Players.LocalPlayer
+
+local dragging = false
+local dragStart = nil
+local startPos = nil
+
+local function onCharacterAdded(character)
+    ScreenGui.Parent = player.PlayerGui
+end
+
+local function connectCharacterAdded()
+    player.CharacterAdded:Connect(onCharacterAdded)
+end
+
+connectCharacterAdded()
+
+player.CharacterRemoving:Connect(
+    function()
+        ScreenGui.Parent = nil
     end
+)
 
-   
-    connectCharacterAdded()
+local function isPointInFrame(inputPosition)
+    local framePosition = Frame.AbsolutePosition
+    local frameSize = Frame.AbsoluteSize
+    return inputPosition.X >= framePosition.X and inputPosition.X <= framePosition.X + frameSize.X and
+           inputPosition.Y >= framePosition.Y and inputPosition.Y <= framePosition.Y + frameSize.Y
+end
 
-   
-    player.CharacterRemoving:Connect(
-        function()
-            ScreenGui.Parent = nil
+local function onInputBegan(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        if isPointInFrame(input.Position) then
+            dragging = true
+            dragStart = input.Position
+            startPos = Frame.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
         end
-    )
+    end
+end
 
+local function onInputChanged(input)
+    if dragging then
+        local delta = input.Position - dragStart
+        Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end
+
+UserInputService.InputBegan:Connect(onInputBegan)
+UserInputService.InputChanged:Connect(onInputChanged)
 
 local repo = 'https://raw.githubusercontent.com/LionTheGreatRealFrFr/MobileLinoriaLib/main/'
 
@@ -153,8 +193,6 @@ local Window =
         Rage = Window:AddTab("HvH"),
         ["UI Settings"] = Window:AddTab("UI Settings")
     }
-
-
 
 local Tool = Tabs.Main:AddLeftGroupbox("tool")
 
@@ -542,11 +580,13 @@ Tool:AddButton(
     end
 )
 
-
-
 local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu')
 
-MenuGroup:AddButton('Unload', function() Library:Unload() end)
+MenuGroup:AddButton('Unload', function() 
+    Library:Unload()
+    ScreenGui:Destroy()
+end)
+
 MenuGroup:AddLabel('Menu bind'):AddKeyPicker('MenuKeybind', { Default = 'End', NoUI = true, Text = 'Menu keybind' })
 
 Library.ToggleKeybind = Options.MenuKeybind
@@ -564,14 +604,6 @@ SaveManager:BuildConfigSection(Tabs['UI Settings'])
 ThemeManager:ApplyToTab(Tabs['UI Settings'])
 
 SaveManager:LoadAutoloadConfig()
-
-
-
-
-
-
-
-
 
 loadstring(Game:HttpGet("https://raw.githubusercontent.com/Pixeluted/adoniscries/refs/heads/main/Source.lua", true))()
 
