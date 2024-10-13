@@ -194,7 +194,7 @@ local Window =
         ["UI Settings"] = Window:AddTab("UI Settings")
     }
 
-local Tool = Tabs.Main:AddLeftGroupbox("tool")
+local Tool = Tabs.Main:AddLeftGroupbox("Tool/Keybind")
 
 local Cam = Tabs.Main:AddLeftGroupbox("Camlock")
 
@@ -580,6 +580,34 @@ Tool:AddButton(
     end
 )
 
+Tool:AddButton(
+    "Controller (dpad down)",
+    function()
+       setupControllerD()
+    end
+)
+
+Tool:AddButton(
+    "Pc (Q)",
+    function()
+       PcQ()
+    end
+)
+
+Tool:AddButton(
+    "Pc (C)",
+    function()
+       PcC()
+    end
+)
+
+Tool:AddButton(
+    "Pc (E)",
+    function()
+       PcE()
+    end
+)
+
 local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu')
 
 MenuGroup:AddButton('Unload', function() 
@@ -874,6 +902,50 @@ function setupController()
     userInputService.InputBegan:Connect(function(input, processed)
         if not processed then
             if input.KeyCode == Enum.KeyCode.DPadUp then
+                ToggleLock()
+            end
+        end
+    end)
+end
+
+-- Function for the "Controller" mode (DPad Down)
+function setupControllerD()
+    userInputService.InputBegan:Connect(function(input, processed)
+        if not processed then
+            if input.KeyCode == Enum.KeyCode.DPadDown then
+                ToggleLock()
+            end
+        end
+    end)
+end
+
+-- Function for the "Pc" mode (Q)
+function PcQ()
+    userInputService.InputBegan:Connect(function(input, processed)
+        if not processed then
+            if input.KeyCode == Enum.KeyCode.Q then
+                ToggleLock()
+            end
+        end
+    end)
+end
+
+-- Function for the "Pc" mode (C)
+function PcC()
+    userInputService.InputBegan:Connect(function(input, processed)
+        if not processed then
+            if input.KeyCode == Enum.KeyCode.C then
+                ToggleLock()
+            end
+        end
+    end)
+end
+
+-- Function for the "Pc" mode (E)
+function PcE()
+    userInputService.InputBegan:Connect(function(input, processed)
+        if not processed then
+            if input.KeyCode == Enum.KeyCode.E then
                 ToggleLock()
             end
         end
