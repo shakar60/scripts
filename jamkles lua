@@ -170,6 +170,8 @@ end
 UserInputService.InputBegan:Connect(onInputBegan)
 UserInputService.InputChanged:Connect(onInputChanged)
 
+-- ui library
+
 local repo = 'https://raw.githubusercontent.com/LionTheGreatRealFrFr/MobileLinoriaLib/main/'
 
 local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
@@ -194,15 +196,15 @@ local Window =
         ["UI Settings"] = Window:AddTab("UI Settings")
     }
 
-local Tool = Tabs.Main:AddLeftGroupbox("Tool/Keybind")
-
 local Cam = Tabs.Main:AddLeftGroupbox("Camlock")
-
-local Res = Tabs.Main:AddLeftGroupbox("Resolver")
 
 local Tar = Tabs.Main:AddRightGroupbox("target aim")
 
-local Tri = Tabs.Main:AddRightGroupbox("trigger bot")
+local Res = Tabs.Main:AddLeftGroupbox("Resolver")
+
+local Tool = Tabs.Main:AddRightGroupbox("Tool/Keybind")
+
+--local Tri = Tabs.Main:AddRightGroupbox("trigger bot")
 
 local cframe = Tabs.Rage: AddRightGroupbox("Speed")
 
@@ -318,7 +320,7 @@ Tar:AddToggle(
         }
     )
     
-Tar:AddToggle(
+--[[Tar:AddToggle(
         "AutoShoot",
         {
             Text = "AutoShoot",
@@ -328,7 +330,43 @@ Tar:AddToggle(
             targetaim.AutoShoot = state
             end
         }
-    )
+    )]]
+
+local userInputService = game:GetService("UserInputService")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local client = players.LocalPlayer
+local camera = workspace.CurrentCamera
+local auto_shooting = false
+
+Tar:AddToggle(
+    "AutoShoot",
+    {
+        Text = "AutoShoot",
+        Default = false,
+        Tooltip = "Enable",
+        Callback = function(state)
+            auto_shooting = state -- Update the auto_shooting variable
+        end
+    }
+)
+
+local function AutoShoot()
+    if client.Character then
+        local tool = client.Character:FindFirstChildOfClass("Tool")
+        if tool and tool:IsA("Tool") then
+            tool:Activate()
+        end
+    end
+end
+
+runService.Heartbeat:Connect(function()
+    if auto_shooting then
+        AutoShoot()
+    end
+end)
+
 
 Tar:AddInput(
         "Prediction",
@@ -371,17 +409,36 @@ Tar:AddDropdown(
             end
         }
     )
+
 Tar:AddToggle(
-        "Enable AutoReload",
-        {
-            Text = "Enable AutoReload",
-            Default = false,
-            Tooltip = "Enable",
-            Callback = function(state)
-               jamkles.AutoReload = state
+    "Enable AutoReload",
+    {
+        Text = "Enable AutoReload",
+        Default = false,
+        Tooltip = "Reloads For You",
+        Callback = function(isEnabled)
+            _G.AutoReload = isEnabled
+
+            if _G.AutoReload then
+                coroutine.wrap(function()
+                    while _G.AutoReload do
+                        local player = game:GetService("Players").LocalPlayer
+                        local tool = player.Character:FindFirstChildWhichIsA("Tool")
+                        
+                        if tool and tool:FindFirstChild("Ammo") then
+                            if tool.Ammo.Value <= 0 then
+                                game:GetService("ReplicatedStorage").MainEvent:FireServer("Reload", tool)
+                                wait(1)
+                            end
+                        end
+                        
+                        game:GetService("RunService").Heartbeat:Wait()
+                    end
+                end)()
             end
-        }
-    ) 
+        end
+    }
+)
 
 
 Res:AddToggle(
@@ -411,7 +468,7 @@ Res:AddDropdown(
     )
 
 
-Tri:AddToggle(
+--[[Tri:AddToggle(
         "Enable TriggerBot",
         {
             Text = "Enable TriggerBot",
@@ -451,7 +508,7 @@ Tri:AddInput(
                 jamkles.Triggerbot.Settings["Activation Delay"] = value
             end
         }
-    )
+    ) ]]
 
 
 
@@ -546,17 +603,16 @@ cframe:AddSlider(
     "cframe speed",
     {
         Text = "How fast you run around ",
-        Default = 0,
+        Default = 1,
         Min = 0,
-        Max = 50,
+        Max = 25,
         Rounding = 1,
         Compact = false,
         Callback = function(Value)
-            jamkles.cframe.Speed = Value
+            jamkles.cframe.speed = Value
         end
     }
 )
-
 
 
 Tool:AddButton(
@@ -787,11 +843,11 @@ local function ToggleLock()
                 end
             else
                 if jamkles.Enabled then
-                    Library:Notify('Camlock: No target found')
+                    --Library:Notify('Camlock: No target found')
                 end
                 if jamkles.targetaim.enabled then
-                    jamkles.targetaim["Toggled"] = false
-                    Library:Notify('Target Lock: No target found')
+                    --jamkles.targetaim["Toggled"] = true
+                    --Library:Notify('Target Lock: No target found')
                 end
             end
         else
@@ -840,6 +896,7 @@ function spawnTool()
 end
 
 -- Function for the "Button" mode
+
 function spawnButton()
     local player = game.Players.LocalPlayer
     local playerGui = player:WaitForChild("PlayerGui")
@@ -887,6 +944,25 @@ function spawnButton()
             button:GetPropertyChangedSignal("Position"):Connect(function()
                 lastPosition = button.Position
             end)
+
+            -- Create the close button as a child of LockButton
+            local closeButton = Instance.new("TextButton")
+            closeButton.Name = "CloseButton"
+            closeButton.Size = UDim2.new(0, 15, 0, 15)
+            closeButton.Position = UDim2.new(1, -25, 0, 5)  -- Adjust position to top right of LockButton
+            closeButton.Text = "X"
+            closeButton.TextSize = 10
+            closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red background
+            closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+            closeButton.Parent = button  -- Parent to LockButton
+
+            local closeUICorner = Instance.new("UICorner")
+            closeUICorner.CornerRadius = UDim.new(1, 0)
+            closeUICorner.Parent = closeButton
+
+            closeButton.MouseButton1Click:Connect(function()
+                screenGui:Destroy()
+            end)
         end
     end
 
@@ -896,6 +972,7 @@ function spawnButton()
         setupGui()
     end)
 end
+
 
 -- Function for the "Controller" mode
 function setupController()
@@ -994,12 +1071,13 @@ RS.RenderStepped:Connect(function()
 end)
 
 spawn(function()
-    RS.Heartbeat:Connect(function()
-        if jamkles.Enabled and jamkles.cframe.enabled then
-            player.Character.HumanoidRootPart.CFrame =
-                player.Character.HumanoidRootPart.CFrame + player.Character.Humanoid.MoveDirection * jamkles.cframe.speed
+    while RunService.Heartbeat:Wait() do
+        if jamkles.cframe.enabled and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and 
+           player.Character:FindFirstChild("Head") and 
+           player.Character:FindFirstChild("Humanoid").MoveDirection.Magnitude > 0 then
+            player.Character:TranslateBy(player.Character:FindFirstChild("Humanoid").MoveDirection * jamkles.cframe.speed * 2)
         end
-    end)
+    end
 end)
 
 for _, con in pairs(getconnections(Camera.Changed)) do
@@ -1129,20 +1207,6 @@ if jamkles.AntiGroundShots then
 else
     AimPoint = jamkles.AimPart.Position + jamkles.AimPart.Velocity * prediction
 end
-
-
-while jamkles.AutoReload == true and game:GetService("RunService").Heartbeat:Wait() do
-if game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Tool") then
-            if game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Tool"):FindFirstChild("Ammo") then
-                if game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Tool"):FindFirstChild("Ammo").Value <= 0 then
-                    game:GetService("ReplicatedStorage").MainEvent:FireServer("Reload", game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Tool")) 
-                    wait(1)
-                end
-            end
-        end
-end
-
-
 
 if jamkles.desync.sky == true then
     getgenv().JamklesSky = true 
@@ -1345,15 +1409,4 @@ local function resolveTargetVelocity(target)
         end
     end
     return target.Character[getgenv().jamkles.Resolver["PredictionSettings"].HitPart].Velocity
-end
-
-while jamkles.AutoReload == true and game:GetService("RunService").Heartbeat:Wait() do
-if game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Tool") then
-            if game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Tool"):FindFirstChild("Ammo") then
-                if game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Tool"):FindFirstChild("Ammo").Value <= 0 then
-                    game:GetService("ReplicatedStorage").MainEvent:FireServer("Reload", game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Tool")) 
-                    wait(1)
-                end
-            end
-        end
 end
