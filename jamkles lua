@@ -182,7 +182,7 @@ local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
 local Window =
         Library:CreateWindow(
         {
-            Title = "jamkles lua",
+            Title = "jamkles lua (modified by sh4k4r6o)",
             Center = true,
             AutoShow = true
         }
