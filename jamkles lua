@@ -170,6 +170,7 @@ end
 UserInputService.InputBegan:Connect(onInputBegan)
 UserInputService.InputChanged:Connect(onInputChanged)
 
+
 -- ui library
 
 local repo = 'https://raw.githubusercontent.com/LionTheGreatRealFrFr/MobileLinoriaLib/main/'
@@ -439,7 +440,6 @@ Tar:AddToggle(
         end
     }
 )
-
 
 Res:AddToggle(
         "Enable Resolver",
@@ -774,43 +774,42 @@ local function fireAtTarget(target)
     end
 end
 
--- Function to get the closest player using advanced calculations
-local function GetClosestPlayer()
-    local closestPlayer = nil
-    local shortestScore = math.huge
+local FOV43 = Drawing.new("Circle")
+FOV43.Transparency = 0.5
+FOV43.Thickness = 2
+FOV43.Color = Color3.new(1, 0, 0)
+FOV43.Filled = false
+FOV43.Radius = 250
+FOV43.Position = Vector2.new(workspace.CurrentCamera.ViewportSize.X / 2, workspace.CurrentCamera.ViewportSize.Y / 2)
+FOV43.Visible = false
 
-    for _, plr in ipairs(Players:GetPlayers()) do
-        if plr ~= LocalPlayer and isTargetValid(plr) then
-            local part = plr.Character[jamkles.AimPart]
-            if part then
-                local relativePos = part.Position - Camera.CFrame.Position
-                local playerDistance = relativePos.Magnitude
-                local screenPosition, onScreen = Camera:WorldToViewportPoint(part.Position)
+function GetClosestPlayer()
+    local closestPlayer
+    local shortestDistance = math.huge
+    local player = game.Players.LocalPlayer
+    local CC = game:GetService("Workspace").CurrentCamera
+    local screenCenter = Vector2.new(CC.ViewportSize.X / 2, CC.ViewportSize.Y / 2)
+    local fovRadius = FOV43.Radius
+    local viewportSize = CC.ViewportSize
 
-                if onScreen then
-                    local angle = math.deg(math.acos(Camera.CFrame.LookVector:Dot(relativePos.Unit)))
-                    local mouseDistance = (Vector2.new(screenPosition.X, screenPosition.Y) - UserInputService:GetMouseLocation()).Magnitude
-
-                    local angleFactor = angle / 90
-                    local distanceFactor = playerDistance / 1000
-
-                    local score = mouseDistance * 0.3 + angleFactor * 0.5 + distanceFactor * 0.2
-
-                    local ray = Ray.new(Camera.CFrame.Position, relativePos.Unit * playerDistance)
-                    local hitPart = Workspace:FindPartOnRayWithIgnoreList(ray, {LocalPlayer.Character})
-
-                    if (not hitPart or hitPart:IsDescendantOf(plr.Character)) and score < shortestScore then
-                        closestPlayer = plr
-                        shortestScore = score
-                    end
+    for i, v in pairs(game.Players:GetPlayers()) do
+        if v ~= player and v.Character and v.Character:FindFirstChild("Humanoid") 
+           and v.Character.Humanoid.Health > 0 and v.Character:FindFirstChild("HumanoidRootPart") then
+            local pos, onScreen = CC:WorldToViewportPoint(v.Character.PrimaryPart.Position)
+            
+            if onScreen and pos.X > 0 and pos.Y > 0 
+               and pos.X < viewportSize.X and pos.Y < viewportSize.Y then
+                local magnitude = (Vector2.new(pos.X, pos.Y) - screenCenter).magnitude
+                if magnitude < fovRadius and magnitude < shortestDistance then
+                    closestPlayer = v
+                    shortestDistance = magnitude
                 end
             end
         end
     end
-
+    
     return closestPlayer
 end
-
 
 
 local userInputService = game:GetService("UserInputService")
@@ -945,16 +944,15 @@ function spawnButton()
                 lastPosition = button.Position
             end)
 
-            -- Create the close button as a child of LockButton
             local closeButton = Instance.new("TextButton")
             closeButton.Name = "CloseButton"
             closeButton.Size = UDim2.new(0, 15, 0, 15)
-            closeButton.Position = UDim2.new(1, -25, 0, 5)  -- Adjust position to top right of LockButton
+            closeButton.Position = UDim2.new(1, -25, 0, 5)
             closeButton.Text = "X"
             closeButton.TextSize = 10
-            closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red background
+            closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
             closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-            closeButton.Parent = button  -- Parent to LockButton
+            closeButton.Parent = button
 
             local closeUICorner = Instance.new("UICorner")
             closeUICorner.CornerRadius = UDim.new(1, 0)
@@ -972,6 +970,7 @@ function spawnButton()
         setupGui()
     end)
 end
+
 
 
 -- Function for the "Controller" mode
