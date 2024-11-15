@@ -28,7 +28,7 @@ local function createGUI()
     Title.Position = UDim2.new(0, 0, 0.1, 0)
     Title.Size = UDim2.new(1, 0, 0.2, 0)
     Title.Font = Enum.Font.Creepster
-    Title.Text = "By GhostHub"
+    Title.Text = "Fe Fake Lag"
     Title.TextColor3 = Color3.fromRGB(255, 255, 255)
     Title.TextScaled = true
 
@@ -39,7 +39,7 @@ local function createGUI()
     Title2.Position = UDim2.new(0, 0, 0.7, 0)
     Title2.Size = UDim2.new(0.8, 0, 0.3, 0)
     Title2.Font = Enum.Font.Creepster
-    Title2.Text = "Edited By\nsh4k4r6o"
+    Title2.Text = "Made By\nsh4k4r6o"
     Title2.TextColor3 = Color3.fromRGB(255, 255, 255)
     Title2.TextSize = 15
 
