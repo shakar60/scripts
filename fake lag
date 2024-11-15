@@ -1,95 +1,136 @@
---[[..WARNING..EXPECT SOME BUGS LIKE GETTING KICKED OUT OF ROBLOX,USE THE SCRIPT
-ON YOUR OWN SO ITS NOT OUR FAULT IF YOU GET BANNED FOR USING IT,YOUR GAME WILL FREEZE
-WHEN YOU PLAY JENGA AND TOUCH THE LAVA IT MIGHT CRASH BY TOUCHING ANY KIND OF LAVA
-SO MAKE SURE YOU TURN IT OFF BEFORE YOU HIT THE LAVA SO YOU WONT CRASH OUT..WROTE BY
-SH4K4R6O.]]
+--> 99% Made by sh4k4r6o also leaked by sh4k4r6o cus it was obfuscated hahaha 0% chat gpt fr <--
 
--- Create the ScreenGui
 local function createGUI()
-    local DropGUI = Instance.new("ScreenGui")
-    DropGUI.Name = "DropGUI"
-    DropGUI.Parent = game.CoreGui
-    DropGUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "ScreenGui"
+	ScreenGui.ResetOnSpawn = false
+    ScreenGui.Parent = game.CoreGui
+    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
     local main = Instance.new("Frame")
     main.Name = "MainFrame"
-    main.Parent = DropGUI
-    main.BackgroundColor3 = Color3.fromRGB(50, 50, 50) -- Darker background
-    main.Size = UDim2.new(0.15, 0, 0.25, 0) -- Adjusted size for better visibility
-    main.Position = UDim2.new(0.5, -110, 0.5, -140) -- Centered position
+    main.Parent = ScreenGui
+    main.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	main.Transparency = 0.3
+    main.Size = UDim2.new(0.1, 0, 0.15, 0)
+    main.Position = UDim2.new(0.1, 0, 0.2, 0)
     main.Active = true
     main.Draggable = true
 
-    -- Add rounded corners to the main frame
     local UICornerMain = Instance.new("UICorner")
     UICornerMain.CornerRadius = UDim.new(0, 25)
     UICornerMain.Parent = main
 
-    -- Title label with a visible design
-    local titleLabel = Instance.new("TextLabel")
-    titleLabel.Name = "TitleLabel"
-    titleLabel.Parent = main
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Position = UDim2.new(0, 0, 0, 0)
-    titleLabel.Size = UDim2.new(1, 0, 0.2, 0)
-    titleLabel.Font = Enum.Font.SourceSans
-    titleLabel.Text = "By GhostHub"
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.TextScaled = true
+    local Title = Instance.new("TextLabel")
+    Title.Name = "Title"
+    Title.Parent = main
+    Title.BackgroundTransparency = 1
+    Title.Position = UDim2.new(0, 0, 0.1, 0)
+    Title.Size = UDim2.new(1, 0, 0.2, 0)
+    Title.Font = Enum.Font.Creepster
+    Title.Text = "By GhostHub"
+    Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Title.TextScaled = true
 
-    -- Fake Lag toggle button with improved design
-    local DropTool = Instance.new("TextButton")
-    DropTool.Name = "DropTool"
-    DropTool.Parent = main
-    DropTool.BackgroundColor3 = Color3.fromRGB(70, 70, 70) -- Slightly lighter button background
-    DropTool.BackgroundTransparency = 0.3 -- Slight transparency
-    DropTool.Position = UDim2.new(0.1, 0, 0.3, 0)
-    DropTool.Size = UDim2.new(0.8, 0, 0.4, 0)
-    DropTool.Font = Enum.Font.SourceSans
-    DropTool.Text = "Fake Lag Off"
-    DropTool.TextColor3 = Color3.fromRGB(255, 255, 255)
-    DropTool.TextScaled = true
-    DropTool.TextWrapped = true
+    local Title2 = Instance.new("TextLabel")
+    Title2.Name = "Title2"
+    Title2.Parent = main
+    Title2.BackgroundTransparency = 1
+    Title2.Position = UDim2.new(0, 0, 0.7, 0)
+    Title2.Size = UDim2.new(0.8, 0, 0.3, 0)
+    Title2.Font = Enum.Font.Creepster
+    Title2.Text = "Edited By\nsh4k4r6o"
+    Title2.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Title2.TextSize = 15
 
-    -- Add rounded corners to the button
+    local FakeLag = Instance.new("TextButton")
+    FakeLag.Name = "FakeLag"
+    FakeLag.Parent = main
+    FakeLag.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    FakeLag.BackgroundTransparency = 0.5
+    FakeLag.Position = UDim2.new(0.1, 0, 0.3, 0)
+    FakeLag.Size = UDim2.new(0.8, 0, 0.4, 0)
+    FakeLag.Font = Enum.Font.Creepster
+    FakeLag.Text = "Fake Lag"
+    FakeLag.TextColor3 = Color3.fromRGB(255, 255, 255)
+    FakeLag.TextScaled = true
+    FakeLag.TextWrapped = true
+
     local UICornerButton = Instance.new("UICorner")
     UICornerButton.CornerRadius = UDim.new(0, 20)
-    UICornerButton.Parent = DropTool
+    UICornerButton.Parent = FakeLag
 
-    -- Close button with a clean, visible design
-    local closeButton = Instance.new("TextButton")
-    closeButton.Name = "CloseButton"
-    closeButton.Size = UDim2.new(0, 20, 0, 20)
-    closeButton.Position = UDim2.new(1, -25, 0, 5)
-    closeButton.BackgroundTransparency = 1 -- Transparent background
-    closeButton.TextColor3 = Color3.fromRGB(255, 50, 50)
-    closeButton.Text = "X"
-    closeButton.Font = Enum.Font.SourceSans
-    closeButton.TextSize = 14
-    closeButton.Parent = main
-
-    -- Credit label with a visible design
-    local creditLabel = Instance.new("TextLabel")
-    creditLabel.Name = "CreditLabel"
-    creditLabel.Parent = main
-    creditLabel.BackgroundTransparency = 1
-    creditLabel.Position = UDim2.new(0.1, 0, 0.75, 0)
-    creditLabel.Size = UDim2.new(0.8, 0, 0.2, 0)
-    creditLabel.Font = Enum.Font.SourceSans
-    creditLabel.Text = "Edited By sh4k4r6o"
-    creditLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    creditLabel.TextScaled = true
+    local X = Instance.new("TextButton")
+    X.Name = "X"
+    X.Size = UDim2.new(0, 20, 0, 20)
+    X.Position = UDim2.new(1, -27, 0.7, 1)
+    X.TextColor3 = Color3.fromRGB(255, 255, 255)
+	X.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	X.Transparency = 0.1
+    X.Text = "X"
+    X.Font = Enum.Font.Creepster
+    X.TextSize = 14
+    X.Parent = main
+	
+    local UICornerMain = Instance.new("UICorner")
+    UICornerMain.CornerRadius = UDim.new(0, 25)
+    UICornerMain.Parent = X
 
     local fakeLagEnabled = false
+    local lagValue = 0.2
+
+
+    local LagValue = Instance.new("TextLabel")
+    LagValue.Name = "LagValue"
+    LagValue.Parent = main
+    LagValue.BackgroundTransparency = 0.3
+	LagValue.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    LagValue.Position = UDim2.new(-0.6, 5, 0.1, 0)
+    LagValue.Size = UDim2.new(0.5, 0, 0.5, 0)
+    LagValue.Font = Enum.Font.Creepster
+    LagValue.Text = "Lag Value"
+    LagValue.TextColor3 = Color3.fromRGB(255, 255, 255)
+    LagValue.TextSize = 12
+
+	local UICornerMain = Instance.new("UICorner")
+    UICornerMain.CornerRadius = UDim.new(0, 15)
+    UICornerMain.Parent = LagValue
+	
+    local TextBox = Instance.new("TextBox")
+    TextBox.Name = "TextBox"
+    TextBox.Parent = main
+    TextBox.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	TextBox.BackgroundTransparency = 0.9
+    TextBox.Position = UDim2.new(-0.4, 0, 0.4, 0)
+    TextBox.Size = UDim2.new(0.2, 0, 0.2, 0)
+    TextBox.Font = Enum.Font.Creepster
+    TextBox.Text = tostring(lagValue)
+    TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TextBox.TextScaled = true
+
+	local UICornerMain = Instance.new("UICorner")
+    UICornerMain.CornerRadius = UDim.new(0, 20)
+    UICornerMain.Parent = TextBox
+	
+    TextBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
+            local inputValue = tonumber(TextBox.Text)
+            if inputValue then
+                lagValue = inputValue
+            else
+                TextBox.Text = tostring(lagValue)
+            end
+        end
+    end)
 
     local function toggleFakeLag()
         fakeLagEnabled = not fakeLagEnabled
-        DropTool.Text = fakeLagEnabled and "Fake Lag On" or "Fake Lag Off"
+        FakeLag.Text = fakeLagEnabled and "On" or "Off"
 
         if fakeLagEnabled then
-            getgenv().autokill = true
+            getgenv().fakelag = true
             task.spawn(function()
-                while getgenv().autokill do
+                while getgenv().fakelag do
                     for _, V in pairs(game.Players:GetChildren()) do
                         local LocalPlayer = game:GetService("Players").LocalPlayer
                         local Character = LocalPlayer.Character
@@ -97,7 +138,7 @@ local function createGUI()
 
                         if HumanoidRootPart then
                             HumanoidRootPart.Anchored = true
-                            wait(0.2)
+                            wait(lagValue)
                             HumanoidRootPart.Anchored = false
                             wait()
                         end
@@ -105,18 +146,17 @@ local function createGUI()
                 end
             end)
         else
-            getgenv().autokill = false
+            getgenv().fakelag = false
         end
     end
 
-    DropTool.MouseButton1Down:Connect(toggleFakeLag)
-    closeButton.MouseButton1Down:Connect(function()
+    FakeLag.MouseButton1Down:Connect(toggleFakeLag)
+    X.MouseButton1Down:Connect(function()
         if fakeLagEnabled then
-            toggleFakeLag()  -- Turn off Fake Lag before closing
+            toggleFakeLag()
         end
-        DropGUI:Destroy()
+        ScreenGui:Destroy()
     end)
 end
 
--- Create the GUI initially
 createGUI()
