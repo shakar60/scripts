@@ -1,3 +1,5 @@
+--// hi this is for exploiters that needs a position of something and free open source made by sh4k4r6o\\--
+
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "CordsGUI"
 screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
