@@ -1,21 +1,17 @@
--- Create a ScreenGui
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "CordsGUI"
 screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
--- Create a Frame to contain the coordinate label
 local frame = Instance.new("Frame")
 frame.Name = "CordsFrame"
 frame.Parent = screenGui
 frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 frame.BackgroundTransparency = 0.5
 frame.Position = UDim2.new(0.02, 0, 0.02, 0)
-frame.Size = UDim2.new(0.15, 0, 0.1, 0)  -- Narrower width
+frame.Size = UDim2.new(0.15, 0, 0.1, 0)
 frame.BorderSizePixel = 0
 frame.Active = true
 frame.Draggable = true
 
--- Create a title label
 local titleLabel = Instance.new("TextLabel")
 titleLabel.Name = "TitleLabel"
 titleLabel.Parent = frame
@@ -30,7 +26,6 @@ titleLabel.Text = "Cords"
 titleLabel.TextXAlignment = Enum.TextXAlignment.Center
 titleLabel.TextYAlignment = Enum.TextYAlignment.Center
 
--- Create a TextLabel to display the coordinates
 local coordLabel = Instance.new("TextLabel")
 coordLabel.Name = "CoordinateLabel"
 coordLabel.Parent = frame
@@ -46,7 +41,6 @@ coordLabel.TextYAlignment = Enum.TextYAlignment.Top
 coordLabel.TextWrapped = true
 coordLabel.Text = "X: 0\nY: 0\nZ: 0"
 
--- Create a close button
 local closeButton = Instance.new("TextButton")
 closeButton.Name = "CloseButton"
 closeButton.Parent = frame
@@ -60,7 +54,6 @@ closeButton.TextSize = 14
 closeButton.Text = "X"
 closeButton.TextStrokeTransparency = 0.8
 
--- Function to update the coordinates on the label
 local function updateCoordinates()
     local character = game.Players.LocalPlayer.Character
     if character and character:FindFirstChild("HumanoidRootPart") then
@@ -69,12 +62,10 @@ local function updateCoordinates()
     end
 end
 
--- Connect the update function to Heartbeat to refresh every frame
 game:GetService("RunService").Heartbeat:Connect(function()
     updateCoordinates()
 end)
 
--- Close button functionality
 closeButton.MouseButton1Click:Connect(function()
     screenGui:Destroy()
 end)
