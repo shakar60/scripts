@@ -12,6 +12,10 @@ frame.BorderSizePixel = 0
 frame.Active = true
 frame.Draggable = true
 
+local frameCorner = Instance.new("UICorner")
+frameCorner.CornerRadius = UDim.new(0, 15)
+frameCorner.Parent = frame
+
 local titleLabel = Instance.new("TextLabel")
 titleLabel.Name = "TitleLabel"
 titleLabel.Parent = frame
@@ -53,6 +57,10 @@ closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 closeButton.TextSize = 14
 closeButton.Text = "X"
 closeButton.TextStrokeTransparency = 0.8
+
+local closeButtonCorner = Instance.new("UICorner")
+closeButtonCorner.CornerRadius = UDim.new(0, 15)
+closeButtonCorner.Parent = closeButton
 
 local function updateCoordinates()
     local character = game.Players.LocalPlayer.Character
