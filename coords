@@ -16,57 +16,57 @@ local frameCorner = Instance.new("UICorner")
 frameCorner.CornerRadius = UDim.new(0, 15)
 frameCorner.Parent = frame
 
-local titleLabel = Instance.new("TextLabel")
-titleLabel.Name = "TitleLabel"
-titleLabel.Parent = frame
-titleLabel.BackgroundTransparency = 1
-titleLabel.Position = UDim2.new(0, 0, 0, 0)
-titleLabel.Size = UDim2.new(1, 0, 0.2, 0)
-titleLabel.Font = Enum.Font.Code
-titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleLabel.TextSize = 18
-titleLabel.TextStrokeTransparency = 0.8
-titleLabel.Text = "Cords"
-titleLabel.TextXAlignment = Enum.TextXAlignment.Center
-titleLabel.TextYAlignment = Enum.TextYAlignment.Center
+local Title = Instance.new("TextLabel")
+Title.Name = "Title"
+Title.Parent = frame
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0, 0, 0, 0)
+Title.Size = UDim2.new(1, 0, 0.2, 0)
+Title.Font = Enum.Font.Arcade
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 22
+Title.TextStrokeTransparency = 0.8
+Title.Text = "Cords"
+Title.TextXAlignment = Enum.TextXAlignment.Center
+Title.TextYAlignment = Enum.TextYAlignment.Center
 
-local coordLabel = Instance.new("TextLabel")
-coordLabel.Name = "CoordinateLabel"
-coordLabel.Parent = frame
-coordLabel.BackgroundTransparency = 1
-coordLabel.Position = UDim2.new(0, 0, 0.2, 0)
-coordLabel.Size = UDim2.new(1, 0, 0.8, 0)
-coordLabel.Font = Enum.Font.Code
-coordLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-coordLabel.TextSize = 16
-coordLabel.TextStrokeTransparency = 0.8
-coordLabel.TextXAlignment = Enum.TextXAlignment.Left
-coordLabel.TextYAlignment = Enum.TextYAlignment.Top
-coordLabel.TextWrapped = true
-coordLabel.Text = "X: 0\nY: 0\nZ: 0"
+local Cords = Instance.new("TextLabel")
+Cords.Name = "CoordinateLabel"
+Cords.Parent = frame
+Cords.BackgroundTransparency = 1
+Cords.Position = UDim2.new(0.1, 0, 0.2, 0)
+Cords.Size = UDim2.new(1, 0, 0.8, 0)
+Cords.Font = Enum.Font.Arcade
+Cords.TextColor3 = Color3.fromRGB(255, 255, 255)
+Cords.TextSize = 18
+Cords.TextStrokeTransparency = 0.8
+Cords.TextXAlignment = Enum.TextXAlignment.Left
+Cords.TextYAlignment = Enum.TextYAlignment.Top
+Cords.TextWrapped = true
+Cords.Text = "X: 0\nY: 0\nZ: 0"
 
-local closeButton = Instance.new("TextButton")
-closeButton.Name = "CloseButton"
-closeButton.Parent = frame
-closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-closeButton.BorderSizePixel = 0
-closeButton.Position = UDim2.new(1, -30, 0, 0)
-closeButton.Size = UDim2.new(0, 30, 0, 30)
-closeButton.Font = Enum.Font.Code
-closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-closeButton.TextSize = 14
-closeButton.Text = "X"
-closeButton.TextStrokeTransparency = 0.8
+local Destroy = Instance.new("TextButton")
+Destroy.Name = "Destroy"
+Destroy.Parent = frame
+Destroy.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+Destroy.BorderSizePixel = 0
+Destroy.Position = UDim2.new(1, -30, 0.05, 0)
+Destroy.Size = UDim2.new(0, 25, 0, 25)
+Destroy.Font = Enum.Font.Arcade
+Destroy.TextColor3 = Color3.fromRGB(255, 255, 255)
+Destroy.TextSize = 20
+Destroy.Text = "X"
+Destroy.TextStrokeTransparency = 0.8
 
-local closeButtonCorner = Instance.new("UICorner")
-closeButtonCorner.CornerRadius = UDim.new(0, 15)
-closeButtonCorner.Parent = closeButton
+local DestroyCorner = Instance.new("UICorner")
+DestroyCorner.CornerRadius = UDim.new(0, 15)
+DestroyCorner.Parent = Destroy
 
 local function updateCoordinates()
     local character = game.Players.LocalPlayer.Character
     if character and character:FindFirstChild("HumanoidRootPart") then
         local position = character.HumanoidRootPart.Position
-        coordLabel.Text = string.format("X: %d\nY: %d\nZ: %d", math.floor(position.X), math.floor(position.Y), math.floor(position.Z))
+        Cords.Text = string.format("X: %d\nY: %d\nZ: %d", math.floor(position.X), math.floor(position.Y), math.floor(position.Z))
     end
 end
 
@@ -74,6 +74,6 @@ game:GetService("RunService").Heartbeat:Connect(function()
     updateCoordinates()
 end)
 
-closeButton.MouseButton1Click:Connect(function()
+Destroy.MouseButton1Click:Connect(function()
     screenGui:Destroy()
 end)
