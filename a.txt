@@ -1,0 +1,68 @@
+local CK
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local lastPosition = UDim2.new(0.25, -50, 0.25, -25)
+
+local function UpdPos()
+    local ScreenGui = playerGui:FindFirstChild("ScreenGui")
+    if ScreenGui then
+        local CK = ScreenGui:FindFirstChild("CK")
+        if CK then
+            lastPosition = CK.Position
+        end
+    end
+end
+
+local function CreateCK()
+    local ScreenGui = playerGui:FindFirstChild("ScreenGui")
+    if not ScreenGui then
+        ScreenGui = Instance.new("ScreenGui")
+        ScreenGui.Name = "ScreenGui"
+        ScreenGui.ResetOnSpawn = false
+        ScreenGui.Parent = playerGui
+    end
+
+    if not CK then
+        CK = Instance.new("ImageButton")
+        CK.Name = "CK"
+        CK.Size = getgenv().CK.Size
+        CK.BackgroundColor3 = getgenv().CK.BackgroundColor
+        CK.Position = lastPosition
+        CK.BackgroundTransparency = getgenv().CK.GuiTransparency
+        CK.Image = getgenv().CK.Image
+        CK.ImageTransparency = getgenv().CK.ImageTransparency
+        CK.Active = true
+        CK.Draggable = true
+        CK.Parent = ScreenGui
+
+        local UICorner = Instance.new("UICorner")
+        UICorner.CornerRadius = UDim.new(0, 25)
+        UICorner.Parent = CK
+
+        CK.MouseButton1Click:Connect(function()
+            local vim = game:GetService("VirtualInputManager")
+            vim:SendKeyEvent(true, getgenv().CK.KeyCode, false, game)
+        end)
+    end
+end
+
+local function onChatMessage(message)
+    if message == getgenv().CK.DiscordInv then
+        setclipboard("https://discord.gg/vwXXfnuxUg")
+
+    elseif message == getgenv().CK.HideGuiMsg then
+        if CK then
+			UpdPos()
+            CK:Destroy()
+            CK = nil
+        end
+    elseif message == getgenv().CK.ShowGuiMsg then
+        if not CK then
+            CreateCK()
+        end
+    end
+end
+
+game.Players.LocalPlayer.Chatted:Connect(onChatMessage)
+
+CreateCK()
