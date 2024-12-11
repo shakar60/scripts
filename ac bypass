@@ -1,3 +1,5 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/CongoOhioDog/automatic-spork/main/Adonis%20Bypass.lua"))();
+
 for _, con in next, getconnections(workspace.CurrentCamera.Changed) do
 task.wait()
     con:Disable()
