@@ -1,19 +1,23 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/CongoOhioDog/automatic-spork/main/Adonis%20Bypass.lua"))();
+loadstring(game:HttpGet("https://raw.githubusercontent.com/CongoOhioDog/automatic-spork/main/Adonis%20Bypass.lua"))()
+loadstring(game:HttpGet("https://pastebin.com/raw/RY4WhKnW", true))()
+loadstring(game:HttpGet("https://gist.githubusercontent.com/Nothingnesser1/4d874218d64fa8599b03784953dc0e19/raw/2f94ec59550e82bffadd8e7192c2781fa16ab799/main%2520Script"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua", true))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/RelkzzRebranded/Bypassed---OBFUSCATED..../main/Adonis%20BYPASS.lua"))()
 
 for _, con in next, getconnections(workspace.CurrentCamera.Changed) do
-task.wait()
+    task.wait()
     con:Disable()
 end
+
 for _, con in next, getconnections(workspace.CurrentCamera:GetPropertyChangedSignal("CFrame")) do
-   task.wait()
+    task.wait()
     con:Disable()
 end
 
 local getinfo = getinfo or debug.getinfo
 local DEBUG = false
 local Hooked = {}
-
-local Detected, Kill
+local Detected, Kill = nil, nil
 
 setthreadidentity(2)
 
@@ -25,14 +29,11 @@ for i, v in getgc(true) do
         if typeof(DetectFunc) == "function" and not Detected then
             Detected = DetectFunc
 
-            local Old; Old = hookfunction(Detected, function(Action, Info, NoCrash)
+            local OldDetect
+            OldDetect = hookfunction(Detected, function(Action, Info, NoCrash)
                 if Action ~= "_" then
-                    if DEBUG then
-                        warn(Adonis AntiCheat flagged\nMethod: {Action}\nInfo: {Info})
-                    end
+                    return true
                 end
-
-                return true
             end)
 
             table.insert(Hooked, Detected)
@@ -40,10 +41,9 @@ for i, v in getgc(true) do
 
         if rawget(v, "Variables") and rawget(v, "Process") and typeof(KillFunc) == "function" and not Kill then
             Kill = KillFunc
-            local Old; Old = hookfunction(Kill, function(Info)
-                if DEBUG then
-                    warn(Adonis AntiCheat tried to kill (fallback): {Info})
-                end
+
+            local OldKill
+            OldKill = hookfunction(Kill, function(Info)
             end)
 
             table.insert(Hooked, Kill)
@@ -51,57 +51,45 @@ for i, v in getgc(true) do
     end
 end
 
-local Old; Old = hookfunction(getrenv().debug.info, newcclosure(function(...)
+local OldDebugInfo
+OldDebugInfo = hookfunction(getrenv().debug.info, newcclosure(function(...)
     local LevelOrFunc, Info = ...
 
     if Detected and LevelOrFunc == Detected then
-        if DEBUG then
-            warn(Adonis AntiCheat sanity check detected and broken)
-        end
-
         return coroutine.yield(coroutine.running())
     end
 
-    return Old(...)
+    return OldDebugInfo(...)
 end))
 
-    Bypass = true
+local Bypass = true
 
-    local GameMT = getrawmetatable(game)
-    local OldIndexFunc = GameMT.__index;
-    local OldNamecallFunc = GameMT.__namecall
-    setreadonly(GameMT, false)
-    if (Bypass == true) then
-        GameMT.__namecall = newcclosure(function(self, ...) 
-            local NamecallArgs = {...}
-    
-            local DETECTION_STRINGS = 
-            {
-                'CHECKER_1';
-                'CHECKER';
-                'OneMoreTime';
-                'checkingSPEED';
-                'PERMAIDBAN';
-                'BANREMOTE';
-                'FORCEFIELD';
-                'TeleportDetect';
-            };
-    
-            if (table.find(DETECTION_STRINGS, NamecallArgs[1]) and getnamecallmethod() == 'FireServer') then 
-                return;
-            end;
-            local suc, err = pcall(getfenv, 2)
-            if not (err) then 
-                if getfenv(2).crash then 
-                    hookfunction(getfenv(2).crash, function()                        
-                    end)
-                end
+local GameMT = getrawmetatable(game)
+local OldIndexFunc = GameMT.__index
+local OldNamecallFunc = GameMT.__namecall
+
+setreadonly(GameMT, false)
+
+if Bypass then
+    GameMT.__namecall = newcclosure(function(self, ...)
+        local NamecallArgs = {...}
+
+        local DETECTION_STRINGS = {
+            'CHECKER_1', 'CHECKER', 'OneMoreTime', 'checkingSPEED', 'PERMAIDBAN',
+            'BANREMOTE', 'FORCEFIELD', 'TeleportDetect'
+        }
+
+        if (table.find(DETECTION_STRINGS, NamecallArgs[1]) and getnamecallmethod() == 'FireServer') then
+            return
+        end
+
+        local suc, err = pcall(getfenv, 2)
+        if not err then
+            if getfenv(2).crash then
+                hookfunction(getfenv(2).crash, function() end)
             end
-            return OldNamecallFunc(self, ...)
-        end)
-    end
+        end
 
-loadstring(game:HttpGet("https://pastebin.com/raw/RY4WhKnW",true))()
-loadstring(game:HttpGet("https://gist.githubusercontent.com/Nothingnesser1/4d874218d64fa8599b03784953dc0e19/raw/2f94ec59550e82bffadd8e7192c2781fa16ab799/main%2520Script"))()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua", true))()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/RelkzzRebranded/Bypassed---OBFUSCATED..../main/Adonis%20BYPASS.lua"))()
+        return OldNamecallFunc(self, ...)
+    end)
+end
