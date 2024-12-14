@@ -232,11 +232,14 @@ end)
 
 setthreadidentity(7)
 
-for _, con in next, getconnections(workspace.CurrentCamera.Changed) do
-  task.wait()
-    con:Disable()
-end
-for _, con in next, getconnections(workspace.CurrentCamera:GetPropertyChangedSignal("CFrame")) do
-   task.wait()
-    con:Disable()
+if game.PlaceId == 9825515356 then
+    for _, con in next, getconnections(workspace.CurrentCamera.Changed) do
+        task.wait()
+        con:Disable()
+    end
+
+    for _, con in next, getconnections(workspace.CurrentCamera:GetPropertyChangedSignal("CFrame")) do
+        task.wait()
+        con:Disable()
+    end
 end
