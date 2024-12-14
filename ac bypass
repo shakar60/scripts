@@ -243,3 +243,16 @@ if game.PlaceId == 9825515356 then
         con:Disable()
     end
 end
+
+for Key, Object in pairs(getgc(true)) do
+    if type(Object) == "table" then
+        setreadonly(Object, false)
+        local indexInstance = rawget(Object, "indexInstance")
+        if type(indexInstance) == "table" and indexInstance[1] == "kick" then
+            setreadonly(indexInstance, false)
+            rawset(Object, "Table", {"kick", function() coroutine.yield() end}) --> By using coroutine.yield() we are preventing script table from communicating with the server.
+            warn("\n---[ INFO ]---\nBypassed Adonis Anti-Cheat/Anti-Exploit.\nBypass Method: Preventing Script Table From Communicating With The Server.")
+            break
+        end
+    end
+end
