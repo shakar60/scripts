@@ -232,7 +232,6 @@ end)
 
 setthreadidentity(7)
 
-if game.PlaceId == 9825515356 then
     for _, con in next, getconnections(workspace.CurrentCamera.Changed) do
         task.wait()
         con:Disable()
