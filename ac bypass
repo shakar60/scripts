@@ -1,6 +1,6 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua",true))()
 
-local getinfo = getinfo or debug.getinfo
+--[[local getinfo = getinfo or debug.getinfo
 local DEBUG = false
 local Hooked = {}
 
@@ -295,3 +295,4 @@ end
             return OldNamecallFunc(self, ...)
         end)
     end
+]]
