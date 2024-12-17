@@ -32,12 +32,6 @@ end
 
 connectCharacterAdded()
 
-player.CharacterRemoving:Connect(
-    function()
-        Tool:Destroy()
-    end
-)
-
 local MainColor = Color3.fromRGB(255, 255, 255);
 getgenv().Configurations = {
     Target = {
@@ -2141,55 +2135,25 @@ Frost.Name = "Frost"
 Frost.Parent = game.CoreGui
 Frost.ZIndexBehavior = Enum.ZIndexBehavior.Global
 
-local Frame = Instance.new("Frame")
-Frame.Parent = Frost
-Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Frame.BorderSizePixel = 0
-Frame.Position = UDim2.new(0.133798108, 0, 0.20107238, 0)
-Frame.Size = UDim2.new(0, 120, 0, 60)
-Frame.Active = true
-Frame.Draggable = true
-
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 20)
-UICorner.Parent = Frame
-
 local TextButton = Instance.new("TextButton")
-TextButton.Parent = Frame
-TextButton.BackgroundColor3 = Color3.fromRGB(71, 71, 71)
-TextButton.BackgroundTransparency = 0.95
+TextButton.Parent = Frost
+TextButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BackgroundTransparency = 0.3
 TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 TextButton.BorderSizePixel = 0
-TextButton.Size = UDim2.new(0, 96, 0, 35)
+TextButton.Size = UDim2.new(0, 96, 0, 55)
 TextButton.Font = Enum.Font.Creepster
 TextButton.Text = "Lock Button"
 TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextButton.TextScaled = true
 TextButton.TextSize = 18
 TextButton.TextWrapped = true
+TextButton.Draggable = true
+TextButton.Position = UDim2.new(0.133798108, 0, 0.20107238, 0)
 
-TextButton.Position = UDim2.new(0.5, -48, 0.5, -17)
-
-local CloseButton = Instance.new("TextButton")
-CloseButton.Parent = Frame
-CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-CloseButton.Size = UDim2.new(0, 18, 0, 18)
-CloseButton.Position = UDim2.new(1, -23, 0, 5)
-CloseButton.Font = Enum.Font.Creepster
-CloseButton.Text = "X"
-CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseButton.TextSize = 14
-CloseButton.TextScaled = true
-CloseButton.TextWrapped = true
-
-local UICornerX = Instance.new("UICorner")
-UICornerX.CornerRadius = UDim.new(0, 8)
-UICornerX.Parent = CloseButton
-
-CloseButton.MouseButton1Click:Connect(function()
-    Frost:Destroy()
-end)
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 20)
+UICorner.Parent = TextButton
 
 local state = true
 TextButton.MouseButton1Click:Connect(function()
@@ -2413,6 +2377,7 @@ ImageButton.BorderSizePixel = 0
 ImageButton.Position = UDim2.new(0.744, 0,0.145, 0)
 ImageButton.Size = UDim2.new(0.0914429501, 0, 0.15372169, 0)
 ImageButton.Image = "rbxassetid://86865501962131"
+ImageButton.Draggable = true
 
 -- UI Visibility Toggle
 local isVisible = true
@@ -2533,58 +2498,6 @@ TextButton.MouseButton1Click:Connect(function()
         end
     end
 end
-)
-end)
-
-
-Menu.Container("Main", "Tools", "Right")
-
-Menu.Button("Main", "Tools", "Lock Tool (Perm)", function()
-local Tool = Instance.new("Tool")
-Tool.RequiresHandle = false
-Tool.Name = "Lock Tool"
-Tool.Parent = game.Players.LocalPlayer.Backpack
-
-local player = game.Players.LocalPlayer
-
-local function connectCharacterAdded()
-    player.CharacterAdded:Connect(onCharacterAdded)
-end
-
-connectCharacterAdded()
-
-player.CharacterRemoving:Connect(
-    function()
-        Tool.Parent = game.Players.LocalPlayer.Backpack
-    end
-)
-end)
-
-Menu.Button("Main", "Tools", "Lock Tool (Lose on respawn)", function()
-local Tool = Instance.new("Tool")
-Tool.RequiresHandle = false
-Tool.Name = "Lock Tool"
-Tool.Parent = game.Players.LocalPlayer.Backpack
-
-local player = game.Players.LocalPlayer
-
-local function onCharacterAdded(character)
-    local existingTool = character:FindFirstChild(Tool.Name)
-    if existingTool then
-        existingTool:Destroy()
-    end
-end
-
-local function connectCharacterAdded()
-    player.CharacterAdded:Connect(onCharacterAdded)
-end
-
-connectCharacterAdded()
-
-player.CharacterRemoving:Connect(
-    function()
-        Tool:Destroy()
-    end
 )
 end)
 
