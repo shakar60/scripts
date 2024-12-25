@@ -33,10 +33,10 @@ local Library = {
     BackgroundColor = Color3.fromRGB(25, 25, 25);
     AccentColor = Color3.fromRGB(255, 255, 255);
     OutlineColor = Color3.fromRGB(0, 0, 0);
-    RiskColor = Color3.fromRGB(0, 0, 0),
+    RiskColor = Color3.fromRGB(20, 20, 20),
 
     Black = Color3.new(20, 20, 20);
-    Font = Enum.Font.Arcade,
+    Font = Enum.Font.Kalam,
 
     OpenedFrames = {};
     DependencyBoxes = {};
