@@ -32,8 +32,8 @@ local Library = {
     MainColor = Color3.fromRGB(28, 28, 28);
     BackgroundColor = Color3.fromRGB(25, 25, 25);
     AccentColor = Color3.fromRGB(255, 255, 255);
-    OutlineColor = Color3.fromRGB(0, 0, 0);
-    RiskColor = Color3.fromRGB(20, 20, 20),
+    OutlineColor = Color3.fromRGB(55, 55, 55);
+    RiskColor = Color3.fromRGB(0, 0, 0),
 
     Black = Color3.new(0, 0, 0);
     Font = Enum.Font.Arcade,
