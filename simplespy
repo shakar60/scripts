@@ -228,7 +228,7 @@ local Background = Create("Frame",{
     BackgroundTransparency = 1,
     Position = UDim2.new(0, 500, 0, 200),
     Size = UDim2.new(0, 450, 0, 268),
-    Visible = getgenv().SSVisible
+    Visible = getgenv().Visible
 })
 
 local LeftPanel = Create("Frame",{
