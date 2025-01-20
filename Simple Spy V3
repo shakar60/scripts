@@ -1,4 +1,4 @@
--- modified by sh4k4r6o
+-- modified by sh4k4r6o also must use with dark dex by me
 
 if getgenv().SimpleSpyExecuted and type(getgenv().SimpleSpyShutdown) == "function" then
     getgenv().SimpleSpyShutdown()
