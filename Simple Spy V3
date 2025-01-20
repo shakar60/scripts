@@ -1,4 +1,4 @@
--- https://github.com/78n/SimpleSpy
+-- modified by sh4k4r6o
 
 if getgenv().SimpleSpyExecuted and type(getgenv().SimpleSpyShutdown) == "function" then
     getgenv().SimpleSpyShutdown()
