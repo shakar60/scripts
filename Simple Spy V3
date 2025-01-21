@@ -436,12 +436,13 @@ end
 
 --- Toggles the remote spy method (when button clicked)
 function onToggleButtonClick()
-    if toggle then
+    getgenv().ToggleSpy = not getgenv().ToggleSpy
+    
+    if getgenv().ToggleSpy then
         TweenService:Create(Simple, TweenInfo.new(0.5), {TextColor3 = Color3.fromRGB(252, 51, 51)}):Play()
     else
         TweenService:Create(Simple, TweenInfo.new(0.5), {TextColor3 = Color3.fromRGB(68, 206, 91)}):Play()
     end
-    toggleSpyMethod()
 end
 
 --- Reconnects bringBackOnResize if the current viewport changes and also connects it initially
