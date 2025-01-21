@@ -7,7 +7,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/Pixeluted/adoniscries
 	Final Version
 	Developed by Moon
 	Modified for Infinite Yield
-    Modified by sh4k4r6o
+        Modified by sh4k4r6o
 	
 	Dex is a debugging suite designed to help the user debug games and find any potential vulnerabilities.
 ]]
