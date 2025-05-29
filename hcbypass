@@ -1,0 +1,11 @@
+local connections = {
+    getconnections(workspace.CurrentCamera.Changed),
+    getconnections(workspace.CurrentCamera:GetPropertyChangedSignal("CFrame"))
+}
+
+for _, connList in ipairs(connections) do
+    for _, con in next, connList do
+        task.wait()
+        con:Disable()
+    end
+end
