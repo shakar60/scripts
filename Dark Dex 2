@@ -8,13 +8,6 @@
 	Dex is a debugging suite designed to help the user debug games and find any potential vulnerabilities.
 ]]
 
-if not dex then
-    dex = {
-        draggablebutton = true,
-        draggablelist = true
-    }
-end
-
 local nodes = {}
 local selection
 local cloneref = cloneref or function(...) return ... end
