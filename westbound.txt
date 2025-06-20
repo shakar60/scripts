@@ -1,3 +1,5 @@
+-- hi shakar aka rick didnt make this
+
 game:GetService("StarterGui"):SetCore("SendNotification",{
     Title = "this admin made by";
     Text = "!LUCIFER#9773";
