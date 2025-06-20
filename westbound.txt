@@ -1,0 +1,146 @@
+game:GetService("StarterGui"):SetCore("SendNotification",{
+    Title = "this admin made by";
+    Text = "!LUCIFER#9773";
+    Duration = 10;
+})
+
+local Player = game.Players.LocalPlayer
+
+Player.Chatted:connect(function(cht)
+	if cht:match(".gun mod") then
+		local list = require(game:GetService("ReplicatedStorage").GunScripts.GunStats)
+for i,v in pairs(list) do
+    v.Spread = 0
+    v.prepTime = 0.1
+    v.equipTime = 0.1
+    v.MaxShots = math.huge
+    v.ReloadSpeed = 0.1
+    v.BulletSpeed = 250
+    v.HipFireAccuracy = 0
+    v.ZoomAccuracy = 0
+end
+	elseif cht:match(".bank") then
+		local o = game.Players.LocalPlayer.Character.HumanoidRootPart
+  local lol = CFrame.new(Vector3.new(1620.7689208984375, 121.34999084472656, 1576.933837890625))
+  o.CFrame = lol
+	elseif cht:match(".bank1")then
+        local io = game.Players.LocalPlayer.Character.HumanoidRootPart
+  local ol = CFrame.new(Vector3.new(874.121826171875, 24.674365997314453, 197.04891967773438))
+  io.CFrame = ol
+    elseif cht:match(".bank2")then
+        local oi = game.Players.LocalPlayer.Character.HumanoidRootPart
+  local lo = CFrame.new(Vector3.new(264.55621337890625, 13.35000228881836, -178.6842041015625))
+  oi.CFrame = lo
+    elseif cht:match(".aimbot")then
+        local Camera = game:GetService("Workspace").CurrentCamera
+local Players = game:GetService("Players")
+local LocalPlayer = game:GetService("Players").LocalPlayer
+
+local function GetClosestPlayer()
+   local ClosestPlayer = nil
+   local FarthestDistance = math.huge
+
+   for i, v in pairs(Players.GetPlayers(Players)) do
+       if v ~= LocalPlayer and v.Character and v.Character.FindFirstChild(v.Character, "HumanoidRootPart") then
+           local DistanceFromPlayer = (LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude
+
+           if DistanceFromPlayer < FarthestDistance then
+               FarthestDistance = DistanceFromPlayer
+               ClosestPlayer = v
+           end
+       end
+   end
+
+   if ClosestPlayer then
+       return ClosestPlayer
+   end
+end
+
+local GameMetaTable = getrawmetatable(game)
+local OldGameMetaTableNamecall = GameMetaTable.__namecall
+setreadonly(GameMetaTable, false)
+
+GameMetaTable.__namecall = newcclosure(function(object, ...)
+   local NamecallMethod = getnamecallmethod()
+   local Arguments = {...}
+
+   if tostring(NamecallMethod) == "FindPartOnRayWithIgnoreList" then
+       local ClosestPlayer = GetClosestPlayer()
+       
+       if ClosestPlayer and ClosestPlayer.Character then
+           Arguments[1] = Ray.new(Camera.CFrame.Position, (ClosestPlayer.Character.Head.Position - Camera.CFrame.Position).Unit * (Camera.CFrame.Position - ClosestPlayer.Character.Head.Position).Magnitude)
+       end
+   end
+
+   return OldGameMetaTableNamecall(object, unpack(Arguments))
+end)
+
+setreadonly(GameMetaTable, true)
+    elseif cht:match(".esp")then
+        function CreateSG(name,parent,face)
+    local SurfaceGui = Instance.new("SurfaceGui",parent)
+    SurfaceGui.Parent = parent
+    SurfaceGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    SurfaceGui.Face = Enum.NormalId[face]
+	SurfaceGui.LightInfluence = 0
+	SurfaceGui.ResetOnSpawn = false
+    SurfaceGui.Name = name
+    SurfaceGui.AlwaysOnTop = true
+    local Frame = Instance.new("Frame",SurfaceGui)
+	Frame.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+	Frame.Size = UDim2.new(1,0,1,0)
+end
+
+while wait(1) do
+for i,v in pairs (game:GetService("Players"):GetPlayers()) do
+    if v ~= game:GetService("Players").LocalPlayer and v.Character ~= nil and v.Character:FindFirstChild("Head") and v.Character.Head:FindFirstChild("cham") == nil then
+        for i,v in pairs (v.Character:GetChildren()) do
+        if v:IsA("MeshPart") or v.Name == "Head" then
+        CreateSG("cham",v,"Back")
+        CreateSG("cham",v,"Front")
+        CreateSG("cham",v,"Left")
+        CreateSG("cham",v,"Right")
+        CreateSG("cham",v,"Right")
+        CreateSG("cham",v,"Top")
+        CreateSG("cham",v,"Bottom")
+        end
+        end
+    end
+end
+end
+
+	elseif cht:match(".cmds") then
+		game:GetService("StarterGui"):SetCore("SendNotification",{
+    Title = "command's is";
+    Text = ".aimbot .gun mod .esp .bank .bank1 . bank2      you can use /e";
+    Duration = 20;
+})
+end
+end)
+
+game:GetService("StarterGui"):SetCore("SendNotification",{
+    Title = "westbound admin";
+    Text = "to see command's say .cmds";
+    Duration = 15;
+})
+
+local function callback(Text)
+ if Text == "discord" then
+  setclipboard("!LUCIFER#9773")
+elseif Text == ("YouTube") then
+ setclipboard("https://youtube.com/channel/UCJ142XcqAgNGU1458OBu5Og")
+ end
+end
+ 
+local NotificationBindable = Instance.new("BindableFunction")
+NotificationBindable.OnInvoke = callback
+--
+game.StarterGui:SetCore("SendNotification",  {
+ Title = "mad by LUCIFER";
+ Text = "click on button to copy!";
+ Icon = "";
+ Duration = 30;
+ Button1 = "discord";
+ Button2 = "YouTube";
+ Callback = NotificationBindable;
+})
