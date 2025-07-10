@@ -14,11 +14,11 @@ local startTime = os.clock()
 repeat wait() until game:IsLoaded()
 
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Pixeluted/adoniscries/main/Source.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/TheRealXORA/Roblox/refs/heads/Main/Scripts%20/Anti-Cheats%20Bypassers%20/Adonis.luau",true))()
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/TheRealXORA/Roblox/refs/heads/Main/Scripts%20/Anti-Cheats%20Bypassers%20/Dan%20FFA.lua",true))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/TheRealXORA/Roblox/refs/heads/Main/Scripts%20/Anti-Cheats%20Bypassers%20/Dan%20FFA.luau",true))()
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/refs/heads/main/hcbypass",true))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/TheRealXORA/Roblox/refs/heads/Main/Scripts%20/Anti-Cheats%20Bypassers%20/Dah%20Aim%20Trainer.luau",true))()
 
 if not LPH_OBFUSCATED then
     LPH_JIT = function(...) return ... end
