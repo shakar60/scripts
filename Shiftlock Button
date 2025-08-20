@@ -29,7 +29,6 @@ ShiftLockButton.Position = UDim2.new(0.7, 0, 0.75, 0)
 ShiftLockButton.Size = UDim2.new(0.05, 0, 0.05, 0)
 ShiftLockButton.SizeConstraint = Enum.SizeConstraint.RelativeXX
 ShiftLockButton.Image = States.Off
-ShiftLockButton.Draggable = true
 
 ShiftlockCursor.Name = "Shiftlock Cursor"
 ShiftlockCursor.Parent = ShiftLockScreenGui
@@ -43,49 +42,49 @@ ShiftlockCursor.BackgroundTransparency = 1
 ShiftlockCursor.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 ShiftlockCursor.Visible = false
 
-ShiftLockButton.MouseButton1Click:Connect(
-    function()
-        if not Active then
-            Active =
-                RunService.RenderStepped:Connect(
-                function()
-                    Player.Character.Humanoid.AutoRotate = false
-                    ShiftLockButton.Image = States.On
-                    ShiftlockCursor.Visible = true
-                    Player.Character.HumanoidRootPart.CFrame =
-                        CFrame.new(
-                        Player.Character.HumanoidRootPart.Position,
-                        Vector3.new(
-                            workspace.CurrentCamera.CFrame.LookVector.X * MaxLength,
-                            Player.Character.HumanoidRootPart.Position.Y,
-                            workspace.CurrentCamera.CFrame.LookVector.Z * MaxLength
-                        )
+local function ToggleShiftLock()
+    if not Active then
+        Active =
+            RunService.RenderStepped:Connect(
+            function()
+                Player.Character.Humanoid.AutoRotate = false
+                ShiftLockButton.Image = States.On
+                ShiftlockCursor.Visible = true
+                Player.Character.HumanoidRootPart.CFrame =
+                    CFrame.new(
+                    Player.Character.HumanoidRootPart.Position,
+                    Vector3.new(
+                        workspace.CurrentCamera.CFrame.LookVector.X * MaxLength,
+                        Player.Character.HumanoidRootPart.Position.Y,
+                        workspace.CurrentCamera.CFrame.LookVector.Z * MaxLength
                     )
-                    workspace.CurrentCamera.CFrame = workspace.CurrentCamera.CFrame * EnabledOffset
-                    workspace.CurrentCamera.Focus =
-                        CFrame.fromMatrix(
-                        workspace.CurrentCamera.Focus.Position,
-                        workspace.CurrentCamera.CFrame.RightVector,
-                        workspace.CurrentCamera.CFrame.UpVector
-                    ) * EnabledOffset
-                end
-            )
-        else
-            Player.Character.Humanoid.AutoRotate = true
-            ShiftLockButton.Image = States.Off
-            workspace.CurrentCamera.CFrame = workspace.CurrentCamera.CFrame * DisabledOffset
-            ShiftlockCursor.Visible = false
-            pcall(
-                function()
-                    Active:Disconnect()
-                    Active = nil
-                end
-            )
-        end
+                )
+                workspace.CurrentCamera.CFrame = workspace.CurrentCamera.CFrame * EnabledOffset
+                workspace.CurrentCamera.Focus =
+                    CFrame.fromMatrix(
+                    workspace.CurrentCamera.Focus.Position,
+                    workspace.CurrentCamera.CFrame.RightVector,
+                    workspace.CurrentCamera.CFrame.UpVector
+                ) * EnabledOffset
+            end
+        )
+    else
+        Player.Character.Humanoid.AutoRotate = true
+        ShiftLockButton.Image = States.Off
+        workspace.CurrentCamera.CFrame = workspace.CurrentCamera.CFrame * DisabledOffset
+        ShiftlockCursor.Visible = false
+        pcall(
+            function()
+                Active:Disconnect()
+                Active = nil
+            end
+        )
     end
-)
+end
 
-local ShiftLockAction = ContextActionService:BindAction("Shift Lock", ShiftLock, false, "On")
+ShiftLockButton.MouseButton1Click:Connect(ToggleShiftLock)
+
+local ShiftLockAction = ContextActionService:BindAction("Shift Lock", function() ToggleShiftLock() end, false, Enum.KeyCode.LeftShift)
 ContextActionService:SetPosition("Shift Lock", UDim2.new(0.8, 0, 0.8, 0))
 
 return {} and ShiftLockAction
