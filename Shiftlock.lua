@@ -84,7 +84,13 @@ end
 
 ShiftLockButton.MouseButton1Click:Connect(ToggleShiftLock)
 
-local ShiftLockAction = ContextActionService:BindAction("Shift Lock", function() ToggleShiftLock() end, false, Enum.KeyCode.LeftShift)
+local function ShiftLockActionFunction(actionName, inputState, inputObject)
+    if inputState == Enum.UserInputState.Begin then
+        ToggleShiftLock()
+    end
+end
+
+ContextActionService:BindAction("Shift Lock", ShiftLockActionFunction, false, Enum.KeyCode.LeftShift)
 ContextActionService:SetPosition("Shift Lock", UDim2.new(0.8, 0, 0.8, 0))
 
-return {} and ShiftLockAction
+return {}
