@@ -56,72 +56,94 @@
 
 ** RickWare Configs **
 
-1. Arab hood 140ms 
+1. Ar Hood 80ms
 
-2. Comp hood 60ms 
+2. Arab Hood 140ms
 
-3. Comp hood 90ms 
+3. Comp Hood 60ms
 
-4. Comp hood 130ms 
+4. Comp Hood 90ms
 
-5. Da center 120ms 
+5. Comp Hood 130ms
 
-6. Da center 160ms 
+6. Da Center 120ms
 
-7. Da downhill 85ms 
+7. Da Center 160ms
 
-8. Da downhill 100ms 
+8. Da Downhill 85ms
 
-9. Da downhill 90ms 
+9. Da Downhill 90ms
 
-10. Da downhill 120ms 
+10. Da Downhill 100ms
 
-11. Da downhill 120ms V2 
+11. Da Downhill 120ms
 
-12. Da hood 100ms 
+12. Da Downhill 120ms V2
 
-13. Da strike 50ms 
+13. Da Hills 80ms
 
-14. Da strike 75ms 
+14. Da Hood 70ms
 
-15. Da strike 80ms 
+15. Da Hood 100ms
 
-16. Da strike 90ms 
+16. Da Hood 100ms V2
 
-17. Da strike 100ms 
+17. Da Hood 150ms
 
-18. Da strike 130ms 
+18. Da Strike 50ms
 
-19. Da strike 200ms 
+19. Da Strike 75ms
 
-20. Dan FFA 180ms 
+20. Da Strike 80ms
 
-21. Dea hood 80ms 
+21. Da Strike 90ms
 
-22. Dea hood 110ms 
+22. Da Strike 100ms
 
-23. Hood customs 100ms 
+23. Da Strike 120ms
 
-24. Hood customs All ms 
+24. Da Strike 130ms
 
-25. Hood customs Anarchy 
+25. Da Strike 200ms
 
-26. Hood customs Controller 
+26. Dan FFA 180ms
 
-27. Hood customs Controller V2 
+27. Dan FFA 200ms
 
-28. Hood z 130ms 
+28. Dea Hood 80ms
 
-29. Locker hood 120ms 
+29. Dea Hood 110ms
 
-30. Model hood 130ms 
+30. Hood Customs 60ms
 
-31. Murder Vs Sheriff 
+31. Hood Customs 100ms
 
-32. Voidfall 110ms 
+32. Hood Customs All Ms
 
-33. Zee hood 100ms 
+33. Hood Customs Anarchy
 
-34. Zee hood 100ms V2 
+34. Hood Customs Controller
 
-35. Zer hood 90ms 
+35. Hood Customs Controller V2
+
+36. Hood Customs FFA 100ms
+
+37. Hood Z 130ms
+
+38. Locker Hood 120ms
+
+39. Model Hood 130ms
+
+40. Murder Vs Sheriff
+
+41. Voidfall 110ms
+
+42. Zee Hood 60ms
+
+43. Zee Hood 100ms
+
+44. Zee Hood 100ms V2
+
+45. Zee Hood 100ms V3
+
+46. Zer Hood 90ms
