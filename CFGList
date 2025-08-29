@@ -56,96 +56,102 @@
 
 ** RickWare Configs **
 
-1. Ar Hood 80ms 
+1. Ar Hood 80ms
 
-2. Arab Hood 140ms 
+2. Arab Hood 140ms
 
-3. Comp Hood 60ms 
+3. Comp Hood 60ms
 
-4. Comp Hood 90ms 
+4. Comp Hood 90ms
 
-5. Comp Hood 130ms 
+5. Comp Hood 130ms
 
-6. Da Center 120ms 
+6. Da Center 120ms
 
-7. Da Center 160ms 
+7. Da Center 160ms
 
-8. Da Downhill 85ms 
+8. Da Downhill 85ms
 
-9. Da Downhill 90ms 
+9. Da Downhill 90ms
 
-10. Da Downhill 100ms 
+10. Da Downhill 100ms
 
-11. Da Downhill 120ms 
+11. Da Downhill 120ms
 
-12. Da Downhill 120ms V2 
+12. Da Downhill 120ms V2
 
-13. Da Hills 80ms 
+13. Da Hills 80ms
 
-14. Da Hood 70ms 
+14. Da Hood 60ms
 
-15. Da Hood 100ms 
+15. Da Hood 70ms
 
-16. Da Hood 100ms V2 
+16. Da Hood 70ms V2
 
-17. Da Hood 150ms 
+17. Da Hood 100ms
 
-18. Da Strike 50ms 
+18. Da Hood 100ms V2
 
-19. Da Strike 75ms 
+19. Da Hood 150ms
 
-20. Da Strike 80ms 
+20. Da Strike 50ms
 
-21. Da Strike 90ms 
+21. Da Strike 75ms
 
-22. Da Strike 100ms 
+22. Da Strike 80ms
 
-23. Da Strike 120ms 
+23. Da Strike 90ms
 
-24. Da Strike 130ms 
+24. Da Strike 100ms
 
-25. Da Strike 150ms 
+25. Da Strike 120ms
 
-26. Da Strike 200ms 
+26. Da Strike 130ms
 
-27. Dan FFA 180ms 
+27. Da Strike 150ms
 
-28. Dan FFA 200ms 
+28. Da Strike 200ms
 
-29. Dea Hood 80ms 
+29. Dan FFA 180ms
 
-30. Dea Hood 110ms 
+30. Dan FFA 200ms
 
-31. Hood Customs 60ms 
+31. Dea Hood 80ms
 
-32. Hood Customs 100ms 
+32. Dea Hood 110ms
 
-33. Hood Customs All Ms 
+33. Hood Customs 60ms
 
-34. Hood Customs Anarchy 
+34. Hood Customs 90ms
 
-35. Hood Customs Controller 
+35. Hood Customs 100ms
 
-36. Hood Customs Controller V2 
+36. Hood Customs All Ms
 
-37. Hood Customs FFA 100ms 
+37. Hood Customs Anarchy
 
-38. Hood Z 130ms 
+38. Hood Customs Controller
 
-39. Locker Hood 120ms 
+39. Hood Customs Controller V2
 
-40. Model Hood 130ms 
+40. Hood Customs FFA 100ms
 
-41. Murder Vs Sheriff 
+41. Hood Z 130ms
 
-42. Voidfall 110ms 
+42. Locker Hood 120ms
 
-43. Zee Hood 60ms 
+43. Model Hood 130ms
 
-44. Zee Hood 100ms 
+44. Murder Vs Sheriff
 
-45. Zee Hood 100ms V2 
+45. Voidfall 110ms
 
-46. Zee Hood 100ms V3 
+46. Zee Hood 60ms
 
-47. Zer Hood 90ms 
+47. Zee Hood 100ms
+
+48. Zee Hood 100ms V2
+
+49. Zee Hood 100ms V3
+
+50. Zer Hood 90ms
