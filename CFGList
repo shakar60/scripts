@@ -60,128 +60,136 @@
 
 2. Ar Hood 80ms 
 
-3. Comp Hood 60ms 
+3. Ar Hood 100ms 
 
-4. Comp Hood 90ms 
+4. Comp Hood 60ms 
 
-5. Comp Hood 130ms 
+5. Comp Hood 90ms 
 
-6. Da Center 120ms 
+6. Comp Hood 130ms 
 
-7. Da Center 160ms 
+7. Da Center 120ms 
 
-8. Da Downhill 85ms 
+8. Da Center 160ms 
 
-9. Da Downhill 90ms 
+9. Da Hills 80ms 
 
-10. Da Downhill 100ms 
+10. Da Hills 90ms 
 
-11. Da Downhill 120ms 
+11. Da Hills 100ms 
 
-12. Da Downhill 120ms V2 
+12. Da Hills 200ms 
 
-13. Da Hills 80ms 
+13. Dan FFA 180ms 
 
-14. Da Hills 90ms 
+14. Dan FFA 200ms 
 
-15. Da Hills 100ms 
+15. Dea Hood 80ms 
 
-16. Da Hood 60ms 
+16. Dea Hood 110ms 
 
-17. Da Hood 70ms 
+17. Da Hood 60ms 
 
-18. Da Hood 70ms V2 
+18. Da Hood 70ms 
 
-19. Da Hood 100ms 
+19. Da Hood 70ms V2 
 
-20. Da Hood 100ms V2 
+20. Da Hood 100ms 
 
-21. Da Hood 110ms 
+21. Da Hood 100ms V2 
 
-22. Da Hood 150ms 
+22. Da Hood 110ms 
 
-23. Da Strike 50ms 
+23. Da Hood 120ms 
 
-24. Da Strike 75ms 
+24. Da Hood 150ms 
 
-25. Da Strike 80ms 
+25. Da Strike 50ms 
 
-26. Da Strike 90ms 
+26. Da Strike 75ms 
 
-27. Da Strike 90ms V2 
+27. Da Strike 80ms 
 
-28. Da Strike 100ms 
+28. Da Strike 90ms 
 
-29. Da Strike 100ms V2 
+29. Da Strike 90ms V2 
 
-30. Da Strike 120ms 
+30. Da Strike 100ms 
 
-31. Da Strike 130ms 
+31. Da Strike 100ms V2 
 
-32. Da Strike 150ms 
+32. Da Strike 100ms V3 
 
-33. Da Strike 150ms V2 
+33. Da Strike 120ms 
 
-34. Da Strike 150ms V3 
+34. Da Strike 130ms 
 
-35. Da Strike 200ms 
+35. Da Strike 150ms 
 
-36. Da Strike 200ms V2 
+36. Da Strike 150ms V2 
 
-37. Da Uphill 60ms 
+37. Da Strike 150ms V3 
 
-38. Dan FFA 180ms 
+38. Da Strike 200ms 
 
-39. Dan FFA 200ms 
+39. Da Strike 200ms V2 
 
-40. Dea Hood 80ms 
+40. Da Uphill 60ms 
 
-41. Dea Hood 110ms 
+41. Da Downhill 85ms 
 
-42. Hood Customs 60ms 
+42. Da Downhill 90ms 
 
-43. Hood Customs 90ms 
+43. Da Downhill 100ms 
 
-44. Hood Customs 100ms 
+44. Da Downhill 120ms 
 
-45. Hood Customs All Ms 
+45. Da Downhill 120ms V2 
 
-46. Hood Customs Anarchy 
+46. Hood Customs 60ms 
 
-47. Hood Customs Controller 
+47. Hood Customs 90ms 
 
-48. Hood Customs Controller V2 
+48. Hood Customs 100ms 
 
-49. Hood Customs FFA 100ms 
+49. Hood Customs All Ms 
 
-50. Hood Z 130ms 
+50. Hood Customs Anarchy 
 
-51. Locker Hood 110ms 
+51. Hood Customs Controller 
 
-52. Locker Hood 120ms 
+52. Hood Customs Controller V2 
 
-53. Model Hood 130ms 
+53. Hood Customs FFA 100ms 
 
-54. Murder Vs Sheriff 
+54. Hood Z 130ms 
 
-55. Voidfall 110ms 
+55. Locker Hood 110ms 
 
-56. Zee Hood 60ms 
+56. Locker Hood 120ms 
 
-57. Zee Hood 70ms 
+57. Model Hood 130ms 
 
-58. Zee Hood 100ms 
+58. Murder Vs Sheriff 
 
-59. Zee Hood 100ms V2 
+59. Voidfall 110ms 
 
-60. Zee Hood 100ms V3 
+60. Zee Hood 60ms 
 
-61. Zee Hood 100ms V4 
+61. Zee Hood 70ms 
 
-62. Zee Hood 100ms V6 
+62. Zee Hood 100ms 
 
-63. Zee Hood 120ms 
+63. Zee Hood 100ms V2 
 
-64. Zee Hood 150ms 
+64. Zee Hood 100ms V3 
 
-65. Zer Hood 90ms 
+65. Zee Hood 100ms V4 
+
+66. Zee Hood 100ms V6 
+
+67. Zee Hood 120ms 
+
+68. Zee Hood 150ms 
+
+69. Zer Hood 90ms 
