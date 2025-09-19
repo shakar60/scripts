@@ -1,0 +1,13 @@
+for _, v in next, getgc(true) do
+    if typeof(v) == 'table' and rawget(v, 'Spread') then
+        rawset(v, 'Spread', 0)
+        rawset(v, 'BaseSpread', 0)
+        rawset(v, 'MinCamRecoil', Vector3.new())
+        rawset(v, 'MaxCamRecoil', Vector3.new())
+        rawset(v, 'MinRotRecoil', Vector3.new())
+        rawset(v, 'MaxRotRecoil', Vector3.new())
+        rawset(v, 'MinTransRecoil', Vector3.new())
+        rawset(v, 'MaxTransRecoil', Vector3.new())
+        rawset(v, 'ScopeSpeed', 100)
+    end
+end
