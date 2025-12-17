@@ -1,0 +1,202 @@
+-- not mine
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+
+local localPlayer = Players.LocalPlayer
+
+local skinModels = {}
+local lasers = {}
+
+local LASER_COLOR = Color3.fromRGB(255, 0, 0)
+local LASER_WIDTH_SCALE = 1/12.5
+local LASER_HEIGHT_OFFSET = 0.5
+local LASER_SHORTEN = 0.50
+
+local function isHitbox(part)
+	local n = part.Name:lower()
+	if n:find("hitbox") or n == "hb" then
+		return true
+	end
+	if part.Size.Magnitude > 10 then
+		return true
+	end
+	return false
+end
+
+local function fixCharacter(character)
+	for _, obj in ipairs(character:GetDescendants()) do
+		if obj:IsA("BasePart") then
+			if obj.Name ~= "HumanoidRootPart" then
+				if isHitbox(obj) then
+					obj.Transparency = 1
+					obj.LocalTransparencyModifier = 1
+					obj.CanCollide = false
+				else
+					obj.Transparency = 0
+					obj.LocalTransparencyModifier = 0
+				end
+			end
+		elseif obj:IsA("Decal") then
+			obj.Transparency = 0
+		end
+	end
+end
+
+local function trackModel(model)
+	if skinModels[model] then return end
+	if model:IsA("Model") and model.Name:lower():sub(1,5) == "skin_" then
+		skinModels[model] = true
+		local laser = Instance.new("Part")
+		laser.Anchored = true
+		laser.CanCollide = false
+		laser.Material = Enum.Material.Neon
+		laser.Color = LASER_COLOR
+		laser.Transparency = 0
+		laser.Name = "SkinLaser"
+		laser.Parent = Workspace
+		lasers[model] = laser
+	end
+end
+
+for _, obj in ipairs(Workspace:GetDescendants()) do
+	trackModel(obj)
+end
+
+Workspace.DescendantAdded:Connect(trackModel)
+
+local function getBoundingBox(model)
+	local cframe, size
+	pcall(function()
+		cframe, size = model:GetBoundingBox()
+	end)
+	return cframe, size
+end
+
+RunService.RenderStepped:Connect(function()
+	for _, player in ipairs(Players:GetPlayers()) do
+		if player ~= localPlayer then
+			local character = player.Character
+			if character and character.Parent then
+				fixCharacter(character)
+			end
+		end
+	end
+
+	for model, _ in pairs(skinModels) do
+		if model.Parent then
+			for _, part in ipairs(model:GetDescendants()) do
+				if part:IsA("BasePart") then
+					part.Transparency = 0
+					part.CanCollide = false
+					if part.Material == Enum.Material.ForceField then
+						part.Material = Enum.Material.SmoothPlastic
+					end
+				end
+			end
+
+			local laser = lasers[model]
+			if laser then
+				local cframe, size = getBoundingBox(model)
+				if cframe and size then
+					local laserSize = Vector3.new(size.X * LASER_WIDTH_SCALE, size.Y * LASER_WIDTH_SCALE, size.Z - LASER_SHORTEN*2)
+					laser.Size = laserSize
+
+					local front = cframe.Position + (cframe.LookVector * (size.Z/2 - LASER_SHORTEN))
+					local back = cframe.Position - (cframe.LookVector * (size.Z/2 - LASER_SHORTEN))
+					local centerLine = (front + back) / 2
+					centerLine = centerLine + Vector3.new(0, LASER_HEIGHT_OFFSET, 0)
+
+					laser.CFrame = CFrame.new(centerLine, centerLine + cframe.LookVector)
+				end
+			end
+		else
+			if lasers[model] then
+				lasers[model]:Destroy()
+				lasers[model] = nil
+			end
+			skinModels[model] = nil
+		end
+	end
+end)
+
+--[[local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+local BlindShot = {
+	NameESP = {
+		Enabled = true,
+		Color = Color3.fromRGB(255, 0, 0),
+		Size = 12
+	},
+	HeadESP = {
+		Enabled = true,
+		Color = Color3.fromRGB(0, 255, 255),
+		Length = 100,
+		Thickness = 0.2
+	}
+}
+
+local function createEsp(character)
+	local head = character:WaitForChild("Head", 10)
+	local player = Players:GetPlayerFromCharacter(character)
+	if not head or not player then return end
+	
+	for _, v in pairs(character:GetDescendants()) do
+		if v.Name == "LaserBeam" or v.Name == "NameEsp" then v:Destroy() end
+	end
+
+	if BlindShot.HeadESP.Enabled then
+		local beam = Instance.new("BoxHandleAdornment")
+		beam.Name = "LaserBeam"
+		beam.Size = Vector3.new(BlindShot.HeadESP.Thickness, BlindShot.HeadESP.Thickness, BlindShot.HeadESP.Length)
+		beam.Color3 = BlindShot.HeadESP.Color
+		beam.Transparency = 0.3
+		beam.AlwaysOnTop = true
+		beam.Adornee = head
+		beam.Parent = head
+		beam.CFrame = CFrame.new(0, 0, -BlindShot.HeadESP.Length / 2)
+	end
+
+	if BlindShot.NameESP.Enabled then
+		local billing = Instance.new("BillboardGui")
+		billing.Name = "NameEsp"
+		billing.Adornee = head
+		billing.Size = UDim2.new(0, 40, 0, 15)
+		billing.StudsOffset = Vector3.new(0, 2.5, 0)
+		billing.AlwaysOnTop = true
+		billing.Parent = head
+
+		local label = Instance.new("TextLabel")
+		label.BackgroundTransparency = 1
+		label.Size = UDim2.new(1, 0, 1, 0)
+		label.Text = player.DisplayName
+		label.TextColor3 = BlindShot.NameESP.Color
+		label.TextSize = BlindShot.NameESP.Size
+		label.Font = Enum.Font.SourceSansBold
+		label.Parent = billing
+	end
+end
+
+local function updateEsp()
+	local chaosFolder = workspace:FindFirstChild("chaos")
+	
+	for _, player in ipairs(Players:GetPlayers()) do
+		if player ~= LocalPlayer and player.Character then
+			local char = player.Character
+			
+			if chaosFolder and char:IsDescendantOf(chaosFolder) then
+				if not char:FindFirstChild("NameEsp", true) then
+					createEsp(char)
+				end
+			else
+				if char:FindFirstChild("NameEsp", true) then char:FindFirstChild("NameEsp", true):Destroy() end
+				if char:FindFirstChild("LaserBeam", true) then char:FindFirstChild("LaserBeam", true):Destroy() end
+			end
+		end
+	end
+end
+
+RunService.Heartbeat:Connect(updateEsp)]]
