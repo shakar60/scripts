@@ -1,36 +1,21 @@
--- this script is not mine i just added auto execute to it which is made by claude, the discord of the script is loadstring(game:HttpGet("https://raw.githubusercontent.com/LunarZR/bomba/refs/heads/main/AOTR1"))()
+-- this script is not mine i just added auto execute to it, the discord of the script is https://discord.gg/Kp6SWZWkQV
 
-local Script = "https://raw.githubusercontent.com/LunarZR/bomba/refs/heads/main/AOTR1"
-
-local function ExecuteScript()
-local success, result = pcall(function()
-return game:HttpGet(Script)
+local script = [[
+pcall(function()
+loadstring(game:HttpGet(“https://raw.githubusercontent.com/LunarZR/bomba/refs/heads/main/AOTR1”))()
 end)
+]]
 
-if success and result then
-    loadstring(result)()
-end
-
-end
-
-local QueueScript = string.format([[
-repeat task.wait() until game:IsLoaded()
-task.wait(0.1)
-
-local success, result = pcall(function()
-    return game:HttpGet("%s")
+if syn and syn.queue_on_teleport then
+game.Players.LocalPlayer.OnTeleport:Connect(function()
+syn.queue_on_teleport(script)
 end)
-
-if success and result then
-    loadstring(result)()
+elseif queue_on_teleport then
+game.Players.LocalPlayer.OnTeleport:Connect(function()
+queue_on_teleport(script)
+end)
 end
 
-]], Script)
-
-if queue_on_teleport then
-queue_on_teleport(QueueScript)
-elseif syn and syn.queue_on_teleport then
-syn.queue_on_teleport(QueueScript)
-end
-
-ExecuteScript()
+pcall(function()
+loadstring(game:HttpGet(“https://raw.githubusercontent.com/LunarZR/bomba/refs/heads/main/AOTR1”))()
+end)
