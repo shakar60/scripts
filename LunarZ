@@ -1,9 +1,36 @@
-local script = [[loadstring(game:HttpGet("https://raw.githubusercontent.com/LunarZR/bomba/refs/heads/main/AOTR1"))()]]
+-- this script is not mine i just added auto execute to it which is made by claude, the discord of the script is loadstring(game:HttpGet("https://raw.githubusercontent.com/LunarZR/bomba/refs/heads/main/AOTR1"))()
 
-if queue_on_teleport then
-    queue_on_teleport(script)
-elseif syn and syn.queue_on_teleport then
-    syn.queue_on_teleport(script)
+local Script = “https://raw.githubusercontent.com/LunarZR/bomba/refs/heads/main/AOTR1”
+
+local function ExecuteScript()
+local success, result = pcall(function()
+return game:HttpGet(Script)
+end)
+
+if success and result then
+    loadstring(result)()
 end
 
-loadstring(script)()
+end
+
+local QueueScript = string.format([[
+repeat task.wait() until game:IsLoaded()
+task.wait(0.1)
+
+local success, result = pcall(function()
+    return game:HttpGet("%s")
+end)
+
+if success and result then
+    loadstring(result)()
+end
+
+]], Script)
+
+if queue_on_teleport then
+queue_on_teleport(QueueScript)
+elseif syn and syn.queue_on_teleport then
+syn.queue_on_teleport(QueueScript)
+end
+
+ExecuteScript()
