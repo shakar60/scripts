@@ -1,6 +1,6 @@
 -- this script is not mine i just added auto execute to it which is made by claude, the discord of the script is loadstring(game:HttpGet("https://raw.githubusercontent.com/LunarZR/bomba/refs/heads/main/AOTR1"))()
 
-local Script = “https://raw.githubusercontent.com/LunarZR/bomba/refs/heads/main/AOTR1”
+local Script = "https://raw.githubusercontent.com/LunarZR/bomba/refs/heads/main/AOTR1"
 
 local function ExecuteScript()
 local success, result = pcall(function()
