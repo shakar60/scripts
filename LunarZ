@@ -17,5 +17,5 @@ end)
 end
 
 pcall(function()
-loadstring(game:HttpGet(“https://raw.githubusercontent.com/LunarZR/bomba/refs/heads/main/AOTR1”))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/LunarZR/bomba/refs/heads/main/AOTR1"))()
 end)
