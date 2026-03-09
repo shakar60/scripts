@@ -1,12 +1,15 @@
 -- this script is not mine i just added auto execute to it, the discord of the script is https://discord.gg/Kp6SWZWkQV
 
-local script = "pcall(function() loadstring(game:HttpGet(\"https://raw.githubusercontent.com/LunarZR/bomba/refs/heads/main/AOTR1\"))() end)"
-local queue = syn and syn.queue_on_teleport or queue_on_teleport
+local script = [[
+    pcall(function() 
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/LunarZR/bomba/refs/heads/main/AOTR1"))() end)
+    end)
+]]
+
+local queue = (syn and syn.queue_on_teleport) or queue_on_teleport
 
 if queue then
-    local connection
-    connection = game.Players.LocalPlayer.OnTeleport:Connect(function()
-        connection:Disconnect()
+    game:GetService("Players").LocalPlayer.OnTeleport:Connect(function()
         queue(script)
     end)
 end
