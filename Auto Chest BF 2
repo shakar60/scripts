@@ -9,8 +9,12 @@ local script = [[
 local queue = (syn and syn.queue_on_teleport) or queue_on_teleport
 
 if queue then
-    game:GetService("Players").LocalPlayer.OnTeleport:Connect(function()
-        queue(script)
+    local connection
+    connection = game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
+        if State == Enum.TeleportState.Started then
+            queue(script)
+            connection:Disconnect()
+        end
     end)
 end
 
