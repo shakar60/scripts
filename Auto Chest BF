@@ -1,5 +1,5 @@
 repeat wait() until game:IsLoaded() and game:GetService("Players").LocalPlayer
-getgenv().Team = "Pirate"
+getgenv().Team = "Pirates"
 getgenv().Mode = "Chests"
 getgenv().Items = {"Fist of Darkness", "God's Chalice"}
 loadstring(game:HttpGet("https://raw.githubusercontent.com/trongdeptraihucscript/Main/refs/heads/main/TN-Tp-Chest.lua"))()
