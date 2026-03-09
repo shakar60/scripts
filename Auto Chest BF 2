@@ -1,4 +1,4 @@
--- this script is not mine i just added auto execute to it, the discord of the script is https://discord.gg/Kp6SWZWkQV
+-- this script is not mine i just added auto execute to it, the discord of the script is https://discord.gg/kar4Qxy5nK
 
 local script = "pcall(function() loadstring(game:HttpGet(\"https://raw.githubusercontent.com/shakar60/scripts/refs/heads/main/Auto%20Chest%20BF"))() end)"
 local queue = syn and syn.queue_on_teleport or queue_on_teleport
