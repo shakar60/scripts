@@ -1,0 +1,16 @@
+local GameInfo = loadstring(game:HttpGet("https://raw.githubusercontent.com/TheRealXORA/Roblox/refs/heads/Main/Scripts%20/Utilities%20/Fetch%20Game%20Information.luau", true))()
+if GameInfo.Creator.Name == "Wiggity." then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/IAlwaysTap/FluxWare/refs/heads/main/fluxware/bladeball.lua"))()
+    elseif GameInfo.Name:find("Prison Life") then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/IAlwaysTap/FluxWare/refs/heads/main/fluxware/prisonlife.lua"))()
+    elseif GameInfo.Creator.Name == "Uplift Games" then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/IAlwaysTap/FluxWare/refs/heads/main/fluxware/adotpmepetspawn.lua"))()
+    elseif GameInfo.Creator.Name == "ROLVe" then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/IAlwaysTap/FluxWare/refs/heads/main/fluxware/arsenal.lua"))()
+    elseif GameInfo.Creator.Name == "CRIMCORP" then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/IAlwaysTap/FluxWare/refs/heads/main/fluxware/criminality.lua"))()
+    elseif GameInfo.Creator.Name == "Wave of Brainrots" then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/IAlwaysTap/FluxWare/refs/heads/main/fluxware/escapeabrainrot.lua"))()
+    elseif GameInfo.Creator.Name == "Polygon Interactive" then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/IAlwaysTap/FluxWare/refs/heads/main/fluxware/defusal.lua"))()
+end
