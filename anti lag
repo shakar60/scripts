@@ -1,0 +1,538 @@
+-- これは完全にクロードAIによって作成されました
+local Players = game:GetService("Players")
+local Lighting = game:GetService("Lighting")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+
+local lp = Players.LocalPlayer
+local w = workspace
+
+local active = false
+local cons = {}
+local originals = { lighting = {}, terrain = {}, workspace = {}, postFx = {}, postFxCam = {} }
+local attrPrefix = "ANTILAG_"
+
+local function safeGet(inst, prop)
+	local ok, v = pcall(function() return inst[prop] end)
+	return ok and v or nil
+end
+
+local function safeSet(inst, prop, val)
+	pcall(function() inst[prop] = val end)
+end
+
+local function connect(sig, fn)
+	local c = sig:Connect(fn)
+	table.insert(cons, c)
+	return c
+end
+
+local function disconnectAll()
+	for _, c in cons do pcall(function() c:Disconnect() end) end
+	cons = {}
+end
+
+local function getAttr(inst, key)
+	local ok, v = pcall(function() return inst:GetAttribute(attrPrefix .. key) end)
+	return ok and v or nil
+end
+
+local function setAttr(inst, key, val)
+	pcall(function() inst:SetAttribute(attrPrefix .. key, val) end)
+end
+
+local function clearAttr(inst, key)
+	pcall(function() inst:SetAttribute(attrPrefix .. key, nil) end)
+end
+
+local function remember(inst, prop, val)
+	if getAttr(inst, prop) == nil then
+		if typeof(val) == "EnumItem" then
+			setAttr(inst, prop, val.Name)
+		else
+			setAttr(inst, prop, val)
+		end
+	end
+end
+
+local function recall(inst, prop)
+	return getAttr(inst, prop)
+end
+
+local function getChildrenSafe(inst)
+	local ok, ch = pcall(inst.GetChildren, inst)
+	return ok and ch or {}
+end
+
+local function isClothingLike(inst)
+	return inst:IsA("Shirt") or inst:IsA("Pants") or inst:IsA("ShirtGraphic")
+		or inst:IsA("Accessory") or inst:IsA("Clothing") or inst:IsA("HumanoidDescription")
+end
+
+local function getCharacterModel(inst)
+	local a = inst
+	while a do
+		if a:IsA("Model") and a:FindFirstChildOfClass("Humanoid") then return a end
+		a = a.Parent
+	end
+end
+
+local function playerFromCharacter(model)
+	local ok, plr = pcall(function() return Players:GetPlayerFromCharacter(model) end)
+	return ok and plr or nil
+end
+
+local function snapshotEnv()
+	for _, p in { "GlobalShadows", "FogEnd", "Brightness", "Ambient", "OutdoorAmbient" } do
+		if originals.lighting[p] == nil then
+			originals.lighting[p] = safeGet(Lighting, p)
+		end
+	end
+	for _, e in Lighting:GetChildren() do
+		if e:IsA("PostEffect") or e:IsA("Atmosphere") then
+			if originals.postFx[e] == nil then
+				local en = safeGet(e, "Enabled")
+				originals.postFx[e] = en == nil and true or en
+			end
+		end
+	end
+	local cam = w.CurrentCamera
+	if cam then
+		for _, e in cam:GetChildren() do
+			if e:IsA("PostEffect") then
+				if originals.postFxCam[e] == nil then
+					local en = safeGet(e, "Enabled")
+					originals.postFxCam[e] = en == nil and true or en
+				end
+			end
+		end
+	end
+	local T = w:FindFirstChildOfClass("Terrain")
+	if T then
+		for _, p in { "Decoration", "WaterWaveSize", "WaterWaveSpeed", "WaterReflectance", "WaterTransparency" } do
+			if originals.terrain[p] == nil then
+				originals.terrain[p] = safeGet(T, p)
+			end
+		end
+	end
+	for _, p in { "StreamingEnabled", "StreamingPauseMode", "StreamOutBehavior", "TargetRadius" } do
+		if originals.workspace[p] == nil then
+			originals.workspace[p] = safeGet(w, p)
+		end
+	end
+end
+
+local function applyEnv()
+	pcall(function() settings().Rendering.QualityLevel = Enum.QualityLevel.Level01 end)
+	safeSet(Lighting, "GlobalShadows", false)
+	safeSet(Lighting, "FogEnd", math.huge)
+	safeSet(Lighting, "Brightness", 0)
+	safeSet(Lighting, "Ambient", Color3.new(0.4, 0.4, 0.4))
+	safeSet(Lighting, "OutdoorAmbient", Color3.new(0.4, 0.4, 0.4))
+	pcall(function() Lighting.Technology = Enum.Technology.Compatibility end)
+	local T = w:FindFirstChildOfClass("Terrain")
+	if T then
+		safeSet(T, "Decoration", false)
+		safeSet(T, "WaterWaveSize", 0)
+		safeSet(T, "WaterWaveSpeed", 0)
+		safeSet(T, "WaterReflectance", 0)
+		safeSet(T, "WaterTransparency", 0)
+	end
+	for _, e in Lighting:GetChildren() do
+		if e:IsA("PostEffect") or e:IsA("Atmosphere") then
+			safeSet(e, "Enabled", false)
+		end
+	end
+	local cam = w.CurrentCamera
+	if cam then
+		for _, e in cam:GetChildren() do
+			if e:IsA("PostEffect") then safeSet(e, "Enabled", false) end
+		end
+	end
+end
+
+local function restoreEnv()
+	pcall(function()
+		if originals.quality ~= nil then
+			settings().Rendering.QualityLevel = originals.quality
+		end
+	end)
+	for p, v in originals.lighting do
+		if v ~= nil then safeSet(Lighting, p, v) end
+	end
+	for e, wasEnabled in originals.postFx do
+		if e and e.Parent then safeSet(e, "Enabled", wasEnabled) end
+	end
+	for e, wasEnabled in originals.postFxCam do
+		if e and e.Parent then safeSet(e, "Enabled", wasEnabled) end
+	end
+	local T = w:FindFirstChildOfClass("Terrain")
+	if T then
+		for p, v in originals.terrain do
+			if v ~= nil then safeSet(T, p, v) end
+		end
+	end
+	for p, v in originals.workspace do
+		if v ~= nil then safeSet(w, p, v) end
+	end
+	originals = { lighting = {}, terrain = {}, workspace = {}, postFx = {}, postFxCam = {} }
+end
+
+local function optimizeInstance(inst)
+	if not active then return end
+	local cm = getCharacterModel(inst)
+	if cm then
+		local pl = playerFromCharacter(cm)
+		if pl then
+			if pl == lp then return end
+		end
+	end
+	if isClothingLike(inst) then return end
+
+	if inst:IsA("BasePart") then
+		remember(inst, "Material", inst.Material)
+		remember(inst, "Reflectance", inst.Reflectance)
+		remember(inst, "CastShadow", inst.CastShadow)
+		safeSet(inst, "Material", Enum.Material.Plastic)
+		safeSet(inst, "Reflectance", 0)
+		safeSet(inst, "CastShadow", false)
+	end
+
+	if inst:IsA("MeshPart") then
+		local tx = safeGet(inst, "TextureID")
+		if tx and tx ~= "" then
+			remember(inst, "TextureID", tx)
+			safeSet(inst, "TextureID", "")
+		end
+	end
+
+	if inst:IsA("SpecialMesh") then
+		local tx = safeGet(inst, "TextureId")
+		if tx and tx ~= "" then
+			remember(inst, "TextureId", tx)
+			safeSet(inst, "TextureId", "")
+		end
+	end
+
+	if inst:IsA("Decal") or inst:IsA("Texture") then
+		remember(inst, "Transparency", inst.Transparency)
+		safeSet(inst, "Transparency", 1)
+	end
+
+	local isEffect = inst:IsA("ParticleEmitter") or inst:IsA("Trail") or inst:IsA("Fire")
+		or inst:IsA("Smoke") or inst:IsA("Sparkles") or inst:IsA("Beam")
+		or inst:IsA("PointLight") or inst:IsA("SurfaceLight") or inst:IsA("SpotLight")
+		or inst:IsA("SurfaceAppearance") or inst:IsA("Highlight") or inst:IsA("PostEffect")
+
+	if isEffect then
+		local en = safeGet(inst, "Enabled")
+		if en ~= nil then
+			remember(inst, "Enabled", en)
+			safeSet(inst, "Enabled", false)
+		end
+		if inst:IsA("ParticleEmitter") then
+			local rate = safeGet(inst, "Rate")
+			if rate ~= nil then
+				remember(inst, "Rate", rate)
+				safeSet(inst, "Rate", 0)
+			end
+			pcall(function() inst:Clear() end)
+		end
+	end
+
+	if inst:IsA("Atmosphere") then
+		for _, p in { "Density", "Haze", "Glare" } do
+			local v = safeGet(inst, p)
+			if v ~= nil then
+				remember(inst, p, v)
+				safeSet(inst, p, 0)
+			end
+		end
+	end
+end
+
+local function restoreInstance(inst)
+	if inst:IsA("BasePart") then
+		local m = recall(inst, "Material")
+		if m then safeSet(inst, "Material", Enum.Material[m] or inst.Material) clearAttr(inst, "Material") end
+		local r = recall(inst, "Reflectance")
+		if r then safeSet(inst, "Reflectance", r) clearAttr(inst, "Reflectance") end
+		local cs = recall(inst, "CastShadow")
+		if cs ~= nil then safeSet(inst, "CastShadow", cs) clearAttr(inst, "CastShadow") end
+		if inst:IsA("MeshPart") then
+			local tx = recall(inst, "TextureID")
+			if tx then safeSet(inst, "TextureID", tx) clearAttr(inst, "TextureID") end
+		end
+	end
+	if inst:IsA("SpecialMesh") then
+		local t = recall(inst, "TextureId")
+		if t then safeSet(inst, "TextureId", t) clearAttr(inst, "TextureId") end
+	end
+	if inst:IsA("Decal") or inst:IsA("Texture") then
+		local t = recall(inst, "Transparency")
+		if t ~= nil then safeSet(inst, "Transparency", t) clearAttr(inst, "Transparency") end
+	end
+	for _, cls in {
+		"ParticleEmitter", "Trail", "Fire", "Smoke", "Sparkles", "Beam",
+		"PointLight", "SurfaceLight", "SpotLight", "SurfaceAppearance",
+		"Highlight", "PostEffect"
+	} do
+		if inst:IsA(cls) then
+			local e = recall(inst, "Enabled")
+			if e ~= nil then safeSet(inst, "Enabled", e) clearAttr(inst, "Enabled") end
+			if inst:IsA("ParticleEmitter") then
+				local rate = recall(inst, "Rate")
+				if rate ~= nil then safeSet(inst, "Rate", rate) clearAttr(inst, "Rate") end
+			end
+			break
+		end
+	end
+	if inst:IsA("Atmosphere") then
+		for _, p in { "Density", "Haze", "Glare" } do
+			local v = recall(inst, p)
+			if v ~= nil then safeSet(inst, p, v) clearAttr(inst, p) end
+		end
+	end
+end
+
+local function sweepTree(root, fn)
+	local q = { root }
+	local qi, qn = 1, 1
+	local n = 0
+	while qi <= qn do
+		local inst = q[qi]; qi = qi + 1
+		pcall(fn, inst)
+		local ch = getChildrenSafe(inst)
+		for i = 1, #ch do qn = qn + 1; q[qn] = ch[i] end
+		n = n + 1
+		if n >= 256 then n = 0; task.wait() end
+	end
+end
+
+local function enable()
+	if active then return end
+	active = true
+	snapshotEnv()
+	connect(w.DescendantAdded, function(inst)
+		task.defer(function()
+			pcall(optimizeInstance, inst)
+		end)
+	end)
+	connect(Lighting.DescendantAdded, function(inst)
+		task.defer(function()
+			pcall(optimizeInstance, inst)
+		end)
+	end)
+	applyEnv()
+	task.spawn(function()
+		sweepTree(w, optimizeInstance)
+		sweepTree(Lighting, optimizeInstance)
+	end)
+end
+
+local function disable()
+	if not active then return end
+	active = false
+	disconnectAll()
+	task.spawn(function()
+		sweepTree(w, restoreInstance)
+		sweepTree(Lighting, restoreInstance)
+		restoreEnv()
+	end)
+end
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "AntiLagUI"
+gui.ResetOnSpawn = false
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.IgnoreGuiInset = true
+gui.Parent = (gethui and gethui()) or lp.PlayerGui
+
+local DARK   = Color3.fromRGB(10, 10, 14)
+local PANEL  = Color3.fromRGB(18, 18, 24)
+local BORDER = Color3.fromRGB(38, 38, 52)
+local ACC    = Color3.fromRGB(99, 102, 241)
+local ACC2   = Color3.fromRGB(139, 92, 246)
+local TEXT   = Color3.fromRGB(230, 230, 240)
+local SUBTEXT= Color3.fromRGB(120, 120, 145)
+local GREEN  = Color3.fromRGB(52, 211, 153)
+local RED    = Color3.fromRGB(248, 113, 113)
+
+local main = Instance.new("Frame")
+main.Name = "Main"
+main.Size = UDim2.new(0, 280, 0, 130)
+main.Position = UDim2.new(0.5, -140, 0.5, -65)
+main.BackgroundColor3 = PANEL
+main.BorderSizePixel = 0
+main.Active = true
+main.Draggable = true
+main.Parent = gui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 12)
+corner.Parent = main
+
+local stroke = Instance.new("UIStroke")
+stroke.Color = BORDER
+stroke.Thickness = 1.2
+stroke.Parent = main
+
+local topBar = Instance.new("Frame")
+topBar.Name = "TopBar"
+topBar.Size = UDim2.new(1, 0, 0, 38)
+topBar.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
+topBar.BorderSizePixel = 0
+topBar.Parent = main
+
+local topCorner = Instance.new("UICorner")
+topCorner.CornerRadius = UDim.new(0, 12)
+topCorner.Parent = topBar
+
+local topFix = Instance.new("Frame")
+topFix.Size = UDim2.new(1, 0, 0, 12)
+topFix.Position = UDim2.new(0, 0, 1, -12)
+topFix.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
+topFix.BorderSizePixel = 0
+topFix.Parent = topBar
+
+local grad = Instance.new("UIGradient")
+grad.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, ACC),
+	ColorSequenceKeypoint.new(1, ACC2),
+})
+grad.Rotation = 90
+grad.Parent = topBar
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -48, 1, 0)
+title.Position = UDim2.new(0, 14, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "⚡  ANTI LAG"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextSize = 14
+title.Font = Enum.Font.GothamBold
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = topBar
+
+local closeBtn = Instance.new("TextButton")
+closeBtn.Size = UDim2.new(0, 26, 0, 26)
+closeBtn.Position = UDim2.new(1, -32, 0.5, -13)
+closeBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 75)
+closeBtn.Text = "✕"
+closeBtn.TextColor3 = TEXT
+closeBtn.TextSize = 12
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.BorderSizePixel = 0
+closeBtn.Parent = topBar
+
+local closeCorner = Instance.new("UICorner")
+closeCorner.CornerRadius = UDim.new(1, 0)
+closeCorner.Parent = closeBtn
+
+local statusLabel = Instance.new("TextLabel")
+statusLabel.Size = UDim2.new(1, -28, 0, 18)
+statusLabel.Position = UDim2.new(0, 14, 0, 46)
+statusLabel.BackgroundTransparency = 1
+statusLabel.Text = "Status:        INACTIVE"
+statusLabel.TextColor3 = SUBTEXT
+statusLabel.TextSize = 12
+statusLabel.Font = Enum.Font.Gotham
+statusLabel.TextXAlignment = Enum.TextXAlignment.Left
+statusLabel.Parent = main
+
+local dot = Instance.new("Frame")
+dot.Size = UDim2.new(0, 8, 0, 8)
+dot.Position = UDim2.new(0, 56, 0, 50)
+dot.BackgroundColor3 = RED
+dot.BorderSizePixel = 0
+dot.Parent = main
+
+local dotCorner = Instance.new("UICorner")
+dotCorner.CornerRadius = UDim.new(1, 0)
+dotCorner.Parent = dot
+
+local hint = Instance.new("TextLabel")
+hint.Size = UDim2.new(1, -28, 0, 14)
+hint.Position = UDim2.new(0, 14, 0, 68)
+hint.BackgroundTransparency = 1
+hint.Text = "Removes particles, lights, textures & post-FX"
+hint.TextColor3 = SUBTEXT
+hint.TextSize = 10
+hint.Font = Enum.Font.Gotham
+hint.TextXAlignment = Enum.TextXAlignment.Left
+hint.Parent = main
+
+local toggleBtn = Instance.new("TextButton")
+toggleBtn.Size = UDim2.new(1, -28, 0, 34)
+toggleBtn.Position = UDim2.new(0, 14, 0, 88)
+toggleBtn.BackgroundColor3 = ACC
+toggleBtn.Text = "ENABLE"
+toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleBtn.TextSize = 13
+toggleBtn.Font = Enum.Font.GothamBold
+toggleBtn.BorderSizePixel = 0
+toggleBtn.AutoButtonColor = false
+toggleBtn.Parent = main
+
+local toggleCorner = Instance.new("UICorner")
+toggleCorner.CornerRadius = UDim.new(0, 8)
+toggleCorner.Parent = toggleBtn
+
+local toggleGrad = Instance.new("UIGradient")
+toggleGrad.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, ACC),
+	ColorSequenceKeypoint.new(1, ACC2),
+})
+toggleGrad.Rotation = 90
+toggleGrad.Parent = toggleBtn
+
+local tweenInfo = TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+local function updateUI()
+	if active then
+		TweenService:Create(toggleBtn, tweenInfo, { BackgroundColor3 = GREEN }):Play()
+		toggleGrad.Enabled = false
+		toggleBtn.Text = "DISABLE"
+		TweenService:Create(dot, tweenInfo, { BackgroundColor3 = GREEN }):Play()
+		statusLabel.Text = "Status:        ACTIVE"
+		statusLabel.TextColor3 = GREEN
+		dot.Position = UDim2.new(0, 60, 0, 50)
+	else
+		toggleGrad.Enabled = true
+		toggleBtn.Text = "ENABLE"
+		TweenService:Create(dot, tweenInfo, { BackgroundColor3 = RED }):Play()
+		statusLabel.Text = "Status:        INACTIVE"
+		statusLabel.TextColor3 = SUBTEXT
+		dot.Position = UDim2.new(0, 56, 0, 50)
+	end
+end
+
+toggleBtn.MouseEnter:Connect(function()
+	TweenService:Create(toggleBtn, tweenInfo, { BackgroundTransparency = 0.15 }):Play()
+end)
+toggleBtn.MouseLeave:Connect(function()
+	TweenService:Create(toggleBtn, tweenInfo, { BackgroundTransparency = 0 }):Play()
+end)
+closeBtn.MouseEnter:Connect(function()
+	TweenService:Create(closeBtn, tweenInfo, { BackgroundColor3 = RED }):Play()
+end)
+closeBtn.MouseLeave:Connect(function()
+	TweenService:Create(closeBtn, tweenInfo, { BackgroundColor3 = Color3.fromRGB(60, 60, 75) }):Play()
+end)
+
+toggleBtn.MouseButton1Click:Connect(function()
+	if active then
+		disable()
+	else
+		enable()
+	end
+	updateUI()
+end)
+
+closeBtn.MouseButton1Click:Connect(function()
+	if active then disable() end
+	gui:Destroy()
+end)
+
+updateUI()
