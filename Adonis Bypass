@@ -1,4 +1,4 @@
---/ by @xora_is_banned
+-- by @xora_is_banned
 if BYPASSED_ADONIS then return end
 getgenv().ADONIS_BYPASS_DEBUG_MODE = true
 
