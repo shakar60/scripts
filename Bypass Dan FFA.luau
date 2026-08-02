@@ -1,5 +1,5 @@
 -- by @xora_is_banned
-local GameInformation = loadstring(game:HttpGet("https://raw.githubusercontent.com/shakar60/scripts/refs/heads/main/Fetch%20Game%20Information.luau", true))()
+local GameInformation = loadstring(game:HttpGet("https://raw.githubusercontent.com/XORAWasBanned/Roblox/refs/heads/main/Scripts/Utilities%20/Others%20/Game%20Information%20Fetcher.luau", true))()
 if not GameInformation.Name:find("Dan FFA") then return end
 local Namecall; Namecall = hookmetamethod(game, "__namecall", function(...)
     if checkcaller() then return Namecall(...) end
