@@ -1,6 +1,6 @@
 -- by @xora_is_banned
 if BYPASSED_ADONIS then return end
-getgenv().ADONIS_BYPASS_DEBUG_MODE = true
+getgenv().ADONIS_BYPASS_DEBUG_MODE = false
 
 local ScriptContext = game:service("ScriptContext")
 local LocalPlayer = game:service("Players").LocalPlayer
